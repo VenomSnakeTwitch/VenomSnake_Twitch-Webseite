@@ -33,6 +33,7 @@
         .grid-bg { background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
         .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
         .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
+        .glow-twitch { box-shadow: 0 0 30px rgba(145, 70, 255, 0.3); }
 
         /* Navigation */
         .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; }
@@ -45,6 +46,8 @@
         .nav-links { display: flex; align-items: center; gap: 2rem; }
         .nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--twitch); }
+        .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--twitch); transition: width 0.3s ease; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         .discord-btn { background-color: #5865F2; color: white; padding: 0.5rem 1rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
         .discord-btn:hover { background-color: #4752c4; }
 
@@ -55,7 +58,7 @@
         .mobile-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.5rem; font-family: 'Chakra Petch', sans-serif; letter-spacing: 0.1em; color: var(--text-secondary); text-decoration: none; }
         .mobile-nav a.active { color: var(--twitch); }
 
-        /* Page */
+        /* Page Container */
         .page { display: none; min-height: 100vh; padding-top: 96px; padding-bottom: 3rem; }
         .page.active { display: block; }
         .container { max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
@@ -64,26 +67,72 @@
         .page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 2.5rem; text-transform: uppercase; letter-spacing: -0.025em; }
         .page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--text-secondary); margin-top: 0.5rem; }
 
-        /* Stream + Chat Grid */
-        .stream-chat-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
-        .twitch-embed { width: 100%; height: 400px; background-color: black; }
-        .chat-container { background-color: var(--surface); border: 1px solid var(--border); height: 400px; display: flex; flex-direction: column; }
-        .chat-header { padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; color: var(--tactical-blue); }
-        .chat-embed { flex: 1; }
+        /* Stream & Chat Grid */
+        .stream-chat-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .stream-container, .chat-container { background-color: var(--surface); border: 1px solid var(--border); }
+        .stream-container { position: relative; padding-top: 56.25%; overflow: hidden; }
+        .stream-container iframe, .stream-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: cover; }
+        .chat-container { height: 600px; }
 
-        /* Schedule */
+        /* Schedule / Next Stream */
         .schedule-section { margin-top: 2rem; }
-        .schedule-section h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem; }
-        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-        .schedule-card { background-color: var(--surface); border: 1px solid var(--border); padding: 1rem; }
-        .schedule-card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
-        .schedule-dot { width: 12px; height: 12px; background-color: var(--twitch); border-radius: 50%; }
+        .schedule-section h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; text-transform: uppercase; margin-bottom: 1rem; }
+        .schedule-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .schedule-card { background-color: var(--surface); border: 1px solid var(--border); padding: 1rem; flex: 1; min-width: 150px; text-align: center; }
+        .schedule-card h3 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem; }
+        .schedule-card p { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--text-secondary); }
+        .next-stream { margin-top: 1.5rem; text-align: center; font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; }
+        .countdown { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; color: var(--twitch); margin-top: 0.5rem; }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .stream-chat-grid { grid-template-columns: 1fr; } .chat-container { height: 400px; } }
+        @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } .page-header h1 { font-size: 2rem; } }
+
     </style>
 </head>
 <body>
 <script>
     const TWITCH_PARENT = window.location.hostname;
     const TWITCH_CHANNEL = "VenomSnake_Twitch";
+    const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+        document.getElementById('mobileNav').classList.toggle('open');
+    }
+
+    // Page Switch
+    function showPage(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelector('#page-' + page).classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        document.querySelector('.nav-link[data-page="' + page + '"]').classList.add('active');
+    }
+
+    // Countdown Timer
+    const nextStreamDate = new Date(); // Beispiel: setze auf nächsten Stream
+    nextStreamDate.setHours(13,30,0,0); // 13:30 Uhr
+    const daysOfWeek = [ "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag" ];
+    
+    function updateCountdown() {
+        const now = new Date();
+        const diff = nextStreamDate - now;
+        const countdownEl = document.getElementById('countdown');
+        const nextStreamEl = document.getElementById('nextStream');
+
+        if(diff <= 0) {
+            countdownEl.textContent = "JETZT LIVE!";
+        } else {
+            const h = Math.floor(diff / 1000 / 60 / 60);
+            const m = Math.floor(diff / 1000 / 60 % 60);
+            const s = Math.floor(diff / 1000 % 60);
+            countdownEl.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            nextStreamEl.textContent = "Nächster Stream: " + daysOfWeek[nextStreamDate.getDay()] + " 13:30 Uhr";
+        }
+    }
+
+    setInterval(updateCountdown, 1000);
+    window.onload = updateCountdown;
 </script>
 
 <!-- Navigation -->
@@ -93,17 +142,30 @@
             <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
             <span class="logo-text"><span class="venom">VENOM</span><span class="snake">SNAKE</span></span>
         </a>
+
         <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">STREAM</a>
-            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">ÜBER MICH</a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn">DISCORD</a>
+            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">
+                <i data-lucide="tv" style="width: 16px; height: 16px;"></i> STREAM
+            </a>
+            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
+                <i data-lucide="user" style="width: 16px; height: 16px;"></i> ÜBER MICH
+            </a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">DISCORD</a>
         </div>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">MENU</button>
+
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+        </button>
     </div>
+
     <div class="mobile-nav" id="mobileNav">
-        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">STREAM</a>
-        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">ÜBER MICH</a>
-        <a href="https://discord.gg/SFzk4YxgRv" target="_blank">DISCORD</a>
+        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
+            <i data-lucide="tv" style="width: 18px; height: 18px;"></i> STREAM
+        </a>
+        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
+            <i data-lucide="user" style="width: 18px; height: 18px;"></i> ÜBER MICH
+        </a>
+        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">DISCORD</a>
     </div>
 </nav>
 
@@ -116,32 +178,22 @@
         </div>
 
         <div class="stream-chat-grid">
-            <div class="stream-left">
-                <div id="twitch-embed" class="twitch-embed"></div>
+            <div class="stream-container">
+                <iframe src="https://player.twitch.tv/?channel=VenomSnake_Twitch&parent=localhost" allowfullscreen></iframe>
             </div>
-            <div class="stream-right">
-                <div class="chat-container">
-                    <div class="chat-header">
-                        <span>Live Chat</span>
-                        <a href="https://www.twitch.tv/VenomSnake_Twitch/chat" target="_blank">Öffnen</a>
-                    </div>
-                    <div class="chat-embed" id="twitch-chat"></div>
-                </div>
+            <div class="chat-container">
+                <iframe src="https://www.twitch.tv/embed/VenomSnake_Twitch/chat?parent=localhost"></iframe>
             </div>
         </div>
 
         <div class="schedule-section">
-            <h2>Nächster Stream</h2>
             <div class="schedule-grid">
-                <div class="schedule-card">
-                    <div class="schedule-card-header">
-                        <div class="schedule-dot"></div>
-                        <span>Montag, 13:30 Uhr</span>
-                    </div>
-                    <h3 id="next-stream-title">Resident Evil Mission</h3>
-                    <p id="countdown">In 02:15:30</p>
-                </div>
+                <div class="schedule-card"><h3>Montag</h3><p>13:30 Uhr</p></div>
+                <div class="schedule-card"><h3>Mittwoch</h3><p>13:30 Uhr</p></div>
+                <div class="schedule-card"><h3>Freitag</h3><p>13:30 Uhr</p></div>
             </div>
+            <div class="next-stream" id="nextStream">Nächster Stream: </div>
+            <div class="countdown" id="countdown">--:--:--</div>
         </div>
     </div>
 </main>
@@ -151,62 +203,15 @@
     <div class="container">
         <div class="page-header">
             <h1>ÜBER MICH</h1>
-            <p class="subtitle">Gamer & Streamer // Metal Gear Solid & Resident Evil Fan</p>
+            <p class="subtitle">Lerne den Streamer kennen</p>
         </div>
-        <p>Hier kannst du ein bisschen Text über dich, deinen Stream und deine Community einfügen.</p>
+        <p>Hier könnte deine About-Seite stehen.</p>
     </div>
 </main>
 
-<script src="https://embed.twitch.tv/embed/v1.js"></script>
 <script>
-    // Mobile Menu
-    function toggleMobileMenu() {
-        const nav = document.getElementById("mobileNav");
-        nav.classList.toggle("open");
-    }
-
-    // Page Switching
-    function showPage(page) {
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.getElementById("page-" + page).classList.add("active");
-        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-        document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
-    }
-
-    // Twitch Embed
-    new Twitch.Embed("twitch-embed", {
-        width: "100%",
-        height: 400,
-        channel: TWITCH_CHANNEL,
-        parent: [window.location.hostname]
-    });
-
-    // Twitch Chat
-    new Twitch.Chat({
-        width: "100%",
-        height: 400,
-        channel: TWITCH_CHANNEL,
-        parent: [window.location.hostname]
-    }).render(document.getElementById("twitch-chat"));
-
-    // Countdown
-    const nextStreamTime = new Date();
-    nextStreamTime.setHours(13, 30, 0); // Nächster Streamzeitpunkt
-    const countdownEl = document.getElementById("countdown");
-
-    function updateCountdown() {
-        const now = new Date();
-        let diff = nextStreamTime - now;
-        if(diff <= 0){
-            countdownEl.textContent = "Jetzt Live!";
-            return;
-        }
-        const hours = Math.floor(diff / (1000*60*60));
-        const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-        const seconds = Math.floor((diff % (1000*60)) / 1000);
-        countdownEl.textContent = `In ${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-    }
-    setInterval(updateCountdown, 1000);
+    // Lucide Icons Init
+    window.addEventListener('DOMContentLoaded', () => { lucide.replace(); });
 </script>
 </body>
 </html>
