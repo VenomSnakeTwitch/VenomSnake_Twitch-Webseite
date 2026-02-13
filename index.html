@@ -32,11 +32,7 @@
 
         .grid-bg { background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
         .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
-        .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
-        .cut-corner-sm { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
-        .cut-corner-top { clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px); }
         .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
-        .glow-twitch { box-shadow: 0 0 30px rgba(145, 70, 255, 0.3); }
 
         /* Navigation */
         .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; }
@@ -49,8 +45,6 @@
         .nav-links { display: flex; align-items: center; gap: 2rem; }
         .nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--twitch); }
-        .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--twitch); transition: width 0.3s ease; }
-        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         .discord-btn { background-color: #5865F2; color: white; padding: 0.5rem 1rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
         .discord-btn:hover { background-color: #4752c4; }
 
@@ -61,7 +55,7 @@
         .mobile-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.5rem; font-family: 'Chakra Petch', sans-serif; letter-spacing: 0.1em; color: var(--text-secondary); text-decoration: none; }
         .mobile-nav a.active { color: var(--twitch); }
 
-        /* Page Container */
+        /* Page */
         .page { display: none; min-height: 100vh; padding-top: 96px; padding-bottom: 3rem; }
         .page.active { display: block; }
         .container { max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
@@ -70,56 +64,26 @@
         .page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 2.5rem; text-transform: uppercase; letter-spacing: -0.025em; }
         .page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--text-secondary); margin-top: 0.5rem; }
 
-        /* Stream Grid */
-        .stream-grid { display: grid; gap: 1.5rem; }
-        @media (min-width: 1024px) { .stream-grid { grid-template-columns: 2fr 1fr; } }
+        /* Stream + Chat Grid */
+        .stream-chat-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+        .twitch-embed { width: 100%; height: 400px; background-color: black; }
+        .chat-container { background-color: var(--surface); border: 1px solid var(--border); height: 400px; display: flex; flex-direction: column; }
+        .chat-header { padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; color: var(--tactical-blue); }
+        .chat-embed { flex: 1; }
 
-        .stream-container { background-color: var(--surface); border: 1px solid var(--border); position: relative; }
-        .live-status { position: absolute; top: 1rem; left: 1rem; z-index: 10; display: flex; align-items: center; gap: 0.5rem; background-color: rgba(0,0,0,0.6); padding: 0.25rem 0.75rem; }
-        .live-dot { width: 8px; height: 8px; background-color: var(--live); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-        @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.6; transform:scale(1.1); } }
-        .live-status span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--live); letter-spacing: 0.1em; }
-
-        .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
-        .twitch-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-        @keyframes stream-glow { 0%,100%{box-shadow:0 0 20px rgba(145,70,255,0.2);} 50%{box-shadow:0 0 40px rgba(145,70,255,0.5);} }
-        .stream-live-glow { animation: stream-glow 2s infinite ease-in-out; border-color: rgba(145,70,255,0.5) !important; }
-
-        /* Stream Info & Chat */
-        .stream-info { margin-top: 1rem; background-color: var(--surface); border: 1px solid var(--border); padding: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; flex-direction: column; }
-        .chat-container { background-color: var(--surface); border: 1px solid var(--border); height: 500px; display: flex; flex-direction: column; overflow: hidden; }
-        @media (min-width: 1024px) { .chat-container { height: 600px; } }
-        .chat-header { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-        .chat-header span { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; color: var(--tactical-blue); }
-        .chat-header a { font-size: 0.75rem; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.25rem; }
-        .chat-header a:hover { color: var(--twitch); }
-        .chat-embed { flex: 1; position: relative; min-height: 0; }
-        .chat-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-
-        /* About Page */
-        .about-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 1024px) { .about-grid { grid-template-columns: 1fr 2fr; } .about-container { max-width: 1200px; } }
-
-        .profile-card { background-color: var(--surface); border: 1px solid var(--border); overflow: hidden; }
-        .profile-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-        .profile-card-content { padding: 1.5rem; }
-        .profile-card h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; color: white; margin-bottom: 0.5rem; }
-        .profile-tags { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-        .tag { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.25rem 0.5rem; }
-        .tag-twitch { background-color: rgba(145, 70, 255, 0.2); color: var(--twitch); }
-        .tag-tactical { background-color: rgba(82, 182, 202, 0.2); color: var(--tactical-blue); }
-
-        /* Responsive */
-        @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } .page-header h1 { font-size: 2rem; } .container { padding: 0 1rem; } }
-
+        /* Schedule */
+        .schedule-section { margin-top: 2rem; }
+        .schedule-section h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .schedule-card { background-color: var(--surface); border: 1px solid var(--border); padding: 1rem; }
+        .schedule-card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .schedule-dot { width: 12px; height: 12px; background-color: var(--twitch); border-radius: 50%; }
     </style>
 </head>
 <body>
 <script>
     const TWITCH_PARENT = window.location.hostname;
     const TWITCH_CHANNEL = "VenomSnake_Twitch";
-    const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
 </script>
 
 <!-- Navigation -->
@@ -129,30 +93,17 @@
             <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
             <span class="logo-text"><span class="venom">VENOM</span><span class="snake">SNAKE</span></span>
         </a>
-
         <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">
-                <i data-lucide="tv" style="width: 16px; height: 16px;"></i> STREAM
-            </a>
-            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
-                <i data-lucide="user" style="width: 16px; height: 16px;"></i> ÜBER MICH
-            </a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">DISCORD</a>
+            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">STREAM</a>
+            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">ÜBER MICH</a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn">DISCORD</a>
         </div>
-
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
-        </button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">MENU</button>
     </div>
-
     <div class="mobile-nav" id="mobileNav">
-        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
-            <i data-lucide="tv" style="width: 18px; height: 18px;"></i> STREAM
-        </a>
-        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
-            <i data-lucide="user" style="width: 18px; height: 18px;"></i> ÜBER MICH
-        </a>
-        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">DISCORD</a>
+        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">STREAM</a>
+        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">ÜBER MICH</a>
+        <a href="https://discord.gg/SFzk4YxgRv" target="_blank">DISCORD</a>
     </div>
 </nav>
 
@@ -160,38 +111,36 @@
 <main id="page-stream" class="page active grid-bg">
     <div class="container">
         <div class="page-header">
-            <h1><span class="glow-text" style="color: var(--twitch)">LIVE</span> <span style="color: var(--tactical-blue)">STREAM</span></h1>
+            <h1><span class="glow-text" style="color: var(--twitch);">LIVE</span> <span style="color: var(--tactical-blue);">STREAM</span></h1>
             <p class="subtitle">MISSION CONTROL // TACTICAL ENTERTAINMENT</p>
         </div>
 
-        <div class="stream-grid">
-            <div style="display:flex; flex-direction:column; gap:1rem;">
-                <div class="stream-container stream-live-glow" style="height:360px;">
-                    <div class="live-status">
-                        <div class="live-dot"></div>
-                        <span id="live-status-text">Offline</span>
+        <div class="stream-chat-grid">
+            <div class="stream-left">
+                <div id="twitch-embed" class="twitch-embed"></div>
+            </div>
+            <div class="stream-right">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <span>Live Chat</span>
+                        <a href="https://www.twitch.tv/VenomSnake_Twitch/chat" target="_blank">Öffnen</a>
                     </div>
-                    <div id="twitch-embed" class="twitch-embed"></div>
-                </div>
-
-                <div class="stream-info">
-                    <h2>Nächster Stream</h2>
-                    <p id="next-stream-info">Montag, 13:30 Uhr</p>
-                    <p id="countdown" style="font-family:'JetBrains Mono', monospace; font-size:1.25rem;">--:--:--</p>
-                </div>
-
-                <div class="stream-info">
-                    <h2>Streaming-Tage</h2>
-                    <p>Montag, Mittwoch, Freitag</p>
+                    <div class="chat-embed" id="twitch-chat"></div>
                 </div>
             </div>
+        </div>
 
-            <div class="chat-container">
-                <div class="chat-header">
-                    <span>Live Chat</span>
-                    <a href="https://www.twitch.tv/VenomSnake_Twitch/chat" target="_blank">Popout</a>
+        <div class="schedule-section">
+            <h2>Nächster Stream</h2>
+            <div class="schedule-grid">
+                <div class="schedule-card">
+                    <div class="schedule-card-header">
+                        <div class="schedule-dot"></div>
+                        <span>Montag, 13:30 Uhr</span>
+                    </div>
+                    <h3 id="next-stream-title">Resident Evil Mission</h3>
+                    <p id="countdown">In 02:15:30</p>
                 </div>
-                <div id="twitch-chat" class="chat-embed"></div>
             </div>
         </div>
     </div>
@@ -202,130 +151,62 @@
     <div class="container">
         <div class="page-header">
             <h1>ÜBER MICH</h1>
-            <p class="subtitle">Lerne VenomSnake_Twitch kennen</p>
+            <p class="subtitle">Gamer & Streamer // Metal Gear Solid & Resident Evil Fan</p>
         </div>
-        <div class="about-grid">
-            <div class="profile-card">
-                <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="Profilbild">
-                <div class="profile-card-content">
-                    <h2>VenomSnake_Twitch</h2>
-                    <div class="profile-tags">
-                        <span class="tag tag-twitch">Twitch Streamer</span>
-                        <span class="tag tag-tactical">Gamer</span>
-                    </div>
-                    <p>Hier findest du Streams zu Metal Gear Solid, Resident Evil und anderen spannenden Spielen. Ich streame regelmäßig Montag, Mittwoch und Freitag ab 13:30 Uhr.</p>
-                </div>
-            </div>
-        </div>
+        <p>Hier kannst du ein bisschen Text über dich, deinen Stream und deine Community einfügen.</p>
     </div>
 </main>
 
 <script src="https://embed.twitch.tv/embed/v1.js"></script>
 <script>
-    // Mobile Menu Toggle
+    // Mobile Menu
     function toggleMobileMenu() {
-        const mobileNav = document.getElementById('mobileNav');
-        mobileNav.classList.toggle('open');
+        const nav = document.getElementById("mobileNav");
+        nav.classList.toggle("open");
     }
 
     // Page Switching
-    function showPage(pageId) {
-        const pages = document.querySelectorAll('.page');
-        const navLinks = document.querySelectorAll('.nav-link');
-        pages.forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + pageId).classList.add('active');
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.dataset.page === pageId) link.classList.add('active');
-        });
+    function showPage(page) {
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.getElementById("page-" + page).classList.add("active");
+        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+        document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
     }
 
     // Twitch Embed
     new Twitch.Embed("twitch-embed", {
         width: "100%",
-        height: "100%",
+        height: 400,
         channel: TWITCH_CHANNEL,
-        parent: [TWITCH_PARENT],
-        layout: "video",
-        autoplay: false
+        parent: [window.location.hostname]
     });
 
-    new Twitch.Embed("twitch-chat", {
+    // Twitch Chat
+    new Twitch.Chat({
         width: "100%",
-        height: "100%",
+        height: 400,
         channel: TWITCH_CHANNEL,
-        parent: [TWITCH_PARENT],
-        layout: "chat"
-    });
+        parent: [window.location.hostname]
+    }).render(document.getElementById("twitch-chat"));
 
-    // Countdown & Live Status
-    const nextStreamTimes = [
-        { day: 1, hour: 13, minute: 30 }, // Montag
-        { day: 3, hour: 13, minute: 30 }, // Mittwoch
-        { day: 5, hour: 13, minute: 30 }  // Freitag
-    ];
-
-    function getNextStreamDate() {
-        const now = new Date();
-        let nextStream = null;
-
-        for (let i = 0; i < nextStreamTimes.length; i++) {
-            let stream = nextStreamTimes[i];
-            let date = new Date(now);
-            date.setDate(now.getDate() + ((stream.day + 7 - now.getDay()) % 7));
-            date.setHours(stream.hour, stream.minute, 0, 0);
-            if (date > now) {
-                nextStream = date;
-                break;
-            }
-        }
-
-        // Falls alle vorbei sind, nächster Montag
-        if (!nextStream) {
-            let stream = nextStreamTimes[0];
-            let date = new Date(now);
-            date.setDate(now.getDate() + ((stream.day + 7 - now.getDay()) % 7));
-            date.setHours(stream.hour, stream.minute, 0, 0);
-            nextStream = date;
-        }
-
-        return nextStream;
-    }
+    // Countdown
+    const nextStreamTime = new Date();
+    nextStreamTime.setHours(13, 30, 0); // Nächster Streamzeitpunkt
+    const countdownEl = document.getElementById("countdown");
 
     function updateCountdown() {
         const now = new Date();
-        const nextStream = getNextStreamDate();
-        let diff = nextStream - now;
-
-        const liveText = document.getElementById('live-status-text');
-        const countdownEl = document.getElementById('countdown');
-        const nextStreamInfo = document.getElementById('next-stream-info');
-
-        // Update next stream info
-        const options = { weekday: 'long', hour: '2-digit', minute: '2-digit' };
-        nextStreamInfo.textContent = nextStream.toLocaleDateString('de-DE', options);
-
-        if (diff <= 0) {
-            liveText.textContent = "Live Jetzt!";
-            countdownEl.textContent = "";
-        } else {
-            liveText.textContent = "Offline";
-            let hours = Math.floor(diff / 1000 / 60 / 60);
-            let minutes = Math.floor((diff / 1000 / 60) % 60);
-            let seconds = Math.floor((diff / 1000) % 60);
-            countdownEl.textContent = 
-                `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        let diff = nextStreamTime - now;
+        if(diff <= 0){
+            countdownEl.textContent = "Jetzt Live!";
+            return;
         }
+        const hours = Math.floor(diff / (1000*60*60));
+        const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+        const seconds = Math.floor((diff % (1000*60)) / 1000);
+        countdownEl.textContent = `In ${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
     }
-
     setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    // Initialize Lucide icons
-    window.addEventListener('DOMContentLoaded', () => {
-        lucide.replace();
-    });
 </script>
 </body>
 </html>
