@@ -33,6 +33,104 @@
             box-sizing: border-box;
         }
 
+<script src="https://player.twitch.tv/js/embed/v1.js"></script>
+<script>
+    // =========================
+    // 1. Seitensteuerung
+    // =========================
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + pageId).classList.add('active');
+
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        document.querySelector(`.nav-link[data-page="${pageId}"]`)?.classList.add('active');
+    }
+
+    function toggleMobileMenu() {
+        document.getElementById('mobileNav').classList.toggle('open');
+    }
+
+    // =========================
+    // 2. Twitch Player und Chat
+    // =========================
+    const twitchPlayer = new Twitch.Player("twitch-player-container", {
+        channel: TWITCH_CHANNEL,
+        parent: [TWITCH_PARENT],
+        width: "100%",
+        height: "100%",
+        autoplay: false,
+        muted: false
+    });
+
+    const twitchChat = new Twitch.Embed("twitch-chat-container", {
+        width: "100%",
+        height: "100%",
+        channel: TWITCH_CHANNEL,
+        parent: [TWITCH_PARENT]
+    });
+
+    // =========================
+    // 3. Live Status & Countdown
+    // =========================
+    const liveStatusText = document.querySelector(".live-status span");
+    const liveDot = document.querySelector(".live-dot");
+
+    // Hier definierst du deine Stream-Zeiten
+    const streamSchedule = [
+        { day: 1, hour: 13, minute: 30 }, // Montag
+        { day: 3, hour: 13, minute: 30 }, // Mittwoch
+        { day: 5, hour: 13, minute: 30 }  // Freitag
+    ];
+
+    function getNextStream() {
+        const now = new Date();
+        let nextStream = null;
+
+        for (let i = 0; i < 7; i++) {
+            const checkDay = (now.getDay() + i) % 7;
+            const schedule = streamSchedule.find(s => s.day === checkDay);
+            if (!schedule) continue;
+
+            let nextDate = new Date(now);
+            nextDate.setDate(now.getDate() + i);
+            nextDate.setHours(schedule.hour, schedule.minute, 0, 0);
+
+            if (nextDate > now) {
+                nextStream = nextDate;
+                break;
+            }
+        }
+
+        return nextStream;
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+        const nextStream = getNextStream();
+        const countdownElement = document.querySelector(".stream-info p");
+
+        if (!nextStream) return;
+
+        const diff = nextStream - now;
+        if (diff <= 0) {
+            liveStatusText.textContent = "IST JETZT LIVE";
+            liveDot.style.backgroundColor = "#ff4444";
+            countdownElement.textContent = "LIVE!";
+        } else {
+            liveStatusText.textContent = "COUNTDOWN";
+            liveDot.style.backgroundColor = "#ff4444";
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            countdownElement.textContent = `Nächster Stream in ${hours}h ${minutes}m ${seconds}s`;
+        }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+</script>
         body {
             font-family: 'Rajdhani', sans-serif;
             font-weight: 500;
