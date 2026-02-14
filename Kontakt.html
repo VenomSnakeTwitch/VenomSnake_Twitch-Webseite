@@ -11,16 +11,13 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
+    /* Schwarz-blauer Verlauf + Hintergrundbild */
+    background: linear-gradient(to bottom, #000000, #0000ff),
+                url("https://venomsnaketwitch.github.io/VenomSnake_Twitch-Webseite/backgroundcontact.png") no-repeat center center fixed;
+    background-size: cover;
     color: gold;
     text-align: center;
     overflow: hidden;
-
-    /* Schwarz-blauer Verlauf + Hintergrundbild */
-    background-color: #000; /* Fallback */
-    background-image: linear-gradient(to bottom, #000000, #0000ff), url("backgroundcontact.png");
-    background-repeat: no-repeat;
-    background-position: center top;
-    background-size: contain;
 }
 
 #overlay {
@@ -84,6 +81,7 @@ button:hover {
 #messageStatus {
     font-size: 14px;
     margin-top: 10px;
+    text-align: center;
 }
 
 @media (max-width: 600px){
@@ -107,7 +105,7 @@ button:hover {
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-    // EmailJS Initialisierung
+    // EmailJS Initialisierung mit Public Key
     emailjs.init("Bw8SYa2jG4vcW4APx");
 
     const form = document.getElementById('contactForm');
