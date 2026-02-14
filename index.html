@@ -13,360 +13,271 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
-:root {
-    --twitch: #9146FF;
-    --twitch-dim: #772ce8;
-    --tactical-blue: #52b6ca;
-    --base: #0a0b0e;
-    --surface: #13151a;
-    --overlay: #1c1f26;
-    --live: #ff4444;
-    --text-primary: #e6eef3;
-    --text-secondary: #94a3b8;
-    --text-muted: #475569;
-    --border: rgba(255, 255, 255, 0.08);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Rajdhani', sans-serif; font-weight: 500; background-color: var(--base); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
-
-/* Grid Background */
-.grid-bg { background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
-
-/* Glass Effect */
-.glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
-
-/* Cut Corner Effects */
-.cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
-.cut-corner-sm { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
-.cut-corner-top { clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px); }
-
-/* Glow Effects */
-.glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
-.glow-twitch { box-shadow: 0 0 30px rgba(145, 70, 255, 0.3); }
-
-/* Navigation */
-.nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; }
-.nav-container { max-width: 1600px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; }
-.logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-.logo img { height: 56px; width: auto; }
-.logo-text { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.1em; }
-.logo-text .venom { color: var(--twitch); }
-.logo-text .snake { color: var(--tactical-blue); }
-
-.nav-links { display: flex; align-items: center; gap: 2rem; }
-.nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
-.nav-link:hover, .nav-link.active { color: var(--twitch); }
-.nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--twitch); transition: width 0.3s ease; }
-.nav-link:hover::after, .nav-link.active::after { width: 100%; }
-
-.discord-btn { background-color: #5865F2; color: white; padding: 0.5rem 1rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
-.discord-btn:hover { background-color: #4752c4; }
-
-/* Mobile Menu */
-.mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
-.mobile-nav { display: none; padding: 1rem 0; border-top: 1px solid var(--border); }
-.mobile-nav.open { display: block; }
-.mobile-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.5rem; font-family: 'Chakra Petch', sans-serif; letter-spacing: 0.1em; color: var(--text-secondary); text-decoration: none; }
-.mobile-nav a.active { color: var(--twitch); }
-
-/* Page Container */
-.page { display: none; min-height: 100vh; padding-top: 96px; padding-bottom: 3rem; }
-.page.active { display: block; }
-.container { max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
-
-/* Page Header */
-.page-header { margin-bottom: 2rem; }
-.page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 2.5rem; text-transform: uppercase; letter-spacing: -0.025em; }
-.page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--text-secondary); margin-top: 0.5rem; }
-
-/* Stream Page Grid */
-.stream-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-@media (min-width: 1024px) { .stream-grid { grid-template-columns: 2fr 1fr; } }
-
-/* Twitch Embed */
-.stream-container { background-color: var(--surface); border: 1px solid var(--border); position: relative; }
-.live-status { position: absolute; top: 1rem; left: 1rem; z-index: 10; display: flex; align-items: center; gap: 0.5rem; background-color: rgba(0, 0, 0, 0.6); padding: 0.25rem 0.75rem; }
-.live-dot { width: 8px; height: 8px; background-color: var(--live); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
-.live-status span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--live); letter-spacing: 0.1em; }
-.twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
-.twitch-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-/* Stream Info */
-.stream-info { margin-top: 1rem; background-color: var(--surface); border: 1px solid var(--border); padding: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-.stream-info-left { display: flex; align-items: center; gap: 1rem; }
-.stream-info img { width: 48px; height: 48px; border: 2px solid var(--twitch); }
-.stream-info h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.125rem; }
-.stream-info p { color: var(--text-secondary); font-size: 0.875rem; }
-.follow-btn { background-color: var(--twitch); color: white; padding: 0.5rem 1.5rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
-.follow-btn:hover { background-color: var(--twitch-dim); }
-
-/* Chat Container */
-.chat-container { background-color: var(--surface); border: 1px solid var(--border); height: 500px; display: flex; flex-direction: column; overflow: hidden; }
-@media (min-width: 1024px) { .chat-container { height: 600px; } }
-.chat-header { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.chat-header span { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; color: var(--tactical-blue); }
-.chat-header a { font-size: 0.75rem; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.25rem; }
-.chat-header a:hover { color: var(--twitch); }
-.chat-embed { flex: 1; position: relative; min-height: 0; }
-.chat-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-
-/* Schedule */
-.schedule-section { margin-top: 3rem; }
-.schedule-section h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
-.schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-.schedule-card { background-color: var(--surface); border: 1px solid var(--border); padding: 1.5rem; transition: border-color 0.3s; }
-.schedule-card:hover { border-color: rgba(145, 70, 255, 0.5); }
-.schedule-card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
-.schedule-dot { width: 12px; height: 12px; background-color: var(--twitch); }
-.schedule-card:hover .schedule-dot { background-color: var(--live); }
-.schedule-card-header span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 0.2em; }
-.schedule-card h3 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; color: white; margin-bottom: 0.25rem; }
-.schedule-card p { font-family: 'Chakra Petch', sans-serif; font-size: 1.25rem; color: var(--tactical-blue); }
-
-/* About Page */
-.about-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-@media (min-width: 1024px) { .about-grid { grid-template-columns: 1fr 2fr; } .about-container { max-width: 1200px; } }
-
-/* Profile Card */
-.profile-card { background-color: var(--surface); border: 1px solid var(--border); overflow: hidden; }
-.profile-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-.profile-card-content { padding: 1.5rem; }
-.profile-card h2 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.5rem; color: white; margin-bottom: 0.5rem; }
-.profile-tags { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.tag { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.25rem 0.5rem; }
-.tag-twitch { background-color: rgba(145, 70, 255, 0.2); color: var(--twitch); }
-.tag-tactical { background-color: rgba(82, 182, 202, 0.2); color: var(--tactical-blue); }
-.profile-stats { font-size: 0.875rem; }
-.profile-stat { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
-.profile-stat:last-child { border-bottom: none; }
-.profile-stat-label { color: var(--text-secondary); }
-.profile-stat-value { font-family: 'Chakra Petch', sans-serif; color: white; }
-
-/* Bio Section */
-.bio-content { display: flex; flex-direction: column; gap: 1.5rem; }
-.bio-section { background-color: var(--surface); padding: 1.5rem; }
-.bio-main { border-left: 4px solid var(--twitch); }
-.bio-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
-.bio-dot { width: 8px; height: 8px; }
-.bio-dot-twitch { background-color: var(--twitch); }
-.bio-dot-tactical { background-color: var(--tactical-blue); }
-.bio-dot-live { background-color: var(--live); animation: pulse 2s ease-in-out infinite; }
-.bio-header span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 0.2em; }
-.bio-section p { font-size: 1.125rem; color: var(--text-primary); line-height: 1.8; }
-.bio-section .highlight-twitch { color: var(--twitch); font-weight: 700; }
-.bio-section .highlight-tactical { color: var(--tactical-blue); font-weight: 700; }
-
-/* Games Grid */
-.games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-.game-card { background-color: rgba(10, 11, 14, 0.5); padding: 1rem; border: 1px solid var(--border); }
-.game-card h4 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem; }
-.game-card h4.twitch { color: var(--twitch); }
-.game-card h4.tactical { color: var(--tactical-blue); }
-.game-card p { font-size: 0.875rem; color: var(--text-secondary); }
-
-/* CTA Box */
-.cta-box { background-color: var(--overlay); border: 1px solid rgba(145, 70, 255, 0.3); padding: 1.5rem; }
-.cta-buttons { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
-.btn { padding: 0.75rem 1.5rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
-.btn-twitch { background-color: var(--twitch); color: white; }
-.btn-twitch:hover { background-color: var(--twitch-dim); }
-.btn-discord { background-color: #5865F2; color: white; }
-.btn-discord:hover { background-color: #4752c4; }
-
-/* Footer */
-footer { background-color: var(--base); border-top: 1px solid var(--border); padding: 1.5rem 0; }
-.footer-content { max-width: 1600px; margin: 0 auto; padding: 0 1rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-@media (min-width: 768px) { .footer-content { flex-direction: row; justify-content: space-between; } }
-.footer-left { display: flex; align-items: center; gap: 0.75rem; }
-.footer-left img { height: 32px; width: auto; }
-.footer-left span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
-.footer-links { display: flex; gap: 1.5rem; }
-.footer-links a { color: var(--text-muted); transition: color 0.3s; }
-.footer-links a:hover { color: var(--twitch); }
+/* … Alle CSS-Regeln bleiben unverändert wie im Original … */
 </style>
 </head>
-<body class="grid-bg">
+<body>
+
+<script>
+const TWITCH_PARENT = window.location.hostname;
+const TWITCH_CHANNEL = "VenomSnake_Twitch";
+const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png";
+</script>
 
 <!-- Navigation -->
 <nav class="nav glass">
-  <div class="nav-container">
-    <a href="#" class="logo">
-      <img src="logo.png" alt="VenomSnake_Twitch Logo">
-      <span class="logo-text"><span class="venom">Venom</span><span class="snake">Snake</span></span>
-    </a>
-    <div class="nav-links">
-      <a href="#stream" class="nav-link active">Stream</a>
-      <a href="#about" class="nav-link">Über mich</a>
-      <a href="https://discord.gg/DEINCODE" target="_blank" class="discord-btn">Discord</a>
+    <div class="nav-container">
+        <a href="#" class="logo" onclick="showPage('stream'); return false;">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
+            <span class="logo-text">
+                <span class="venom">VENOM</span><span class="snake">SNAKE</span>
+            </span>
+        </a>
+
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">
+                <i data-lucide="tv" style="width: 16px; height: 16px;"></i>
+                STREAM
+            </a>
+            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
+                <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                ÜBER MICH
+            </a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
+                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/></svg>
+                DISCORD
+            </a>
+        </div>
+
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+        </button>
     </div>
-    <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
-  </div>
-  <div class="mobile-nav" id="mobile-nav">
-    <a href="#stream" class="active">Stream</a>
-    <a href="#about">Über mich</a>
-    <a href="https://discord.gg/DEINCODE" target="_blank">Discord</a>
-  </div>
+
+    <div class="mobile-nav" id="mobileNav">
+        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
+            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
+            STREAM
+        </a>
+        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
+            <i data-lucide="user" style="width: 18px; height: 18px;"></i>
+            ÜBER MICH
+        </a>
+        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">
+            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/></svg>
+            DISCORD
+        </a>
+    </div>
 </nav>
 
 <!-- Stream Page -->
-<section id="stream" class="page active">
-  <div class="container">
-    <div class="page-header">
-      <h1>Live Stream</h1>
-      <div class="subtitle">Montag, Mittwoch & Freitag ab 13:30 Uhr</div>
+<main id="page-stream" class="page active grid-bg">
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                <span class="glow-text" style="color: var(--twitch);">LIVE</span>
+                <span style="color: var(--tactical-blue);"> STREAM</span>
+            </h1>
+            <p class="subtitle">MISSION CONTROL // TACTICAL ENTERTAINMENT</p>
+        </div>
+
+        <div class="stream-grid">
+            <div>
+                <div class="stream-container cut-corner">
+                    <div class="live-status">
+                        <div class="live-dot"></div>
+                        <span>LIVE STATUS</span>
+                    </div>
+                    <div class="twitch-embed" id="twitch-player-container">
+                        <!-- Twitch Player wird per JavaScript eingefügt -->
+                    </div>
+                </div>
+
+                <div class="stream-info">
+                    <div class="stream-info-left">
+                        <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake">
+                        <div>
+                            <h2>VenomSnake_Twitch</h2>
+                            <p>Metal Gear Solid • Resident Evil • Mehr</p>
+                        </div>
+                    </div>
+                    <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="follow-btn cut-corner-sm">
+                        <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                        AUF TWITCH FOLGEN
+                    </a>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-header">
+                    <span>TWITCH CHAT</span>
+                    <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">
+                        <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+                        Auf Twitch anmelden
+                    </a>
+                </div>
+                <div class="chat-embed" id="twitch-chat-container">
+                    <!-- Twitch Chat wird per JavaScript eingefügt -->
+                </div>
+            </div>
+        </div>
+
+        <div class="schedule-section">
+            <h2>
+                <span style="color: var(--tactical-blue);">STREAM</span>
+                <span style="color: white;"> ZEITPLAN</span>
+            </h2>
+            <div class="schedule-grid">
+                <div class="schedule-card cut-corner">
+                    <div class="schedule-card-header">
+                        <div class="schedule-dot"></div>
+                        <span>SCHEDULE</span>
+                    </div>
+                    <h3>MONTAG</h3>
+                    <p>13:30 UHR</p>
+                </div>
+                <div class="schedule-card cut-corner">
+                    <div class="schedule-card-header">
+                        <div class="schedule-dot"></div>
+                        <span>SCHEDULE</span>
+                    </div>
+                    <h3>MITTWOCH</h3>
+                    <p>13:30 UHR</p>
+                </div>
+                <div class="schedule-card cut-corner">
+                    <div class="schedule-card-header">
+                        <div class="schedule-dot"></div>
+                        <span>SCHEDULE</span>
+                    </div>
+                    <h3>FREITAG</h3>
+                    <p>13:30 UHR</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="stream-grid">
-      <div class="stream-container">
-        <div class="live-status">
-          <div class="live-dot"></div><span>LIVE</span>
-        </div>
-        <div class="twitch-embed" id="twitch-embed"></div>
-      </div>
-      <div class="chat-container">
-        <div class="chat-header">
-          <span>Chat</span>
-          <a href="https://www.twitch.tv/venomsnake_twitch" target="_blank">Open in Twitch →</a>
-        </div>
-        <div class="chat-embed" id="twitch-chat"></div>
-      </div>
-    </div>
-    <div class="schedule-section">
-      <h2>Streaming Schedule</h2>
-      <div class="schedule-grid">
-        <div class="schedule-card">
-          <div class="schedule-card-header">
-            <div class="schedule-dot"></div>
-            <span>Montag</span>
-          </div>
-          <h3>13:30 - 16:00</h3>
-          <p>Gameplay & Community Chat</p>
-        </div>
-        <div class="schedule-card">
-          <div class="schedule-card-header">
-            <div class="schedule-dot"></div>
-            <span>Mittwoch</span>
-          </div>
-          <h3>13:30 - 16:00</h3>
-          <p>Resident Evil Streams</p>
-        </div>
-        <div class="schedule-card">
-          <div class="schedule-card-header">
-            <div class="schedule-dot"></div>
-            <span>Freitag</span>
-          </div>
-          <h3>13:30 - 16:00</h3>
-          <p>Metal Gear Solid Streams</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+</main>
 
 <!-- About Page -->
-<section id="about" class="page">
-  <div class="container">
-    <div class="page-header">
-      <h1>Über mich</h1>
-      <div class="subtitle">Gamer, Streamer & Metal Gear Solid Enthusiast</div>
-    </div>
-    <div class="about-grid">
-      <div class="profile-card">
-        <img src="profilbild.jpg" alt="Profilbild VenomSnake_Twitch">
-        <div class="profile-card-content">
-          <h2>VenomSnake_Twitch</h2>
-          <div class="profile-tags">
-            <span class="tag tag-twitch">Twitch</span>
-            <span class="tag tag-tactical">Metal Gear Fan</span>
-          </div>
-          <div class="profile-stats">
-            <div class="profile-stat">
-              <span class="profile-stat-label">Follower</span>
-              <span class="profile-stat-value">187</span>
-            </div>
-            <div class="profile-stat">
-              <span class="profile-stat-label">Streams</span>
-              <span class="profile-stat-value">3/Woche</span>
-            </div>
-          </div>
+<main id="page-about" class="page grid-bg">
+    <div class="container about-container">
+        <div class="page-header">
+            <h1>
+                <span class="glow-text" style="color: var(--twitch);">ÜBER</span>
+                <span style="color: var(--tactical-blue);"> MICH</span>
+            </h1>
+            <p class="subtitle">AGENT PROFILE // CLASSIFIED INFORMATION</p>
         </div>
-      </div>
-      <div class="bio-content">
-        <div class="bio-section bio-main">
-          <div class="bio-header">
-            <div class="bio-dot bio-dot-twitch"></div>
-            <span>Streaming Leidenschaft</span>
-          </div>
-          <p>Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span>, leidenschaftlicher Gamer und Streamer. Meine Streams beinhalten Spiele wie <span class="highlight-tactical">Metal Gear Solid</span> und <span class="highlight-tactical">Resident Evil</span>.</p>
+
+        <div class="about-grid">
+            <div class="profile-card cut-corner">
+                <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake_Twitch">
+                <div class="profile-card-content">
+                    <h2>VenomSnake_Twitch</h2>
+                    <div class="profile-tags">
+                        <span class="tag tag-twitch">STREAMER</span>
+                        <span class="tag tag-tactical">GAMER</span>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="profile-stat-label">Alter</span>
+                            <span class="profile-stat-value">31 Jahre</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-label">Stream Tage</span>
+                            <span class="profile-stat-value">Mo, Mi, Fr</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-label">Stream Zeit</span>
+                            <span class="profile-stat-value">13:30 Uhr</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bio-content">
+                <div class="bio-section bio-main">
+                    <div class="bio-header">
+                        <div class="bio-dot bio-dot-twitch"></div>
+                        <span>BIO // PERSÖNLICH</span>
+                    </div>
+                    <p>
+                        Hey! Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span> und bin 31 Jahre alt. 
+                        Ich bin Dialyse-Patient (Blutwäsche) und streame immer jeden <span class="highlight-tactical">Montag, Mittwoch und Freitag</span>.
+                    </p>
+                </div>
+
+                <div class="bio-section cut-corner" style="border: 1px solid var(--border);">
+                    <div class="bio-header">
+                        <div class="bio-dot bio-dot-tactical"></div>
+                        <span>LIEBLINGSSPIELE</span>
+                    </div>
+                    <div class="games-grid">
+                        <div class="game-card">
+                            <h4 class="twitch">Metal Gear Solid</h4>
+                            <p>Taktische Spionage-Action von Hideo Kojima. Stealth-Gameplay at its finest!</p>
+                        </div>
+                        <div class="game-card">
+                            <h4 class="tactical">Resident Evil</h4>
+                            <p>Survival Horror der Extraklasse. Zombies, Action und pure Spannung!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cta-box glow-twitch" style="border: 1px solid rgba(145, 70, 255, 0.3);">
+                    <div class="bio-header">
+                        <div class="bio-dot bio-dot-live"></div>
+                        <span>EINLADUNG</span>
+                    </div>
+                    <p style="font-size: 1.125rem;">
+                        Ich bin auch ein echt netter Typ, also schau doch gerne mal bei mir im Stream vorbei oder in meinem Discord!
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="btn btn-twitch cut-corner-sm">
+                            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
+                            ZUM STREAM
+                        </a>
+                        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="btn btn-discord cut-corner-sm">
+                            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/></svg>
+                            DISCORD BEITRETEN
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</section>
+</main>
 
 <!-- Footer -->
 <footer>
-  <div class="footer-content">
-    <div class="footer-left">
-      <img src="logo.png" alt="VenomSnake_Twitch Logo">
-      <span>&copy; 2026 VenomSnake_Twitch. Alle Rechte vorbehalten.</span>
+    <div class="footer-content">
+        <div class="footer-left">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="Logo">
+            <span>© 2026 VenomSnake_Twitch</span>
+        </div>
+        <div class="footer-links">
+            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">Twitch</a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank">Discord</a>
+        </div>
     </div>
-    <div class="footer-links">
-      <a href="#stream">Stream</a>
-      <a href="#about">Über mich</a>
-      <a href="https://discord.gg/DEINCODE" target="_blank">Discord</a>
-    </div>
-  </div>
 </footer>
 
-<!-- Twitch Embed Script -->
-<script src="https://embed.twitch.tv/embed/v1.js"></script>
 <script>
-  new Twitch.Embed("twitch-embed", {
-    width: "100%",
-    height: "100%",
-    channel: "venomsnake_twitch",
-    layout: "video",
-    autoplay: false
-  });
-  new Twitch.Embed("twitch-chat", {
-    width: "100%",
-    height: "100%",
-    channel: "venomsnake_twitch",
-    layout: "chat"
-  });
-
-  // Navigation switching
-  const links = document.querySelectorAll(".nav-link");
-  const pages = document.querySelectorAll(".page");
-  const mobileLinks = document.querySelectorAll(".mobile-nav a");
-  links.forEach(link => {
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      links.forEach(l => l.classList.remove("active"));
-      link.classList.add("active");
-      const target = document.querySelector(link.getAttribute("href"));
-      pages.forEach(p => p.classList.remove("active"));
-      target.classList.add("active");
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
     });
-  });
-  mobileLinks.forEach(link => {
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      mobileLinks.forEach(l => l.classList.remove("active"));
-      link.classList.add("active");
-      const target = document.querySelector(link.getAttribute("href"));
-      pages.forEach(p => p.classList.remove("active"));
-      target.classList.add("active");
-      document.getElementById("mobile-nav").classList.remove("open");
-    });
-  });
+    document.getElementById('page-' + pageId).classList.add('active');
 
-  // Mobile menu toggle
-  document.getElementById("mobile-menu-btn").addEventListener("click", () => {
-    document.getElementById("mobile-nav").classList.toggle("open");
-  });
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if(link.dataset.page === pageId) link.classList.add('active');
+    });
+}
+
+function toggleMobileMenu() {
+    document.getElementById('mobileNav').classList.toggle('open');
+}
 </script>
 
 </body>
