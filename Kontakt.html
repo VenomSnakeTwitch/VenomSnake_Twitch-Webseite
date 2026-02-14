@@ -14,11 +14,13 @@ body {
     color: gold;
     text-align: center;
     overflow: hidden;
-    /* Schwarz-Blauer Verlauf + Hintergrundbild */
-    background: linear-gradient(to bottom, #000000, #0000ff), url("backgroundcontact.png");
+
+    /* Schwarz-blauer Verlauf + Hintergrundbild */
+    background-color: #000; /* Fallback */
+    background-image: linear-gradient(to bottom, #000000, #0000ff), url("backgroundcontact.png");
     background-repeat: no-repeat;
     background-position: center top;
-    background-size: cover; /* Bild skaliert, damit es die Seite füllt */
+    background-size: contain;
 }
 
 #overlay {
@@ -105,7 +107,7 @@ button:hover {
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-    // EmailJS Initialisierung mit Public Key
+    // EmailJS Initialisierung
     emailjs.init("Bw8SYa2jG4vcW4APx");
 
     const form = document.getElementById('contactForm');
