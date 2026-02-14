@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VenomSnake Musikplayer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: url("musicbackground.png") no-repeat center center fixed;
+    background-size: cover;
+    color: #c8c8ff;
+    text-align: center;
+    overflow: hidden;
+}
+
+#overlay {
+    background: rgba(0,0,50,0.85);
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
+}
+
+button, select {
+    background: #220066;
+    border: 2px solid #8888ff;
+    color: #c8c8ff;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+button:hover, select:hover {
+    background: #8888ff;
+    color: #220066;
+}
+
+input[type=range] {
+    width: 250px;
+    margin-top: 10px;
+    -webkit-appearance: none;
+    background: #8888ff;
+    height: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #220066;
+    border: 2px solid #8888ff;
+    border-radius: 50%;
+}
+
+#progressContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+#timeLabel, #durationLabel {
+    width: 50px;
+    text-align: center;
+    font-size: 14px;
+}
+
+@media (max-width: 600px){
+    h1 { font-size: 28px; }
+    button, select { padding: 8px 16px; font-size: 14px; }
+    input[type=range] { width: 180px; }
+    #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
+}
+</style>
+</head>
+<body>
+<div id="overlay">
+    <h1>VenomSnake Musikplayer</h1>
+    <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
+
+    <audio id="audioPlayer">
+        Dein Browser unterstützt kein Audio-Element.
+    </audio>
+
+    <div>
+        <button onclick="prevSong()">⏮ Vorheriger</button>
+        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
+        <button onclick="stopSong()">⏹ Stop</button>
+        <button onclick="nextSong()">⏭ Nächster</button>
+        <button onclick="toggleFullscreen()">🖵 Vollbild</button>
+    </div>
+
+    <div>
+        Lautstärke:
+        <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
+    </div>
+
+    <div id="progressContainer">
+        <span id="timeLabel">0:00</span>
+        <input type="range" id="progress" min="0" max="100" value="0" oninput="seekSong(this.value)">
+        <span id="durationLabel">0:00</span>
+    </div>
+
+    <div>
+        Song auswählen:
+        <select id="songSelect" onchange="selectSong()">
+            <option value="0">Song Platzhalter 1</option>
+            <option value="1">Song Platzhalter 2</option>
+            <option value="2">Song Platzhalter 3</option>
+        </select>
+    </div>
+</div>
+
+<script>
+const songs = [
+    "song1.mp3", // Platzhalter, später auf GitHub ersetzen
+    "song2.mp3",
+    "song3.mp3"
+];
+
+let currentIndex = null;
+const audio = document.getElementById("audioPlayer");
+const currentSongLabel = document.getElementById("currentSong");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const songSelect = document.getElementById("songSelect");
+const progress = document.getElementById("progress");
+const timeLabel = document.getElementById("timeLabel");
+const durationLabel = document.getElementById("durationLabel");
+
+// Laden eines Songs
+function loadSong(index){
+    currentIndex = index;
+    audio.src = songs[index];
+    currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = "▶ Play";
+}
+
+// Play/Pause Toggle
+function togglePlay(){
+    if(currentIndex === null) return alert("Bitte zuerst einen Song auswählen!");
+    if(audio.paused){
+        audio.play();
+        playPauseBtn.textContent = "⏸ Pause";
+    } else {
+        audio.pause();
+        playPauseBtn.textContent = "▶ Play";
+    }
+}
+
+// Stop
+function stopSong(){
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = "▶ Play";
+}
+
+// Nächster Song
+function nextSong(){
+    if(currentIndex === null) return;
+    currentIndex = (currentIndex + 1) % songs.length;
+    songSelect.value = currentIndex;
+    loadSong(currentIndex);
+}
+
+// Vorheriger Song
+function prevSong(){
+    if(currentIndex === null) return;
+    currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+    songSelect.value = currentIndex;
+    loadSong(currentIndex);
+}
+
+// Lautstärke setzen
+function setVolume(value){
+    audio.volume = value;
+}
+
+// Song über Dropdown auswählen
+function selectSong(){
+    const index = parseInt(songSelect.value);
+    loadSong(index);
+}
+
+// Song Fortschritt aktualisieren
+audio.addEventListener("timeupdate", () => {
+    if(!audio.duration) return;
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.value = percent;
+    timeLabel.textContent = formatTime(audio.currentTime);
+    durationLabel.textContent = formatTime(audio.duration);
+});
+
+// Im Song springen
+function seekSong(value){
+    if(!audio.duration) return;
+    audio.currentTime = (value / 100) * audio.duration;
+}
+
+// Formatieren von Sekunden in MM:SS
+function formatTime(seconds){
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// Vollbild Toggle
+function toggleFullscreen(){
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+</script>
+</body>
+</html>
