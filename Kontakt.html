@@ -2,10 +2,6 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, <!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kontakt – VenomSnake_Twitch</title>
 <style>
@@ -125,95 +121,5 @@ button:hover {
             });
     });
 </script>
-</body>
-</html>
-<title>Kontakt – VenomSnake Twitch Web</title>
-<style>
-body {
-    font-family: 'Orbitron', sans-serif;
-    background: #0d0d0d; /* Dunkles Twitch-Style Background */
-    color: #9146FF; /* Twitch Blau als Hauptfarbe */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-form {
-    background: rgba(18,18,18,0.9);
-    padding: 25px;
-    border: 2px solid #9146FF;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 0 20px #9146FF;
-    text-align: center;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    background: #1c1c1c;
-    color: #9146FF;
-    border: 2px solid #9146FF;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: bold;
-}
-
-input::placeholder, textarea::placeholder {
-    color: #9146FFaa; /* leicht transparent */
-}
-
-button {
-    background: #9146FF;
-    color: #0d0d0d;
-    border: 2px solid #9146FF;
-    padding: 12px 20px;
-    cursor: pointer;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: bold;
-    border-radius: 5px;
-    margin-top: 10px;
-    transition: all 0.2s ease;
-}
-
-button:hover {
-    background: #0d0d0d;
-    color: #9146FF;
-    border-color: #9146FF;
-}
-</style>
-</head>
-<body>
-
-<form id="contactForm">
-    <h2>Kontakt</h2>
-    <input type="text" name="from_name" placeholder="Dein Name" required>
-    <input type="email" name="reply_to" placeholder="Deine E-Mail" required>
-    <textarea name="message" placeholder="Deine Nachricht" rows="5" required></textarea>
-    <button type="submit">Senden</button>
-</form>
-
-<!-- EmailJS SDK -->
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script>
-emailjs.init("Bw8SYa2jG4vcW4APx"); // Public Key
-
-const form = document.getElementById('contactForm');
-form.addEventListener('submit', function(event) {
-    event.preventDefault();
-    emailjs.sendForm('service_v64fxbu', 'template_1f6t01d', this)
-    .then(() => {
-        alert('Nachricht erfolgreich gesendet!');
-        form.reset();
-    }, (err) => {
-        alert('Fehler beim Senden: ' + JSON.stringify(err));
-    });
-});
-</script>
-
 </body>
 </html>
