@@ -97,6 +97,18 @@ input[type=range]::-webkit-slider-thumb {
     font-size: 14px;
 }
 
+#backButton {
+    margin-top: 20px;
+    background: black;
+    border: 2px solid gold;
+    color: gold;
+}
+
+#backButton:hover {
+    background: gold;
+    color: black;
+}
+
 @media (max-width: 600px){
     h1 { font-size: 28px; }
     #infoText { font-size: 14px; }
@@ -145,11 +157,14 @@ input[type=range]::-webkit-slider-thumb {
             <option value="2">Song Platzhalter 3</option>
         </select>
     </div>
+
+    <!-- Neuer Button zurück zur Index.html -->
+    <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
 </div>
 
 <script>
 const songs = [
-    "song1.mp3", // Platzhalter
+    "song1.mp3",
     "song2.mp3",
     "song3.mp3"
 ];
@@ -163,7 +178,6 @@ const progress = document.getElementById("progress");
 const timeLabel = document.getElementById("timeLabel");
 const durationLabel = document.getElementById("durationLabel");
 
-// Laden eines Songs
 function loadSong(index){
     currentIndex = index;
     audio.src = songs[index];
@@ -173,7 +187,6 @@ function loadSong(index){
     playPauseBtn.textContent = "▶ Play";
 }
 
-// Play/Pause Toggle
 function togglePlay(){
     if(currentIndex === null) return alert("Bitte zuerst einen Song auswählen!");
     if(audio.paused){
@@ -185,14 +198,12 @@ function togglePlay(){
     }
 }
 
-// Stop
 function stopSong(){
     audio.pause();
     audio.currentTime = 0;
     playPauseBtn.textContent = "▶ Play";
 }
 
-// Nächster Song
 function nextSong(){
     if(currentIndex === null) return;
     currentIndex = (currentIndex + 1) % songs.length;
@@ -200,7 +211,6 @@ function nextSong(){
     loadSong(currentIndex);
 }
 
-// Vorheriger Song
 function prevSong(){
     if(currentIndex === null) return;
     currentIndex = (currentIndex - 1 + songs.length) % songs.length;
@@ -208,18 +218,15 @@ function prevSong(){
     loadSong(currentIndex);
 }
 
-// Lautstärke setzen
 function setVolume(value){
     audio.volume = value;
 }
 
-// Song über Dropdown auswählen
 function selectSong(){
     const index = parseInt(songSelect.value);
     loadSong(index);
 }
 
-// Song Fortschritt aktualisieren
 audio.addEventListener("timeupdate", () => {
     if(!audio.duration) return;
     const percent = (audio.currentTime / audio.duration) * 100;
@@ -228,20 +235,17 @@ audio.addEventListener("timeupdate", () => {
     durationLabel.textContent = formatTime(audio.duration);
 });
 
-// Im Song springen
 function seekSong(value){
     if(!audio.duration) return;
     audio.currentTime = (value / 100) * audio.duration;
 }
 
-// Formatieren von Sekunden in MM:SS
 function formatTime(seconds){
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-// Vollbild Toggle
 function toggleFullscreen(){
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
