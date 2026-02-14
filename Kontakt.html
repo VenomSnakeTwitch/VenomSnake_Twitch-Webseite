@@ -14,13 +14,10 @@ body {
     color: gold;
     text-align: center;
     overflow: hidden;
-
-    /* Hintergrund: Schwarz-Blau-Verlauf */
     background: linear-gradient(to bottom, #000000, #0000ff);
     height: 100vh;
 }
 
-/* Hintergrundbild als absolute Ebene */
 #backgroundImage {
     position: fixed;
     top: 0;
@@ -32,11 +29,10 @@ body {
     z-index: 0;
 }
 
-/* Overlay mit Kontaktformular */
 #overlay {
     position: relative;
     z-index: 1;
-    background: rgba(0,0,0,0.75); /* leicht transparent, damit Bild durchscheint */
+    background: rgba(0,0,0,0.75);
     width: 100%;
     min-height: 100vh;
     display: flex;
@@ -98,6 +94,10 @@ button:hover {
     margin-top: 10px;
 }
 
+.backButton {
+    margin-bottom: 20px;
+}
+
 @media (max-width: 600px){
     h1 { font-size: 28px; }
     form { max-width: 90%; }
@@ -113,6 +113,10 @@ button:hover {
 <!-- Kontaktformular Overlay -->
 <div id="overlay">
     <h1>Kontakt</h1>
+    
+    <!-- Neuer Button für Rückkehr -->
+    <button class="backButton" onclick="window.location.href='index.html'">Zurück zur Startseite</button>
+    
     <form id="contactForm">
         <input type="text" name="from_name" placeholder="Dein Name" required>
         <input type="email" name="reply_to" placeholder="Deine E-Mail" required>
@@ -124,7 +128,6 @@ button:hover {
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-    // EmailJS Initialisierung
     emailjs.init("Bw8SYa2jG4vcW4APx");
 
     const form = document.getElementById('contactForm');
