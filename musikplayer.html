@@ -32,8 +32,19 @@ body {
 
 h1 {
     font-size: 36px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
+}
+
+#infoText {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #c0c0ff;
+    text-shadow: 0 0 5px #8888ff;
+}
+
+form, button, select, input, textarea {
+    font-family: 'Orbitron', sans-serif;
 }
 
 button, select {
@@ -88,6 +99,7 @@ input[type=range]::-webkit-slider-thumb {
 
 @media (max-width: 600px){
     h1 { font-size: 28px; }
+    #infoText { font-size: 14px; }
     button, select { padding: 8px 16px; font-size: 14px; }
     input[type=range] { width: 180px; }
     #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
@@ -97,6 +109,9 @@ input[type=range]::-webkit-slider-thumb {
 <body>
 <div id="overlay">
     <h1>VenomSnake Musikplayer</h1>
+    <div id="infoText">
+        🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
+    </div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
     <audio id="audioPlayer">
@@ -134,7 +149,7 @@ input[type=range]::-webkit-slider-thumb {
 
 <script>
 const songs = [
-    "song1.mp3", // Platzhalter, später auf GitHub ersetzen
+    "song1.mp3", // Platzhalter
     "song2.mp3",
     "song3.mp3"
 ];
