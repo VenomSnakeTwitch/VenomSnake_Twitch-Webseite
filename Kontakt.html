@@ -2,7 +2,131 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, <!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontakt – VenomSnake_Twitch</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: url("backgroundcontact.png") no-repeat center center fixed;
+    background-size: cover;
+    color: gold;
+    text-align: center;
+    overflow: hidden;
+}
+
+#overlay {
+    background: rgba(0,0,0,0.85);
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px gold, 0 0 30px black;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+input, textarea {
+    padding: 10px;
+    border: 2px solid gold;
+    border-radius: 5px;
+    background: black;
+    color: gold;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    resize: none;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #00bfff;
+}
+
+button {
+    background: black;
+    border: 2px solid gold;
+    color: gold;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: gold;
+    color: black;
+}
+
+#messageStatus {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px){
+    h1 { font-size: 28px; }
+    form { max-width: 90%; }
+    input, textarea, button { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+<div id="overlay">
+    <h1>Kontakt</h1>
+    <form id="contactForm">
+        <input type="text" name="from_name" placeholder="Dein Name" required>
+        <input type="email" name="reply_to" placeholder="Deine E-Mail" required>
+        <textarea name="message" placeholder="Deine Nachricht" rows="5" required></textarea>
+        <button type="submit">Nachricht senden</button>
+        <div id="messageStatus"></div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+    // EmailJS Initialisierung mit Public Key
+    emailjs.init("Bw8SYa2jG4vcW4APx");
+
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('messageStatus');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        status.textContent = "Sende Nachricht...";
+        emailjs.sendForm('service_v64fxbu', 'template_1f6t01d', this)
+            .then(() => {
+                status.textContent = "✅ Nachricht erfolgreich gesendet!";
+                form.reset();
+            }, (error) => {
+                console.error(error);
+                status.textContent = "❌ Fehler beim Senden. Bitte erneut versuchen.";
+            });
+    });
+</script>
+</body>
+</html>
 <title>Kontakt – VenomSnake Twitch Web</title>
 <style>
 body {
