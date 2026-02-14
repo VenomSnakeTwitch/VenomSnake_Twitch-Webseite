@@ -11,17 +11,32 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    /* Schwarz-blauer Verlauf + Hintergrundbild */
-    background: linear-gradient(to bottom, #000000, #0000ff),
-                url("https://venomsnaketwitch.github.io/VenomSnake_Twitch-Webseite/backgroundcontact.png") no-repeat center center fixed;
-    background-size: cover;
     color: gold;
     text-align: center;
     overflow: hidden;
+
+    /* Hintergrund: Schwarz-Blau-Verlauf */
+    background: linear-gradient(to bottom, #000000, #0000ff);
+    height: 100vh;
 }
 
+/* Hintergrundbild als absolute Ebene */
+#backgroundImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("https://venomsnaketwitch.github.io/VenomSnake_Twitch-Webseite/backgroundcontact.png") no-repeat center center;
+    background-size: cover;
+    z-index: 0;
+}
+
+/* Overlay mit Kontaktformular */
 #overlay {
-    background: rgba(0,0,0,0.85);
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,0,0.75); /* leicht transparent, damit Bild durchscheint */
     width: 100%;
     min-height: 100vh;
     display: flex;
@@ -81,7 +96,6 @@ button:hover {
 #messageStatus {
     font-size: 14px;
     margin-top: 10px;
-    text-align: center;
 }
 
 @media (max-width: 600px){
@@ -92,6 +106,11 @@ button:hover {
 </style>
 </head>
 <body>
+
+<!-- Hintergrundbild -->
+<div id="backgroundImage"></div>
+
+<!-- Kontaktformular Overlay -->
 <div id="overlay">
     <h1>Kontakt</h1>
     <form id="contactForm">
@@ -105,7 +124,7 @@ button:hover {
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-    // EmailJS Initialisierung mit Public Key
+    // EmailJS Initialisierung
     emailjs.init("Bw8SYa2jG4vcW4APx");
 
     const form = document.getElementById('contactForm');
