@@ -148,39 +148,38 @@ button:hover, select:hover {
     margin-left: 20px;
 }
 
-#volumeSlider {
-    -webkit-appearance: slider-vertical;
-    writing-mode: bt-lr;
-    width: 40px;
-    height: 160px;
-    background: #8888ff;
-    border-radius: 8px;
-    cursor: pointer;
+/* Info Box */
+#infoBox {
+    margin-top: 25px;
+    width: 90%;
+    max-width: 700px;
+    background: rgba(20,20,80,0.9);
+    border: 2px solid #8888ff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 15px #000044;
 }
 
-#volumeSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 40px;
-    height: 25px;
-    background: #220066;
-    border: 2px solid #f0f0ff;
-    border-radius: 8px;
-    cursor: pointer;
+#infoBox h3 {
+    margin-top: 0;
+    color: #ffffaa;
+}
+
+#infoBox p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 5px 0;
 }
 
 @media (max-width: 600px){
     h1 { font-size: 28px; }
-    #infoText { font-size: 14px; }
-    button, select { padding: 8px 16px; font-size: 14px; }
-    #progress { width: 200px; height: 10px; }
-    #volumeSlider { width: 30px; height: 120px; }
-    #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
 }
 </style>
 </head>
 <body>
 <div id="overlay">
     <h1>VenomSnake Musikplayer</h1>
+
     <div id="infoText">
         🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
     </div>
@@ -189,9 +188,7 @@ button:hover, select:hover {
 
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
-    <audio id="audioPlayer">
-        Dein Browser unterstützt kein Audio-Element.
-    </audio>
+    <audio id="audioPlayer"></audio>
 
     <div id="songControls">
         <select id="songSelect" onchange="selectSong()">
@@ -203,24 +200,13 @@ button:hover, select:hover {
             <option value="5">Parasitäres Bewustsein</option>
             <option value="6">Still Alive (Voiced)</option>
             <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
-			<option value="8">Bye Bye Beautiful</option>
-			<option value="9">Kettenreaktion (Cover)</option>
-			<option value="10">Straße der Verdammnis  (Cover)</option>
-			<option value="11">Syphon Filter Synth Mix</option>
-			<option value="12">VenomSnake Mode Intro song</option>
-			<option value="13">Hell March [Retaliation Cover]</option>
+            <option value="8">Bye Bye Beautiful</option>
+            <option value="9">Kettenreaktion (Cover)</option>
+            <option value="10">Straße der Verdammnis (Cover)</option>
+            <option value="11">Syphon Filter Synth Mix</option>
+            <option value="12">VenomSnake Mode Intro song</option>
+            <option value="13">Hell March [Retaliation Cover]</option>
         </select>
-        <a id="downloadBtn" href="" download>⬇ Download</a>
-        <div id="volumeContainer">
-            <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
-            <span>Lautstärke</span>
-        </div>
-    </div>
-
-    <div id="progressContainer">
-        <span id="timeLabel">0:00</span>
-        <input type="range" id="progress" min="0" max="100" value="0" oninput="seekSong(this.value)">
-        <span id="durationLabel">0:00</span>
     </div>
 
     <div id="controls">
@@ -230,6 +216,15 @@ button:hover, select:hover {
         <button onclick="nextSong()">⏭ Nächster</button>
         <button onclick="toggleFullscreen()">🖵 Vollbild</button>
     </div>
+
+    <!-- INFO BOX UNTER DEN BUTTONS -->
+    <div id="infoBox">
+        <h3>📢 Song News</h3>
+        <p>🔥 Neu: Hell March [Retaliation Cover]</p>
+        <p>🎧 Neu: Syphon Filter Synth Mix</p>
+        <p>🆕 Weitere Tracks folgen bald.</p>
+    </div>
+
 </div>
 
 <script>
@@ -242,31 +237,22 @@ const songs = [
     "Parasitäres Bewustsein.mp3",
     "Still Alive (Voiced).mp3",
     "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
-	"ByeByeBeautiful.mp3",
-	"Kettenreaktion (Cover).mp3",
-	"Straße der Verdammnis  (Cover).mp3",
-	"Syphon Filter Synth Mix.mp3",
-	"VenomSnake Mode Intro song.mp3",
-	"Hell March [Retaliation Cover].mp3"
+    "ByeByeBeautiful.mp3",
+    "Kettenreaktion (Cover).mp3",
+    "Straße der Verdammnis (Cover).mp3",
+    "Syphon Filter Synth Mix.mp3",
+    "VenomSnake Mode Intro song.mp3",
+    "Hell March [Retaliation Cover].mp3"
 ];
 
 let currentIndex = 0;
 const audio = document.getElementById("audioPlayer");
-const currentSongLabel = document.getElementById("currentSong");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
-const progress = document.getElementById("progress");
-const timeLabel = document.getElementById("timeLabel");
-const durationLabel = document.getElementById("durationLabel");
-const downloadBtn = document.getElementById("downloadBtn");
 
 function loadSong(index){
     currentIndex = index;
     audio.src = songs[index];
-    currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
-    playPauseBtn.textContent = "▶ Play";
-    downloadBtn.href = songs[index];
-    downloadBtn.setAttribute("download", songs[index]);
 }
 
 function togglePlay(){
@@ -290,7 +276,6 @@ function nextSong(){
     songSelect.value = currentIndex;
     loadSong(currentIndex);
     audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function prevSong(){
@@ -298,36 +283,11 @@ function prevSong(){
     songSelect.value = currentIndex;
     loadSong(currentIndex);
     audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function selectSong(){
-    const index = parseInt(songSelect.value);
-    loadSong(index);
+    loadSong(parseInt(songSelect.value));
     audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function setVolume(value){
-    audio.volume = value;
-}
-
-audio.addEventListener("timeupdate", () => {
-    if(!audio.duration) return;
-    progress.value = (audio.currentTime / audio.duration) * 100;
-    timeLabel.textContent = formatTime(audio.currentTime);
-    durationLabel.textContent = formatTime(audio.duration);
-});
-
-function seekSong(value){
-    if(!audio.duration) return;
-    audio.currentTime = (value / 100) * audio.duration;
-}
-
-function formatTime(seconds){
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60);
-    return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
 function toggleFullscreen(){
@@ -338,12 +298,10 @@ function toggleFullscreen(){
     }
 }
 
-// 🔥 Automatischer nächster Song nach Ende
 audio.addEventListener("ended", () => {
     nextSong();
 });
 
-// Initial laden
 loadSong(0);
 </script>
 </body>
