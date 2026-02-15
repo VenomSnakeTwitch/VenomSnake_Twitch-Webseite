@@ -11,20 +11,20 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Orbitron', sans-serif;
-    background: black;
-    color: #c8c8ff;
+    background: url("musicbackground.png") no-repeat center center fixed;
+    background-size: cover;
+    color: #f0f0ff;
     text-align: center;
     overflow: hidden;
 }
 
 #overlay {
-    background: url("musicbackground.png") no-repeat center center;
-    background-size: cover;
+    background: rgba(0,0,50,0.85);
     width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
@@ -40,10 +40,18 @@ h1 {
 #infoText {
     font-size: 16px;
     margin-bottom: 20px;
-    color: #c0c0ff;
-    text-shadow: 0 0 5px #8888ff;
+    color: #ffffff;
+    text-shadow: 0 0 5px #000000;
 }
 
+#currentSong {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #ffffaa;
+    text-shadow: 0 0 5px #000044;
+}
+
+/* Buttons */
 form, button, select, input, textarea {
     font-family: 'Orbitron', sans-serif;
 }
@@ -51,7 +59,7 @@ form, button, select, input, textarea {
 button, select {
     background: #220066;
     border: 2px solid #8888ff;
-    color: #c8c8ff;
+    color: #f0f0ff;
     padding: 10px 20px;
     margin: 5px;
     cursor: pointer;
@@ -63,74 +71,6 @@ button, select {
 button:hover, select:hover {
     background: #8888ff;
     color: #220066;
-}
-
-/* Fortschrittsleiste */
-input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 10px;
-    border-radius: 5px;
-    background: #8888ff;
-    outline: none;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #220066;
-    border: 2px solid #c8c8ff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-/* Lautstärkeregler vertikal */
-#volumeSlider {
-    -webkit-appearance: none;
-    width: 10px;
-    height: 150px;
-    background: #8888ff;
-    border-radius: 5px;
-    cursor: pointer;
-    writing-mode: bt-lr; /* Vertikal */
-    transform: rotate(-90deg); /* Drehen um Hochkant zu machen */
-    margin-left: 20px;
-}
-
-#volumeSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 25px;
-    height: 25px;
-    background: #220066;
-    border: 2px solid #c8c8ff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-/* Fortschrittsleiste Container */
-#progressContainer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 80%;
-    max-width: 500px;
-    margin: 10px auto 20px;
-    font-size: 14px;
-    color: #c8c8ff;
-}
-
-/* Song-Auswahl + Download + Lautstärke */
-#songControls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
-    width: 80%;
-    max-width: 500px;
 }
 
 #backButton {
@@ -147,13 +87,96 @@ input[type=range]::-webkit-slider-thumb {
     color: black;
 }
 
+/* Audio-Controls */
+#controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#songControls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#downloadBtn {
+    padding: 10px;
+}
+
+/* Vertikaler Lautstärkeregler */
+#volumeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+}
+
+#volumeSlider {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 15px;
+    height: 150px;
+    background: #8888ff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Fortschrittsleiste */
+#progressContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+#progress {
+    width: 300px;
+    -webkit-appearance: none;
+    height: 8px;
+    background: #8888ff;
+    border-radius: 4px;
+}
+
+#progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#timeLabel, #durationLabel {
+    width: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+/* Responsive */
 @media (max-width: 600px){
     h1 { font-size: 28px; }
     #infoText { font-size: 14px; }
     button, select { padding: 8px 16px; font-size: 14px; }
-    #progressContainer { font-size: 12px; width: 90%; }
-    input[type=range] { height: 8px; }
-    input[type=range]::-webkit-slider-thumb { width: 16px; height: 16px; }
+    #progress { width: 200px; }
+    #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
+    #volumeSlider { height: 100px; width: 12px; }
 }
 </style>
 </head>
@@ -163,21 +186,15 @@ input[type=range]::-webkit-slider-thumb {
     <div id="infoText">
         🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
     </div>
+
+    <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
+
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
     <audio id="audioPlayer">
         Dein Browser unterstützt kein Audio-Element.
     </audio>
 
-    <div>
-        <button onclick="prevSong()">⏮ Vorheriger</button>
-        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
-        <button onclick="stopSong()">⏹ Stop</button>
-        <button onclick="nextSong()">⏭ Nächster</button>
-        <button onclick="toggleFullscreen()">🖵 Vollbild</button>
-    </div>
-
-    <!-- Song auswählen + Download + Lautstärke -->
     <div id="songControls">
         <select id="songSelect" onchange="selectSong()">
             <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
@@ -185,18 +202,25 @@ input[type=range]::-webkit-slider-thumb {
             <option value="2">Wreckfest</option>
         </select>
         <button id="downloadBtn" onclick="downloadSong()">⬇ Download</button>
-        <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
+        <div id="volumeContainer">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
+            <span>Lautstärke</span>
+        </div>
     </div>
 
-    <!-- Musik-Fortschrittsleiste -->
     <div id="progressContainer">
         <span id="timeLabel">0:00</span>
         <input type="range" id="progress" min="0" max="100" value="0" oninput="seekSong(this.value)">
         <span id="durationLabel">0:00</span>
     </div>
 
-    <!-- Button zurück zur Startseite -->
-    <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück</button>
+    <div id="controls">
+        <button onclick="prevSong()">⏮ Vorheriger</button>
+        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
+        <button onclick="stopSong()">⏹ Stop</button>
+        <button onclick="nextSong()">⏭ Nächster</button>
+        <button onclick="toggleFullscreen()">🖵 Vollbild</button>
+    </div>
 </div>
 
 <script>
@@ -225,6 +249,7 @@ function loadSong(index){
 }
 
 function togglePlay(){
+    if(!audio.src) return alert("Bitte zuerst einen Song auswählen!");
     if(audio.paused){
         audio.play();
         playPauseBtn.textContent = "⏸ Pause";
@@ -262,12 +287,10 @@ function selectSong(){
 }
 
 function downloadSong(){
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = songs[currentIndex];
     link.download = songs[currentIndex];
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
 }
 
 audio.addEventListener("timeupdate", () => {
@@ -297,8 +320,8 @@ function toggleFullscreen(){
     }
 }
 
-// Lade ersten Song beim Start
-loadSong(currentIndex);
+// initial load
+loadSong(0);
 </script>
 </body>
 </html>
