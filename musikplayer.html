@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VenomSnake Musikplayer</title>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
@@ -51,11 +52,6 @@ h1 {
     text-shadow: 0 0 5px #000044;
 }
 
-/* Buttons */
-form, button, select, input, textarea {
-    font-family: 'Orbitron', sans-serif;
-}
-
 button, select {
     background: #220066;
     border: 2px solid #8888ff;
@@ -87,14 +83,7 @@ button:hover, select:hover {
     color: black;
 }
 
-/* Audio-Controls */
-#controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
+/* Song Controls */
 #songControls {
     display: flex;
     align-items: center;
@@ -103,11 +92,6 @@ button:hover, select:hover {
     margin-bottom: 10px;
 }
 
-#downloadBtn {
-    padding: 10px;
-}
-
-/* Vertikaler Lautstärkeregler */
 #volumeContainer {
     display: flex;
     flex-direction: column;
@@ -135,7 +119,7 @@ button:hover, select:hover {
     cursor: pointer;
 }
 
-/* Fortschrittsleiste */
+/* Progress Bar */
 #progressContainer {
     display: flex;
     align-items: center;
@@ -168,160 +152,142 @@ button:hover, select:hover {
     font-size: 14px;
     color: #ffffff;
 }
-
-/* Responsive */
-@media (max-width: 600px){
-    h1 { font-size: 28px; }
-    #infoText { font-size: 14px; }
-    button, select { padding: 8px 16px; font-size: 14px; }
-    #progress { width: 200px; }
-    #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
-    #volumeSlider { height: 100px; width: 12px; }
-}
 </style>
 </head>
+
 <body>
 <div id="overlay">
-    <h1>VenomSnake Musikplayer</h1>
-    <div id="infoText">
-        🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
-    </div>
 
-    <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
+<h1>VenomSnake Musikplayer</h1>
 
-    <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
+<div id="infoText">
+🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
+</div>
 
-    <audio id="audioPlayer">
-        Dein Browser unterstützt kein Audio-Element.
-    </audio>
+<button id="backButton" onclick="window.location.href='index.html'">
+🏠 Zurück zur Startseite
+</button>
 
-    <div id="songControls">
-        <select id="songSelect" onchange="selectSong()">
-            <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
-            <option value="1">Ghost Town by VenomSnake_Twitch</option>
-            <option value="2">Wreckfest</option>
-        </select>
-        <button id="downloadBtn" onclick="downloadSong()">⬇ Download</button>
-        <div id="volumeContainer">
-            <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
-            <span>Lautstärke</span>
-        </div>
-    </div>
+<h2 id="currentSong">▶ Snake Eater VenomSnake_Twitch Mix</h2>
 
-    <div id="progressContainer">
-        <span id="timeLabel">0:00</span>
-        <input type="range" id="progress" min="0" max="100" value="0" oninput="seekSong(this.value)">
-        <span id="durationLabel">0:00</span>
-    </div>
+<audio id="audioPlayer"></audio>
 
-    <div id="controls">
-        <button onclick="prevSong()">⏮ Vorheriger</button>
-        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
-        <button onclick="stopSong()">⏹ Stop</button>
-        <button onclick="nextSong()">⏭ Nächster</button>
-        <button onclick="toggleFullscreen()">🖵 Vollbild</button>
-    </div>
+<div id="songControls">
+<select id="songSelect" onchange="selectSong()">
+<option value="0">Snake Eater VenomSnake_Twitch Mix</option>
+<option value="1">Ghost Town by VenomSnake_Twitch</option>
+<option value="2">Wreckfest</option>
+<option value="3">In The Air Tonight by VenomSnake_Twitch</option>
+<option value="4">Paradies City</option>
+<option value="5">Parasitäres Bewußtsein</option>
+<option value="6">Still Alive (Voiced)</option>
+<option value="7">Yu-Gi-Oh Master Duel Solo Gate Synth Mix</option>
+</select>
+
+<button onclick="downloadSong()">⬇ Download</button>
+
+<div id="volumeContainer">
+<input type="range" min="0" max="1" step="0.01" value="0.5"
+id="volumeSlider" oninput="setVolume(this.value)">
+<span style="color:white;">Lautstärke</span>
+</div>
+</div>
+
+<div id="progressContainer">
+<span id="timeLabel">0:00</span>
+<input type="range" id="progress" min="0" max="100"
+value="0" oninput="seekSong(this.value)">
+<span id="durationLabel">0:00</span>
+</div>
+
+<div>
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()">▶ / ⏸</button>
+<button onclick="stopSong()">⏹</button>
+<button onclick="nextSong()">⏭</button>
+</div>
+
 </div>
 
 <script>
 const songs = [
-    "Snake Eater VenomSnake_Twitch Mix.mp3",
-    "Ghost Town by VenomSnake_Twitch.mp3",
-    "Wreckfest.mp3"
+"Snake Eater VenomSnake_Twitch Mix.mp3",
+"Ghost Town by VenomSnake_Twitch.mp3",
+"Wreckfest.mp3",
+"In The Air Tonight by VenomSnake_Twitch .mp3",
+"Paradies City.mp3",
+"Parasitäres Bewußtsein.mp3",
+"Still Alive (Voiced).mp3",
+"Yu-Gi-Oh Master Duel Solo Gate Synth Mix.mp3"
 ];
 
 let currentIndex = 0;
 const audio = document.getElementById("audioPlayer");
 const currentSongLabel = document.getElementById("currentSong");
-const playPauseBtn = document.getElementById("playPauseBtn");
-const songSelect = document.getElementById("songSelect");
-const progress = document.getElementById("progress");
-const timeLabel = document.getElementById("timeLabel");
-const durationLabel = document.getElementById("durationLabel");
 
-function loadSong(index){
-    currentIndex = index;
-    audio.src = songs[index];
-    currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
-    audio.pause();
-    audio.currentTime = 0;
-    playPauseBtn.textContent = "▶ Play";
+audio.src = songs[0];
+
+function selectSong(){
+currentIndex = document.getElementById("songSelect").value;
+audio.src = songs[currentIndex];
+currentSongLabel.textContent =
+"▶ " + document.getElementById("songSelect").options[currentIndex].text;
+audio.play();
 }
 
 function togglePlay(){
-    if(!audio.src) return alert("Bitte zuerst einen Song auswählen!");
-    if(audio.paused){
-        audio.play();
-        playPauseBtn.textContent = "⏸ Pause";
-    } else {
-        audio.pause();
-        playPauseBtn.textContent = "▶ Play";
-    }
+if(audio.paused){ audio.play(); }
+else{ audio.pause(); }
 }
 
 function stopSong(){
-    audio.pause();
-    audio.currentTime = 0;
-    playPauseBtn.textContent = "▶ Play";
+audio.pause();
+audio.currentTime = 0;
 }
 
 function nextSong(){
-    currentIndex = (currentIndex + 1) % songs.length;
-    songSelect.value = currentIndex;
-    loadSong(currentIndex);
+currentIndex = (parseInt(currentIndex)+1)%songs.length;
+document.getElementById("songSelect").value=currentIndex;
+selectSong();
 }
 
 function prevSong(){
-    currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-    songSelect.value = currentIndex;
-    loadSong(currentIndex);
+currentIndex = (parseInt(currentIndex)-1+songs.length)%songs.length;
+document.getElementById("songSelect").value=currentIndex;
+selectSong();
 }
 
 function setVolume(value){
-    audio.volume = value;
-}
-
-function selectSong(){
-    const index = parseInt(songSelect.value);
-    loadSong(index);
+audio.volume=value;
 }
 
 function downloadSong(){
-    const link = document.createElement("a");
-    link.href = songs[currentIndex];
-    link.download = songs[currentIndex];
-    link.click();
+const link=document.createElement("a");
+link.href=songs[currentIndex];
+link.download=songs[currentIndex];
+link.click();
 }
 
-audio.addEventListener("timeupdate", () => {
-    if(!audio.duration) return;
-    const percent = (audio.currentTime / audio.duration) * 100;
-    progress.value = percent;
-    timeLabel.textContent = formatTime(audio.currentTime);
-    durationLabel.textContent = formatTime(audio.duration);
+audio.addEventListener("timeupdate",()=>{
+if(!audio.duration) return;
+document.getElementById("progress").value=
+(audio.currentTime/audio.duration)*100;
+
+document.getElementById("timeLabel").textContent=formatTime(audio.currentTime);
+document.getElementById("durationLabel").textContent=formatTime(audio.duration);
 });
 
 function seekSong(value){
-    if(!audio.duration) return;
-    audio.currentTime = (value / 100) * audio.duration;
+if(!audio.duration) return;
+audio.currentTime=(value/100)*audio.duration;
 }
 
-function formatTime(seconds){
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60);
-    return `${m}:${s.toString().padStart(2,'0')}`;
+function formatTime(sec){
+const m=Math.floor(sec/60);
+const s=Math.floor(sec%60);
+return m+":"+(s<10?"0"+s:s);
 }
-
-function toggleFullscreen(){
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
-}
-
-// initial load
-loadSong(0);
 </script>
+
 </body>
 </html>
