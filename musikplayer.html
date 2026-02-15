@@ -179,7 +179,188 @@ button:hover, select:hover {
 <option value="2">Wreckfest</option>
 <option value="3">In The Air Tonight by VenomSnake_Twitch</option>
 <option value="4">Paradies City</option>
-<option value="5">Parasitäres Bewußtsein</option>
+<option value="5"><!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VenomSnake Musikplayer</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: url("musicbackground.png") no-repeat center center fixed;
+    background-size: cover;
+    color: #f0f0ff;
+    text-align: center;
+    overflow: hidden;
+}
+
+#overlay {
+    background: rgba(0,0,50,0.85);
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
+}
+
+#infoText {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 0 0 5px #000000;
+}
+
+#currentSong {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #ffffaa;
+    text-shadow: 0 0 5px #000044;
+}
+
+button, select {
+    background: #220066;
+    border: 2px solid #8888ff;
+    color: #f0f0ff;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+button:hover, select:hover {
+    background: #8888ff;
+    color: #220066;
+}
+
+#backButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: black;
+    border: 2px solid gold;
+    color: gold;
+}
+
+#backButton:hover {
+    background: gold;
+    color: black;
+}
+
+/* Song Controls */
+#songControls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#volumeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+}
+
+#volumeSlider {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 15px;
+    height: 150px;
+    background: #8888ff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Progress Bar */
+#progressContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+#progress {
+    width: 300px;
+    -webkit-appearance: none;
+    height: 8px;
+    background: #8888ff;
+    border-radius: 4px;
+}
+
+#progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#timeLabel, #durationLabel {
+    width: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+}
+</style>
+</head>
+
+<body>
+<div id="overlay">
+
+<h1>VenomSnake Musikplayer</h1>
+
+<div id="infoText">
+🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
+</div>
+
+<button id="backButton" onclick="window.location.href='index.html'">
+🏠 Zurück zur Startseite
+</button>
+
+<h2 id="currentSong">▶ Snake Eater VenomSnake_Twitch Mix</h2>
+
+<audio id="audioPlayer"></audio>
+
+<div id="songControls">
+<select id="songSelect" onchange="selectSong()">
+<option value="0">Snake Eater VenomSnake_Twitch Mix</option>
+<option value="1">Ghost Town by VenomSnake_Twitch</option>
+<option value="2">Wreckfest</option>
+<option value="3">In The Air Tonight by VenomSnake_Twitch</option>
+<option value="4">Paradies City</option>
+<option value="5">Parasitäres Bewustsein/option>
 <option value="6">Still Alive (Voiced)</option>
 <option value="7">Yu-Gi-Oh Master Duel Solo Gate Synth Mix</option>
 </select>
@@ -217,6 +398,117 @@ const songs = [
 "In The Air Tonight by VenomSnake_Twitch .mp3",
 "Paradies City.mp3",
 "Parasitäres Bewußtsein.mp3",
+"Still Alive (Voiced).mp3",
+"Yu-Gi-Oh Master Duel Solo Gate Synth Mix.mp3"
+];
+
+let currentIndex = 0;
+const audio = document.getElementById("audioPlayer");
+const currentSongLabel = document.getElementById("currentSong");
+
+audio.src = songs[0];
+
+function selectSong(){
+currentIndex = document.getElementById("songSelect").value;
+audio.src = songs[currentIndex];
+currentSongLabel.textContent =
+"▶ " + document.getElementById("songSelect").options[currentIndex].text;
+audio.play();
+}
+
+function togglePlay(){
+if(audio.paused){ audio.play(); }
+else{ audio.pause(); }
+}
+
+function stopSong(){
+audio.pause();
+audio.currentTime = 0;
+}
+
+function nextSong(){
+currentIndex = (parseInt(currentIndex)+1)%songs.length;
+document.getElementById("songSelect").value=currentIndex;
+selectSong();
+}
+
+function prevSong(){
+currentIndex = (parseInt(currentIndex)-1+songs.length)%songs.length;
+document.getElementById("songSelect").value=currentIndex;
+selectSong();
+}
+
+function setVolume(value){
+audio.volume=value;
+}
+
+function downloadSong(){
+const link=document.createElement("a");
+link.href=songs[currentIndex];
+link.download=songs[currentIndex];
+link.click();
+}
+
+audio.addEventListener("timeupdate",()=>{
+if(!audio.duration) return;
+document.getElementById("progress").value=
+(audio.currentTime/audio.duration)*100;
+
+document.getElementById("timeLabel").textContent=formatTime(audio.currentTime);
+document.getElementById("durationLabel").textContent=formatTime(audio.duration);
+});
+
+function seekSong(value){
+if(!audio.duration) return;
+audio.currentTime=(value/100)*audio.duration;
+}
+
+function formatTime(sec){
+const m=Math.floor(sec/60);
+const s=Math.floor(sec%60);
+return m+":"+(s<10?"0"+s:s);
+}
+</script>
+
+</body>
+</html></option>
+<option value="6">Still Alive (Voiced)</option>
+<option value="7">Yu-Gi-Oh Master Duel Solo Gate Synth Mix</option>
+</select>
+
+<button onclick="downloadSong()">⬇ Download</button>
+
+<div id="volumeContainer">
+<input type="range" min="0" max="1" step="0.01" value="0.5"
+id="volumeSlider" oninput="setVolume(this.value)">
+<span style="color:white;">Lautstärke</span>
+</div>
+</div>
+
+<div id="progressContainer">
+<span id="timeLabel">0:00</span>
+<input type="range" id="progress" min="0" max="100"
+value="0" oninput="seekSong(this.value)">
+<span id="durationLabel">0:00</span>
+</div>
+
+<div>
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()">▶ / ⏸</button>
+<button onclick="stopSong()">⏹</button>
+<button onclick="nextSong()">⏭</button>
+</div>
+
+</div>
+
+<script>
+const songs = [
+"Snake Eater VenomSnake_Twitch Mix.mp3",
+"Ghost Town by VenomSnake_Twitch.mp3",
+"Wreckfest.mp3",
+"In The Air Tonight by VenomSnake_Twitch .mp3",
+"Paradies City.mp3",
+"Parasitäres Bewustsein.mp3",
 "Still Alive (Voiced).mp3",
 "Yu-Gi-Oh Master Duel Solo Gate Synth Mix.mp3"
 ];
