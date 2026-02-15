@@ -108,12 +108,13 @@ button:hover, select:hover {
     color: #220066;
 }
 
+/* Fortschrittsbalken */
 #progressContainer {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
     gap: 10px;
+    margin-top: 15px;
 }
 
 #progress {
@@ -141,6 +142,7 @@ button:hover, select:hover {
     color: #ffffff;
 }
 
+/* Lautstärkeregler vertikal */
 #volumeContainer {
     display: flex;
     flex-direction: column;
@@ -148,9 +150,34 @@ button:hover, select:hover {
     margin-left: 20px;
 }
 
+#volumeSlider {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 40px;
+    height: 160px;
+    background: #8888ff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 40px;
+    height: 25px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Controls */
+#controls {
+    margin-top: 15px;
+}
+
 /* Info Box */
 #infoBox {
-    margin-top: 25px;
+    margin-top: 20px;
     width: 90%;
     max-width: 700px;
     background: rgba(20,20,80,0.9);
@@ -173,6 +200,9 @@ button:hover, select:hover {
 
 @media (max-width: 600px){
     h1 { font-size: 28px; }
+    #progress { width: 200px; }
+    #volumeSlider { height: 120px; width: 30px; }
+    #timeLabel, #durationLabel { width: 40px; font-size: 12px; }
 }
 </style>
 </head>
@@ -181,10 +211,10 @@ button:hover, select:hover {
     <h1>VenomSnake Musikplayer</h1>
 
     <div id="infoText">
-        🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
+        Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
     </div>
 
-    <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
+    <button id="backButton" onclick="window.location.href='index.html'">Zurück zur Startseite</button>
 
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
@@ -207,6 +237,18 @@ button:hover, select:hover {
             <option value="12">VenomSnake Mode Intro song</option>
             <option value="13">Hell March [Retaliation Cover]</option>
         </select>
+        <a id="downloadBtn" href="" download>Download</a>
+
+        <div id="volumeContainer">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <span>Lautstärke</span>
+        </div>
+    </div>
+
+    <div id="progressContainer">
+        <span id="timeLabel">0:00</span>
+        <input type="range" id="progress" min="0" max="100" value="0">
+        <span id="durationLabel">0:00</span>
     </div>
 
     <div id="controls">
@@ -214,15 +256,15 @@ button:hover, select:hover {
         <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
         <button onclick="stopSong()">⏹ Stop</button>
         <button onclick="nextSong()">⏭ Nächster</button>
-        <button onclick="toggleFullscreen()">🖵 Vollbild</button>
+        <button onclick="toggleFullscreen()">Vollbild</button>
     </div>
 
     <!-- INFO BOX UNTER DEN BUTTONS -->
     <div id="infoBox">
-        <h3>📢 Song News</h3>
-        <p>🔥 Neu: Hell March [Retaliation Cover]</p>
-        <p>🎧 Neu: Syphon Filter Synth Mix</p>
-        <p>🆕 Weitere Tracks folgen bald.</p>
+        <h3>Song News</h3>
+        <p>Neu: Hell March [Retaliation Cover]</p>
+        <p>Neu: Syphon Filter Synth Mix</p>
+        <p>Weitere Tracks folgen bald.</p>
     </div>
 
 </div>
@@ -249,10 +291,19 @@ let currentIndex = 0;
 const audio = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
+const progress = document.getElementById("progress");
+const timeLabel = document.getElementById("timeLabel");
+const durationLabel = document.getElementById("durationLabel");
+const volumeSlider = document.getElementById("volumeSlider");
+const downloadBtn = document.getElementById("downloadBtn");
 
 function loadSong(index){
     currentIndex = index;
     audio.src = songs[index];
+    songSelect.value = index;
+    downloadBtn.href = songs[index];
+    downloadBtn.setAttribute("download", songs[index]);
+    document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
 }
 
 function togglePlay(){
@@ -272,36 +323,60 @@ function stopSong(){
 }
 
 function nextSong(){
-    currentIndex = (currentIndex + 1) % songs.length;
-    songSelect.value = currentIndex;
-    loadSong(currentIndex);
+    loadSong((currentIndex + 1) % songs.length);
     audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function prevSong(){
-    currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-    songSelect.value = currentIndex;
-    loadSong(currentIndex);
+    loadSong((currentIndex - 1 + songs.length) % songs.length);
     audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function selectSong(){
     loadSong(parseInt(songSelect.value));
     audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function toggleFullscreen(){
-    if (!document.fullscreenElement) {
+    if(!document.fullscreenElement){
         document.documentElement.requestFullscreen();
     } else {
         document.exitFullscreen();
     }
 }
 
-audio.addEventListener("ended", () => {
-    nextSong();
+// Fortschritt & Zeit
+audio.addEventListener("timeupdate", () => {
+    if(!audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    timeLabel.textContent = formatTime(audio.currentTime);
+    durationLabel.textContent = formatTime(audio.duration);
 });
 
+progress.addEventListener("input", () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+});
+
+// Lautstärke
+volumeSlider.addEventListener("input", () => {
+    audio.volume = volumeSlider.value;
+});
+
+// Zeitformat
+function formatTime(time){
+    if(isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+    return minutes + ":" + seconds;
+}
+
+// Automatischer nächster Song
+audio.addEventListener("ended", nextSong);
+
+// Initial
 loadSong(0);
 </script>
 </body>
