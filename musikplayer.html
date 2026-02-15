@@ -18,19 +18,27 @@ body {
     overflow: hidden;
 }
 
-/* HEADER STYLES VON INDEX.HTML */
+/* HEADER FIXIEREN UND TRANSPARENT MACHEN */
 header {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.7); /* halbtransparent */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     box-sizing: border-box;
+    z-index: 1000; /* Header bleibt über Overlay */
+    backdrop-filter: blur(5px); /* leichte Unschärfe für Eleganz */
 }
+
 header .logo img {
     height: 50px;
+    object-fit: contain;
 }
+
 header nav ul {
     list-style: none;
     display: flex;
@@ -38,16 +46,19 @@ header nav ul {
     margin: 0;
     padding: 0;
 }
+
 header nav ul li a {
     text-decoration: none;
     color: #f0f0ff;
     font-weight: bold;
-}
-header nav ul li a:hover {
-    color: #8888ff;
+    transition: color 0.3s;
 }
 
-/* MUSIKPLAYER STYLES (bestehend) */
+header nav ul li a:hover {
+    color: #88f0ff;
+}
+
+/* OVERLAY MUSIKPLAYER */
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
@@ -56,7 +67,7 @@ header nav ul li a:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 20px;
+    padding: 100px 20px 20px 20px; /* Platz für fixierten Header */
     box-sizing: border-box;
     position: relative;
 }
@@ -67,16 +78,58 @@ h1 {
     text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
 }
 
-/* ... restliche CSS unverändert ... */
+/* Buttons und Controls */
+button, select, #downloadBtn {
+    margin: 10px;
+    padding: 8px 15px;
+    font-size: 16px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #222244;
+    color: #f0f0ff;
+    transition: background 0.3s, color 0.3s;
+}
 
+button:hover, #downloadBtn:hover, select:hover {
+    background: #4444aa;
+    color: #fff;
+}
+
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#songControls, #controls, #progressContainer, #volumeContainer {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#progressContainer input[type="range"], #volumeContainer input[type="range"] {
+    width: 200px;
+}
+
+#infoBox {
+    margin-top: 20px;
+    text-align: left;
+    max-width: 600px;
+}
+#infoBox h3 {
+    margin-bottom: 5px;
+}
 </style>
 </head>
 <body>
 
-<!-- HEADER VON INDEX.HTML -->
+<!-- HEADER -->
 <header>
     <div class="logo">
-        <img src="logo.png" alt="VenomSnake Logo">
+        <img src="DogVenomsnake Logo.png" alt="VenomSnake Logo">
     </div>
     <nav>
         <ul>
@@ -87,7 +140,7 @@ h1 {
     </nav>
 </header>
 
-<!-- EXISTIERENDER MUSIKPLAYER -->
+<!-- MUSIKPLAYER OVERLAY -->
 <div id="overlay">
     <h1>VenomSnake Musikplayer</h1>
 
@@ -146,11 +199,9 @@ h1 {
         <p>Neu: Syphon Filter Synth Mix</p>
         <p>Weitere Tracks folgen bald.</p>
     </div>
-
 </div>
 
 <script>
-/* JS unverändert */
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3",
     "Ghost Town by VenomSnake_Twitch.mp3",
