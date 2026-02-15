@@ -109,6 +109,18 @@ input[type=range]::-webkit-slider-thumb {
     color: black;
 }
 
+#downloadButton {
+    margin-top: 10px;
+    background: #004400;
+    border: 2px solid #88ff88;
+    color: #88ff88;
+}
+
+#downloadButton:hover {
+    background: #88ff88;
+    color: #004400;
+}
+
 @media (max-width: 600px){
     h1 { font-size: 28px; }
     #infoText { font-size: 14px; }
@@ -158,14 +170,8 @@ input[type=range]::-webkit-slider-thumb {
         </select>
     </div>
 
-    <!-- Download-Button -->
-    <div style="margin-top:10px;">
-        <a id="downloadBtn" href="#" download>
-            <button>⬇ Song herunterladen</button>
-        </a>
-    </div>
+    <button id="downloadButton" onclick="downloadSong()">⬇ Song herunterladen</button>
 
-    <!-- Neuer Button zurück zur Index.html -->
     <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
 </div>
 
@@ -176,7 +182,7 @@ const songs = [
     "Wreckfest.mp3"
 ];
 
-let currentIndex = null;
+let currentIndex = 0; // Standardmäßig erster Song
 const audio = document.getElementById("audioPlayer");
 const currentSongLabel = document.getElementById("currentSong");
 const playPauseBtn = document.getElementById("playPauseBtn");
@@ -192,11 +198,6 @@ function loadSong(index){
     audio.pause();
     audio.currentTime = 0;
     playPauseBtn.textContent = "▶ Play";
-
-    // Update Download-Link
-    const downloadBtn = document.getElementById("downloadBtn");
-    downloadBtn.href = songs[index];
-    downloadBtn.setAttribute("download", songSelect.options[index].text + ".mp3");
 }
 
 function togglePlay(){
@@ -239,6 +240,14 @@ function selectSong(){
     loadSong(index);
 }
 
+function downloadSong(){
+    if(currentIndex === null) return alert("Bitte zuerst einen Song auswählen!");
+    const link = document.createElement("a");
+    link.href = songs[currentIndex];
+    link.download = songs[currentIndex];
+    link.click();
+}
+
 audio.addEventListener("timeupdate", () => {
     if(!audio.duration) return;
     const percent = (audio.currentTime / audio.duration) * 100;
@@ -265,6 +274,10 @@ function toggleFullscreen(){
         document.exitFullscreen();
     }
 }
+
+// Standardmäßig ersten Song laden
+loadSong(0);
+songSelect.value = 0;
 </script>
 </body>
 </html>
