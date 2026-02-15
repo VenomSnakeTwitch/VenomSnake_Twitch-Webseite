@@ -30,144 +30,119 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Rajdhani', sans-serif; font-weight: 500; background-color: var(--base); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
 
-    /* Grid Background */
     .grid-bg { background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
-
-    /* Glass Effect */
-    .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
-
-    /* Cut Corner Effects */
+    .glass { backdrop-filter: blur(16px); background-color: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border); }
     .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
     .cut-corner-sm { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
-
-    /* Glow Effects */
-    .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
-    .glow-twitch { box-shadow: 0 0 30px rgba(145, 70, 255, 0.3); }
+    .cut-corner-top { clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px); }
+    .glow-text { text-shadow: 0 0 20px rgba(145,70,255,0.5); }
+    .glow-twitch { box-shadow: 0 0 30px rgba(145,70,255,0.3); }
 
     /* Navigation */
-    .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; }
-    .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; }
-    .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-    .logo img { height: 56px; width: auto; }
-    .logo-text { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.1em; }
+    .nav { position: fixed; top:0; left:0; width:100%; z-index:50; }
+    .nav-container { max-width:1600px; margin:0 auto; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:80px; }
+    .logo { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
+    .logo img { height:56px; width:auto; }
+    .logo-text { font-family: 'Chakra Petch', sans-serif; font-weight:700; font-size:1.25rem; letter-spacing:0.1em; }
     .logo-text .venom { color: var(--twitch); }
     .logo-text .snake { color: var(--tactical-blue); }
-    .nav-links { display: flex; align-items: center; gap: 2rem; }
-    .nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
-    .nav-link:hover, .nav-link.active { color: var(--twitch); }
-    .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--twitch); transition: width 0.3s ease; }
-    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-    .discord-btn { background-color: #5865F2; color: white; padding: 0.5rem 1rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
-    .discord-btn:hover { background-color: #4752c4; }
 
-    /* Mobile Menu */
-    .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
-    .mobile-nav { display: none; padding: 1rem 0; border-top: 1px solid var(--border); }
-    .mobile-nav.open { display: block; }
-    .mobile-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.5rem; font-family: 'Chakra Petch', sans-serif; letter-spacing: 0.1em; color: var(--text-secondary); text-decoration: none; }
+    .nav-links { display:flex; align-items:center; gap:2rem; }
+    .nav-link { font-family:'Chakra Petch', sans-serif; font-size:0.875rem; letter-spacing:0.2em; color: var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:0.5rem; transition: color 0.3s; position:relative; }
+    .nav-link:hover, .nav-link.active { color: var(--twitch); }
+    .nav-link::after { content:""; position:absolute; bottom:-4px; left:0; width:0; height:2px; background-color: var(--twitch); transition: width 0.3s ease; }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+    .discord-btn { background-color:#5865F2; color:white; padding:0.5rem 1rem; font-family:'Chakra Petch', sans-serif; font-size:0.875rem; letter-spacing:0.1em; text-decoration:none; display:flex; align-items:center; gap:0.5rem; transition:background-color 0.3s; }
+    .discord-btn:hover { background-color:#4752c4; }
+
+    .btn { padding:0.75rem 1.5rem; font-family:'Chakra Petch', sans-serif; font-size:0.875rem; letter-spacing:0.1em; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:background-color 0.3s; }
+    .btn-twitch { background-color: var(--twitch); color:white; }
+    .btn-twitch:hover { background-color: var(--twitch-dim); }
+
+    .mobile-menu-btn { display:none; background:none; border:none; color:white; cursor:pointer; }
+    .mobile-nav { display:none; padding:1rem 0; border-top:1px solid var(--border); }
+    .mobile-nav.open { display:block; }
+    .mobile-nav a { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 0.5rem; font-family:'Chakra Petch', sans-serif; letter-spacing:0.1em; color: var(--text-secondary); text-decoration:none; }
     .mobile-nav a.active { color: var(--twitch); }
 
-    /* Page Container */
-    .page { display: none; min-height: 100vh; padding-top: 96px; padding-bottom: 3rem; }
-    .page.active { display: block; }
-    .container { max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
-
-    /* Page Header */
-    .page-header { margin-bottom: 2rem; }
-    .page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 2.5rem; text-transform: uppercase; letter-spacing: -0.025em; }
-    .page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--text-secondary); margin-top: 0.5rem; }
-
-    /* CTA Buttons */
-    .cta-box { background-color: var(--overlay); border: 1px solid rgba(145, 70, 255, 0.3); padding: 1.5rem; }
-    .cta-buttons { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
-    .btn { padding: 0.75rem 1.5rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; }
-    .btn-twitch { background-color: var(--twitch); color: white; }
-    .btn-twitch:hover { background-color: var(--twitch-dim); }
-    .btn-discord { background-color: #5865F2; color: white; }
-    .btn-discord:hover { background-color: #4752c4; }
-
-    /* Footer */
-    footer { background-color: var(--base); border-top: 1px solid var(--border); padding: 1.5rem 0; }
-    .footer-content { max-width: 1600px; margin: 0 auto; padding: 0 1rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-    @media (min-width: 768px) { .footer-content { flex-direction: row; justify-content: space-between; } }
-    .footer-left { display: flex; align-items: center; gap: 0.75rem; }
-    .footer-left img { height: 32px; width: auto; }
-    .footer-left span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
-    .footer-links { display: flex; gap: 1.5rem; }
-    .footer-links a { color: var(--text-muted); transition: color 0.3s; }
+    footer { background-color: var(--base); border-top:1px solid var(--border); padding:1.5rem 0; }
+    .footer-content { max-width:1600px; margin:0 auto; padding:0 1rem; display:flex; flex-direction:column; align-items:center; gap:1rem; }
+    @media(min-width:768px){ .footer-content { flex-direction:row; justify-content:space-between; } }
+    .footer-left { display:flex; align-items:center; gap:0.75rem; }
+    .footer-left img { height:32px; width:auto; }
+    .footer-left span { font-family:'JetBrains Mono', monospace; font-size:0.75rem; color: var(--text-muted); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { color: var(--text-muted); transition:color 0.3s; }
     .footer-links a:hover { color: var(--twitch); }
 
-    /* Responsive */
-    @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } .page-header h1 { font-size: 2rem; } .container { padding: 0 1rem; } }
-
-    .discord-icon { width: 20px; height: 20px; fill: currentColor; }
+    @media(max-width:768px){ .nav-links { display:none; } .mobile-menu-btn { display:block; } }
+    .discord-icon { width:20px; height:20px; fill:currentColor; }
 </style>
 </head>
 <body>
 <script>
-    const TWITCH_PARENT = window.location.hostname;
-    const TWITCH_CHANNEL = "VenomSnake_Twitch";
-    const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
+const TWITCH_PARENT = window.location.hostname;
+const TWITCH_CHANNEL = "VenomSnake_Twitch";
+const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
 </script>
 
 <!-- Navigation -->
 <nav class="nav glass">
     <div class="nav-container">
         <a href="#" class="logo" onclick="showPage('stream'); return false;">
-            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="Logo">
             <span class="logo-text"><span class="venom">VENOM</span><span class="snake">SNAKE</span></span>
         </a>
 
         <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;"><i data-lucide="tv" style="width: 16px; height: 16px;"></i> STREAM</a>
-            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;"><i data-lucide="user" style="width: 16px; height: 16px;"></i> ÜBER MICH</a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">DISCORD</a>
+            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">
+                <i data-lucide="tv" style="width:16px;height:16px;"></i> STREAM
+            </a>
+            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
+                <i data-lucide="user" style="width:16px;height:16px;"></i> ÜBER MICH
+            </a>
+            <!-- Kontakt Button -->
+            <a href="kontakt.html" class="nav-link">
+                <i data-lucide="mail" style="width:16px;height:16px;"></i> KONTAKT
+            </a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
+                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> DISCORD
+            </a>
         </div>
 
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i data-lucide="menu" style="width: 24px; height: 24px;"></i></button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i data-lucide="menu" style="width:24px;height:24px;"></i>
+        </button>
+    </div>
+
+    <div class="mobile-nav" id="mobileNav">
+        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
+            <i data-lucide="tv" style="width:18px;height:18px;"></i> STREAM
+        </a>
+        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
+            <i data-lucide="user" style="width:18px;height:18px;"></i> ÜBER MICH
+        </a>
+        <a href="kontakt.html" class="mobile-nav-link" onclick="toggleMobileMenu();">
+            <i data-lucide="mail" style="width:18px;height:18px;"></i> KONTAKT
+        </a>
+        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color:#5865F2;">
+            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 ..."/></svg>
+        </a>
     </div>
 </nav>
 
 <!-- Stream Page -->
 <main id="page-stream" class="page active grid-bg">
     <div class="container">
-        <!-- Inhalt wie gehabt -->
+        <!-- Hier kommt der Stream-Content (Twitch Player & Chat) -->
     </div>
 </main>
 
 <!-- About Page -->
 <main id="page-about" class="page grid-bg">
     <div class="container about-container">
-        <div class="page-header">
-            <h1><span class="glow-text" style="color: var(--twitch);">ÜBER</span> <span style="color: var(--tactical-blue);"> MICH</span></h1>
-            <p class="subtitle">AGENT PROFILE // CLASSIFIED INFORMATION</p>
-        </div>
-
-        <!-- Bio & Games -->
-        <div class="about-grid">
-            <div class="profile-card cut-corner">
-                <!-- Profilinhalt wie gehabt -->
-            </div>
-
-            <div class="bio-content">
-                <div class="bio-section bio-main">
-                    <!-- Bioinhalt -->
-                </div>
-                <div class="bio-section cut-corner" style="border: 1px solid var(--border);">
-                    <!-- Lieblingsspiele -->
-                </div>
-
-                <div class="cta-box glow-twitch">
-                    <div class="bio-header"><div class="bio-dot bio-dot-live"></div><span>EINLADUNG</span></div>
-                    <p style="font-size: 1.125rem;">Ich bin auch ein echt netter Typ, also schau doch gerne mal bei mir im Stream vorbei oder in meinem Discord!</p>
-                    <div class="cta-buttons">
-                        <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="btn btn-twitch cut-corner-sm"><i data-lucide="tv" style="width: 18px; height: 18px;"></i> ZUM STREAM</a>
-                        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="btn btn-discord cut-corner-sm">DISCORD BEITRETEN</a>
-                        <a href="Kontakt.html" class="btn btn-twitch cut-corner-sm"><i data-lucide="mail" style="width: 18px; height: 18px;"></i> KONTAKT</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Hier kommt der Über Mich-Content -->
     </div>
 </main>
 
@@ -175,23 +150,48 @@
 <footer>
     <div class="footer-content">
         <div class="footer-left">
-            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="Logo">
             <span>© 2025 VenomSnake_Twitch</span>
         </div>
         <div class="footer-links">
-            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank"><i data-lucide="tv" style="width: 20px; height: 20px;"></i></a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank"><svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 ..."/></svg></a>
+            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">
+                <i data-lucide="tv" style="width:20px;height:20px;"></i>
+            </a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank">
+                <svg class="discord-icon" viewBox="0 0 24 24"><path d="..."/></svg>
+            </a>
         </div>
     </div>
 </footer>
 
 <script>
     lucide.createIcons();
-    function showPage(page) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + page).classList.add('active');
+
+    function toggleMobileMenu() {
+        document.getElementById('mobileNav').classList.toggle('open');
     }
-    function toggleMobileMenu() { document.getElementById('mobileNav').classList.toggle('open'); }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + pageId).classList.add('active');
+
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelector(`.nav-link[data-page="${pageId}"]`)?.classList.add('active');
+    }
+
+    // Twitch Embed
+    function loadTwitchEmbeds() {
+        const parent = window.location.hostname;
+        const player = document.getElementById('twitch-player-container');
+        if(player){
+            player.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${TWITCH_CHANNEL}&parent=${parent}" frameborder="0" allowfullscreen="true"></iframe>`;
+        }
+        const chat = document.getElementById('twitch-chat-container');
+        if(chat){
+            chat.innerHTML = `<iframe src="https://www.twitch.tv/embed/${TWITCH_CHANNEL}/chat?parent=${parent}" frameborder="0"></iframe>`;
+        }
+    }
+    window.onload = loadTwitchEmbeds;
 </script>
 </body>
 </html>
