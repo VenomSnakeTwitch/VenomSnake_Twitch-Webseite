@@ -166,6 +166,63 @@
         background-color: #4752c4;
     }
 
+    /* Dropdown Styles */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .dropdown-btn:hover,
+    .dropdown-btn:focus {
+        color: var(--twitch);
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        min-width: 200px;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        z-index: 100;
+        margin-top: 6px;
+    }
+
+    .dropdown-content a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1.25rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        letter-spacing: 0.1em;
+    }
+
+    .dropdown-content a:hover {
+        background-color: rgba(145, 70, 255, 0.15);
+        color: var(--twitch);
+    }
+
+    .dropdown:hover .dropdown-content,
+    .dropdown:focus-within .dropdown-content {
+        display: block;
+    }
+
     .mobile-menu-btn {
         display: none;
         background: none;
@@ -793,7 +850,7 @@
 <body>
 
 <script>
-    const TWITCH_PARENT = window.location.hostname;
+    const TWITCH_PARENT = window.location.hostname || 'localhost';
     const TWITCH_CHANNEL = "VenomSnake_Twitch";
     const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
     const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png";
@@ -814,22 +871,33 @@
                 <i data-lucide="tv" style="width: 16px; height: 16px;"></i>
                 STREAM
             </a>
-            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
-                <i data-lucide="user" style="width: 16px; height: 16px;"></i>
-                ÜBER MICH
-            </a>
-            <a href="kontakt.html" class="nav-link">
-                <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
-                KONTAKT
-            </a>
-            <a href="musikplayer.html" class="nav-link">
-                <i data-lucide="music" style="width: 16px; height: 16px;"></i>
-                MUSIK PLAYER
-            </a>
-            <a href="donation.html" class="nav-link">
-                <i data-lucide="heart-handshake" style="width: 16px; height: 16px;"></i>
-                SPENDEN
-            </a>
+
+            <div class="dropdown">
+                <button class="dropdown-btn nav-link" type="button">
+                    <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
+                    MEHR
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#" data-page="about" onclick="showPage('about'); return false;">
+                        <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                        ÜBER MICH
+                    </a>
+                    <a href="kontakt.html">
+                        <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                        KONTAKT
+                    </a>
+                    <a href="musikplayer.html">
+                        <i data-lucide="music" style="width: 16px; height: 16px;"></i>
+                        MUSIK PLAYER
+                    </a>
+                    <a href="donation.html">
+                        <i data-lucide="heart-handshake" style="width: 16px; height: 16px;"></i>
+                        SPENDEN
+                    </a>
+                </div>
+            </div>
+
             <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
                 <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                 DISCORD
@@ -841,13 +909,12 @@
         </button>
     </div>
 
-    <!-- MOBILE-MENÜ: Discord jetzt direkt unter STREAM -->
+    <!-- MOBILE-MENÜ -->
     <div class="mobile-nav" id="mobileNav">
         <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
             <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
             STREAM
         </a>
-        <!-- Discord als zweiter Eintrag -->
         <a href="https://discord.gg/SFzk4YxgRv" target="_blank">
             <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
             DISCORD
@@ -1072,6 +1139,7 @@
     function loadTwitchEmbeds() {
         const parent = window.location.hostname || 'localhost';
         
+        // Original iframe-Einbindung (wie im Originalcode)
         document.getElementById('twitch-player-container').innerHTML = `
             <iframe
                 src="https://player.twitch.tv/?channel=VenomSnake_Twitch&parent=${parent}&muted=true"
@@ -1085,6 +1153,23 @@
                 src="https://www.twitch.tv/embed/VenomSnake_Twitch/chat?parent=${parent}&darkpopout">
             </iframe>
         `;
+
+        // Original Twitch JS Embed (wie im Originalcode)
+        new Twitch.Player("twitch-player-container", {
+            channel: TWITCH_CHANNEL,
+            parent: [TWITCH_PARENT],
+            width: "100%",
+            height: "100%",
+            autoplay: false,
+            muted: false
+        });
+
+        new Twitch.Embed("twitch-chat-container", {
+            width: "100%",
+            height: "100%",
+            channel: TWITCH_CHANNEL,
+            parent: [TWITCH_PARENT]
+        });
     }
 
     function showPage(pageName) {
@@ -1092,16 +1177,13 @@
             page.classList.remove('active');
         });
         
-        document.getElementById('page-' + pageName).classList.add('active');
+        const targetPage = document.getElementById('page-' + pageName);
+        if (targetPage) {
+            targetPage.classList.add('active');
+        }
         
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('data-page') === pageName) {
-                link.classList.add('active');
-            }
-        });
-        
-        document.querySelectorAll('.mobile-nav a').forEach(link => {
+        // Desktop-Links + Dropdown-Links + Mobile-Links aktualisieren
+        document.querySelectorAll('.nav-link, .dropdown-content a[data-page], .mobile-nav a[data-page]').forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('data-page') === pageName) {
                 link.classList.add('active');
@@ -1116,32 +1198,7 @@
         mobileNav.classList.toggle('open');
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        loadTwitchEmbeds();
-    });
-</script>
-
-<script src="https://player.twitch.tv/js/embed/v1.js"></script>
-<script>
-    const twitchPlayer = new Twitch.Player("twitch-player-container", {
-        channel: TWITCH_CHANNEL,
-        parent: [TWITCH_PARENT],
-        width: "100%",
-        height: "100%",
-        autoplay: false,
-        muted: false
-    });
-
-    const twitchChat = new Twitch.Embed("twitch-chat-container", {
-        width: "100%",
-        height: "100%",
-        channel: TWITCH_CHANNEL,
-        parent: [TWITCH_PARENT]
-    });
-
-    const liveStatusText = document.querySelector(".live-status span");
-    const liveDot = document.querySelector(".live-dot");
-
+    // Countdown Logik (originalgetreu)
     const streamSchedule = [
         { day: 1, hour: 13, minute: 30 },
         { day: 3, hour: 13, minute: 30 },
@@ -1175,9 +1232,12 @@
         const nextStream = getNextStream();
         const countdownElement = document.querySelector(".stream-info p");
 
-        if (!nextStream) return;
+        if (!nextStream || !countdownElement) return;
 
         const diff = nextStream - now;
+        const liveStatusText = document.querySelector(".live-status span");
+        const liveDot = document.querySelector(".live-dot");
+
         if (diff <= 0) {
             liveStatusText.textContent = "IST JETZT LIVE";
             liveDot.style.backgroundColor = "#ff4444";
@@ -1194,9 +1254,14 @@
         }
     }
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTwitchEmbeds();
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
 </script>
+
+<script src="https://player.twitch.tv/js/embed/v1.js"></script>
 
 </body>
 </html>
