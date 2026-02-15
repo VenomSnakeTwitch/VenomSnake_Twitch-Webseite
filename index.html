@@ -166,7 +166,6 @@
         background-color: #4752c4;
     }
 
-    /* Dropdown Styles – nur das Nötigste */
     .dropdown {
         position: relative;
     }
@@ -580,10 +579,17 @@
         overflow: hidden;
     }
 
+    /* Originalregel überschreiben – Logo kleiner & besser proportioniert */
     .profile-card img {
         width: 100%;
-        aspect-ratio: 1;
-        object-fit: cover;
+        max-width: 240px;
+        height: auto;
+        aspect-ratio: unset;
+        object-fit: contain;
+        margin: 1.5rem auto;
+        display: block;
+        border: 3px solid var(--twitch);
+        border-radius: 8px;
     }
 
     .profile-card-content {
@@ -823,7 +829,6 @@
         color: var(--twitch);
     }
 
-    /* NEU: Versionsnummer-Styling */
     .footer-version {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.75rem;
@@ -889,7 +894,6 @@
                 STREAM
             </a>
 
-            <!-- Dropdown-Menü -->
             <div class="dropdown">
                 <button class="dropdown-btn nav-link" type="button">
                     <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
@@ -927,7 +931,6 @@
         </button>
     </div>
 
-    <!-- MOBILE-MENÜ -->
     <div class="mobile-nav" id="mobileNav">
         <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
             <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
@@ -1129,7 +1132,7 @@
     </div>
 </main>
 
-<!-- Footer mit Versionsnummer -->
+<!-- Footer -->
 <footer>
     <div class="footer-content">
         <div class="footer-left">
@@ -1145,7 +1148,6 @@
             </a>
         </div>
 
-        <!-- Versionsnummer -->
         <div class="footer-version">
             <span>Version 1.4</span>
         </div>
@@ -1204,7 +1206,7 @@
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 <script>
     const twitchPlayer = new Twitch.Player("twitch-player-container", {
-        channel: TWITCH_CHANNEL,
+        channel: "VenomSnake_Twitch",
         parent: [TWITCH_PARENT],
         width: "100%",
         height: "100%",
