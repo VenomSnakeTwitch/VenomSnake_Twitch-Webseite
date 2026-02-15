@@ -51,7 +51,6 @@ h1 {
     text-shadow: 0 0 5px #000044;
 }
 
-/* Buttons */
 form, button, select, input, textarea {
     font-family: 'Orbitron', sans-serif;
 }
@@ -87,7 +86,6 @@ button:hover, select:hover {
     color: black;
 }
 
-/* Song + Download + Volume Container */
 #songControls {
     display: flex;
     align-items: center;
@@ -110,7 +108,6 @@ button:hover, select:hover {
     color: #220066;
 }
 
-/* Fortschrittsleiste */
 #progressContainer {
     display: flex;
     align-items: center;
@@ -121,7 +118,7 @@ button:hover, select:hover {
 
 #progress {
     width: 300px;
-    height: 12px; /* dicker */
+    height: 12px;
     -webkit-appearance: none;
     background: #8888ff;
     border-radius: 6px;
@@ -144,7 +141,6 @@ button:hover, select:hover {
     color: #ffffff;
 }
 
-/* Lautstärkeregler vertikal, dick */
 #volumeContainer {
     display: flex;
     flex-direction: column;
@@ -154,9 +150,9 @@ button:hover, select:hover {
 
 #volumeSlider {
     -webkit-appearance: slider-vertical;
-    writing-mode: bt-lr; /* vertikal */
-    width: 40px;   /* breiter */
-    height: 160px; /* hochkant */
+    writing-mode: bt-lr;
+    width: 40px;
+    height: 160px;
     background: #8888ff;
     border-radius: 8px;
     cursor: pointer;
@@ -164,7 +160,7 @@ button:hover, select:hover {
 
 #volumeSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 40px;   /* breiter */
+    width: 40px;
     height: 25px;
     background: #220066;
     border: 2px solid #f0f0ff;
@@ -172,7 +168,6 @@ button:hover, select:hover {
     cursor: pointer;
 }
 
-/* Responsive */
 @media (max-width: 600px){
     h1 { font-size: 28px; }
     #infoText { font-size: 14px; }
@@ -252,21 +247,17 @@ const progress = document.getElementById("progress");
 const timeLabel = document.getElementById("timeLabel");
 const durationLabel = document.getElementById("durationLabel");
 const downloadBtn = document.getElementById("downloadBtn");
-const volumeSlider = document.getElementById("volumeSlider");
 
 function loadSong(index){
     currentIndex = index;
     audio.src = songs[index];
     currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
     playPauseBtn.textContent = "▶ Play";
-
-    // Download-Link aktualisieren
     downloadBtn.href = songs[index];
     downloadBtn.setAttribute("download", songs[index]);
 }
 
 function togglePlay(){
-    if(!audio.src) return alert("Bitte zuerst einen Song auswählen!");
     if(audio.paused){
         audio.play();
         playPauseBtn.textContent = "⏸ Pause";
@@ -286,17 +277,23 @@ function nextSong(){
     currentIndex = (currentIndex + 1) % songs.length;
     songSelect.value = currentIndex;
     loadSong(currentIndex);
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function prevSong(){
     currentIndex = (currentIndex - 1 + songs.length) % songs.length;
     songSelect.value = currentIndex;
     loadSong(currentIndex);
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function selectSong(){
     const index = parseInt(songSelect.value);
     loadSong(index);
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
 }
 
 function setVolume(value){
@@ -305,8 +302,7 @@ function setVolume(value){
 
 audio.addEventListener("timeupdate", () => {
     if(!audio.duration) return;
-    const percent = (audio.currentTime / audio.duration) * 100;
-    progress.value = percent;
+    progress.value = (audio.currentTime / audio.duration) * 100;
     timeLabel.textContent = formatTime(audio.currentTime);
     durationLabel.textContent = formatTime(audio.duration);
 });
@@ -330,7 +326,12 @@ function toggleFullscreen(){
     }
 }
 
-// initial load
+// 🔥 Automatischer nächster Song nach Ende
+audio.addEventListener("ended", () => {
+    nextSong();
+});
+
+// Initial laden
 loadSong(0);
 </script>
 </body>
