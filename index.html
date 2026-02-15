@@ -166,7 +166,7 @@
         background-color: #4752c4;
     }
 
-    /* Dropdown Styles */
+    /* Dropdown Styles – nur das Nötigste */
     .dropdown {
         position: relative;
     }
@@ -823,6 +823,7 @@
         color: var(--twitch);
     }
 
+    /* NEU: Versionsnummer-Styling */
     .footer-version {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.75rem;
@@ -888,6 +889,7 @@
                 STREAM
             </a>
 
+            <!-- Dropdown-Menü -->
             <div class="dropdown">
                 <button class="dropdown-btn nav-link" type="button">
                     <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
@@ -925,6 +927,7 @@
         </button>
     </div>
 
+    <!-- MOBILE-MENÜ -->
     <div class="mobile-nav" id="mobileNav">
         <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
             <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
@@ -1142,6 +1145,7 @@
             </a>
         </div>
 
+        <!-- Versionsnummer -->
         <div class="footer-version">
             <span>Version 1.4</span>
         </div>
@@ -1153,42 +1157,43 @@
 
     function loadTwitchEmbeds() {
         const parent = window.location.hostname || 'localhost';
-
-        // Nur iframe – stabil und wie im Original (kein Mini-Player im Chat)
+        
         document.getElementById('twitch-player-container').innerHTML = `
             <iframe
-                src="https://player.twitch.tv/?channel=\( {TWITCH_CHANNEL}&parent= \){parent}&muted=true"
+                src="https://player.twitch.tv/?channel=VenomSnake_Twitch&parent=${parent}&muted=true"
                 allowfullscreen="true"
                 allow="autoplay; encrypted-media">
             </iframe>
         `;
-
+        
         document.getElementById('twitch-chat-container').innerHTML = `
             <iframe
-                src="https://www.twitch.tv/embed/\( {TWITCH_CHANNEL}/chat?parent= \){parent}&darkpopout"
+                src="https://www.twitch.tv/embed/VenomSnake_Twitch/chat?parent=${parent}&darkpopout"
                 frameborder="0">
             </iframe>
         `;
     }
 
     function showPage(pageName) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        const target = document.getElementById('page-' + pageName);
-        if (target) target.classList.add('active');
-
-        // Alle Links aktualisieren (Desktop + Dropdown + Mobile)
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        document.getElementById('page-' + pageName).classList.add('active');
+        
         document.querySelectorAll('.nav-link, .dropdown-content a[data-page], .mobile-nav a[data-page]').forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('data-page') === pageName) {
                 link.classList.add('active');
             }
         });
-
+        
         window.scrollTo(0, 0);
     }
 
     function toggleMobileMenu() {
-        document.getElementById('mobileNav').classList.toggle('open');
+        const mobileNav = document.getElementById('mobileNav');
+        mobileNav.classList.toggle('open');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1196,12 +1201,8 @@
     });
 </script>
 
-<!-- Twitch Embed Script laden (für die JS-Player-Option, falls gewünscht) -->
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
-
 <script>
-    // Optional: JS-Player-Instanz (wie in deiner Original-Version)
-    // Wenn du sie nicht brauchst, kannst du diesen Block auch löschen
     const twitchPlayer = new Twitch.Player("twitch-player-container", {
         channel: TWITCH_CHANNEL,
         parent: [TWITCH_PARENT],
@@ -1210,8 +1211,6 @@
         autoplay: false,
         muted: false
     });
-
-    // KEIN Twitch.Embed für Chat → bleibt reiner iframe-Chat
 
     const liveStatusText = document.querySelector(".live-status span");
     const liveDot = document.querySelector(".live-dot");
@@ -1249,7 +1248,7 @@
         const nextStream = getNextStream();
         const countdownElement = document.querySelector(".stream-info p");
 
-        if (!nextStream || !countdownElement) return;
+        if (!nextStream) return;
 
         const diff = nextStream - now;
         if (diff <= 0) {
