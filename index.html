@@ -13,7 +13,8 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
-/* … Alle CSS-Regeln bleiben unverändert wie im Original … */
+/* ...Hier kommt dein gesamtes CSS aus dem Original, unverändert... */
+/* Contact-Page-CSS kann entfernt werden */
 </style>
 </head>
 <body>
@@ -21,7 +22,6 @@
 <script>
 const TWITCH_PARENT = window.location.hostname;
 const TWITCH_CHANNEL = "VenomSnake_Twitch";
-const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png";
 </script>
 
@@ -203,7 +203,7 @@ const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4d
                     </div>
                     <p>
                         Hey! Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span> und bin 31 Jahre alt. 
-                        Ich bin Dialyse-Patient (Blutwäsche) und streame immer jeden <span class="highlight-tactical">Montag, Mittwoch und Freitag</span>.
+                        Ich streame immer jeden <span class="highlight-tactical">Montag, Mittwoch und Freitag</span>.
                     </p>
                 </div>
 
@@ -230,7 +230,7 @@ const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4d
                         <span>EINLADUNG</span>
                     </div>
                     <p style="font-size: 1.125rem;">
-                        Ich bin auch ein echt netter Typ, also schau doch gerne mal bei mir im Stream vorbei oder in meinem Discord!
+                        Schau gerne mal bei mir im Stream vorbei oder tritt meinem Discord bei!
                     </p>
                     <div class="cta-buttons">
                         <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="btn btn-twitch cut-corner-sm">
@@ -247,38 +247,6 @@ const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4d
         </div>
     </div>
 </main>
-
-<!-- Footer -->
-<footer>
-    <div class="footer-content">
-        <div class="footer-left">
-            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="Logo">
-            <span>© 2026 VenomSnake_Twitch</span>
-        </div>
-        <div class="footer-links">
-            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">Twitch</a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank">Discord</a>
-        </div>
-    </div>
-</footer>
-
-<script>
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
-    document.getElementById('page-' + pageId).classList.add('active');
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if(link.dataset.page === pageId) link.classList.add('active');
-    });
-}
-
-function toggleMobileMenu() {
-    document.getElementById('mobileNav').classList.toggle('open');
-}
-</script>
 
 </body>
 </html>
