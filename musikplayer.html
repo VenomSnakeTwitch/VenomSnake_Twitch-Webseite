@@ -153,6 +153,33 @@ button:hover, select:hover {
     color: #ffffff;
 }
 
+/* Lautstärkeregler horizontal */
+#volumeContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+#volumeSlider {
+    width: 100px;
+    height: 10px;
+    -webkit-appearance: none;
+    background: #8888ff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
 /* Responsive */
 @media (max-width: 600px){
     h1 { font-size: 28px; }
@@ -160,6 +187,7 @@ button:hover, select:hover {
     button, select { padding: 8px 16px; font-size: 14px; }
     #progress { width: 200px; }
     #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
+    #volumeSlider { width: 80px; height: 8px; }
 }
 </style>
 </head>
@@ -190,6 +218,10 @@ button:hover, select:hover {
             <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
         </select>
         <a id="downloadBtn" href="" download>⬇ Download</a>
+        <div id="volumeContainer">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
+            <span>Lautstärke</span>
+        </div>
     </div>
 
     <div id="progressContainer">
@@ -228,6 +260,7 @@ const progress = document.getElementById("progress");
 const timeLabel = document.getElementById("timeLabel");
 const durationLabel = document.getElementById("durationLabel");
 const downloadBtn = document.getElementById("downloadBtn");
+const volumeSlider = document.getElementById("volumeSlider");
 
 function loadSong(index){
     currentIndex = index;
@@ -272,6 +305,10 @@ function prevSong(){
 function selectSong(){
     const index = parseInt(songSelect.value);
     loadSong(index);
+}
+
+function setVolume(value){
+    audio.volume = value;
 }
 
 audio.addEventListener("timeupdate", () => {
