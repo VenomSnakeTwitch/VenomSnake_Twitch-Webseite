@@ -158,6 +158,13 @@ input[type=range]::-webkit-slider-thumb {
         </select>
     </div>
 
+    <!-- Download-Button -->
+    <div style="margin-top:10px;">
+        <a id="downloadBtn" href="#" download>
+            <button>⬇ Song herunterladen</button>
+        </a>
+    </div>
+
     <!-- Neuer Button zurück zur Index.html -->
     <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
 </div>
@@ -185,6 +192,11 @@ function loadSong(index){
     audio.pause();
     audio.currentTime = 0;
     playPauseBtn.textContent = "▶ Play";
+
+    // Update Download-Link
+    const downloadBtn = document.getElementById("downloadBtn");
+    downloadBtn.href = songs[index];
+    downloadBtn.setAttribute("download", songSelect.options[index].text + ".mp3");
 }
 
 function togglePlay(){
