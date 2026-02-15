@@ -27,11 +27,7 @@
         --border: rgba(255, 255, 255, 0.08);
     }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: 'Rajdhani', sans-serif;
@@ -579,7 +575,6 @@
         overflow: hidden;
     }
 
-    /* Originalregel überschreiben – Logo kleiner & besser proportioniert */
     .profile-card img {
         width: 100%;
         max-width: 240px;
@@ -1065,7 +1060,7 @@
                     <div class="profile-stats">
                         <div class="profile-stat">
                             <span class="profile-stat-label">Alter</span>
-                            <span class="profile-stat-value">31 Jahre</span>
+                            <span class="profile-stat-value" id="age-display">...</span>
                         </div>
                         <div class="profile-stat">
                             <span class="profile-stat-label">Stream Tage</span>
@@ -1086,7 +1081,7 @@
                         <span>BIO // PERSÖNLICH</span>
                     </div>
                     <p>
-                        Hey! Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span> und bin 31 Jahre alt. 
+                        Hey! Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span> und bin <span id="age-display-bio">...</span> Jahre alt. 
                         Ich bin Dialyse-Patient (Blutwäsche) und streame immer jeden <span class="highlight-tactical">Montag, Mittwoch und Freitag</span>.
                     </p>
                 </div>
@@ -1177,29 +1172,43 @@
     }
 
     function showPage(pageName) {
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-        });
-        
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.getElementById('page-' + pageName).classList.add('active');
         
         document.querySelectorAll('.nav-link, .dropdown-content a[data-page], .mobile-nav a[data-page]').forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('data-page') === pageName) {
-                link.classList.add('active');
-            }
+            if (link.getAttribute('data-page') === pageName) link.classList.add('active');
         });
         
         window.scrollTo(0, 0);
     }
 
     function toggleMobileMenu() {
-        const mobileNav = document.getElementById('mobileNav');
-        mobileNav.classList.toggle('open');
+        document.getElementById('mobileNav').classList.toggle('open');
     }
+
+    // === Alter automatisch berechnen ===
+    function calculateAge(birthDateStr) {
+        const today = new Date();
+        const birth = new Date(birthDateStr);
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    const birthDate = "1994-06-08";
 
     document.addEventListener('DOMContentLoaded', function() {
         loadTwitchEmbeds();
+
+        const age = calculateAge(birthDate);
+        const ageElements = document.querySelectorAll('#age-display, #age-display-bio');
+        ageElements.forEach(el => {
+            if (el) el.textContent = age + " Jahre";
+        });
     });
 </script>
 
@@ -1241,18 +1250,17 @@
                 break;
             }
         }
-
         return nextStream;
     }
 
     function updateCountdown() {
         const now = new Date();
-        const nextStream = getNextStream();
+        const next = getNextStream();
         const countdownElement = document.querySelector(".stream-info p");
 
-        if (!nextStream) return;
+        if (!next) return;
 
-        const diff = nextStream - now;
+        const diff = next - now;
         if (diff <= 0) {
             liveStatusText.textContent = "IST JETZT LIVE";
             liveDot.style.backgroundColor = "#ff4444";
