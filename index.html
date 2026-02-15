@@ -42,20 +42,17 @@
         line-height: 1.6;
     }
 
-    /* Grid Background */
     .grid-bg {
         background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
         background-size: 40px 40px;
     }
 
-    /* Glass Effect */
     .glass {
         backdrop-filter: blur(16px);
         background-color: rgba(0, 0, 0, 0.4);
         border-bottom: 1px solid var(--border);
     }
 
-    /* Cut Corner Effects */
     .cut-corner {
         clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
     }
@@ -64,11 +61,6 @@
         clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
     }
 
-    .cut-corner-top {
-        clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
-    }
-
-    /* Glow Effects */
     .glow-text {
         text-shadow: 0 0 20px rgba(145, 70, 255, 0.5);
     }
@@ -77,7 +69,6 @@
         box-shadow: 0 0 30px rgba(145, 70, 255, 0.3);
     }
 
-    /* Navigation */
     .nav {
         position: fixed;
         top: 0;
@@ -174,7 +165,6 @@
         background-color: #4752c4;
     }
 
-    /* Mobile Menu */
     .mobile-menu-btn {
         display: none;
         background: none;
@@ -208,7 +198,6 @@
         color: var(--twitch);
     }
 
-    /* Page Container */
     .page {
         display: none;
         min-height: 100vh;
@@ -226,7 +215,6 @@
         padding: 0 1rem;
     }
 
-    /* Page Header */
     .page-header {
         margin-bottom: 2rem;
     }
@@ -247,7 +235,6 @@
         margin-top: 0.5rem;
     }
 
-    /* Stream Page Grid */
     .stream-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -260,7 +247,6 @@
         }
     }
 
-    /* Twitch Embed */
     .stream-container {
         background-color: var(--surface);
         border: 1px solid var(--border);
@@ -315,7 +301,6 @@
         border: none;
     }
 
-    /* Stream Info */
     .stream-info {
         margin-top: 1rem;
         background-color: var(--surface);
@@ -369,7 +354,6 @@
         background-color: var(--twitch-dim);
     }
 
-    /* Chat Container */
     .chat-container {
         background-color: var(--surface);
         border: 1px solid var(--border);
@@ -428,7 +412,6 @@
         border: none;
     }
 
-    /* Schedule */
     .schedule-section {
         margin-top: 3rem;
     }
@@ -496,7 +479,6 @@
         color: var(--tactical-blue);
     }
 
-    /* About Page */
     .about-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -513,7 +495,6 @@
         }
     }
 
-    /* Profile Card */
     .profile-card {
         background-color: var(--surface);
         border: 1px solid var(--border);
@@ -584,7 +565,6 @@
         color: white;
     }
 
-    /* Bio Section */
     .bio-content {
         display: flex;
         flex-direction: column;
@@ -639,7 +619,6 @@
         font-weight: 700;
     }
 
-    /* Games Grid */
     .games-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -667,7 +646,6 @@
         color: var(--text-secondary);
     }
 
-    /* CTA Box */
     .cta-box {
         background-color: var(--overlay);
         border: 1px solid rgba(145, 70, 255, 0.3);
@@ -690,7 +668,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        transition: background-color 0.3s, transform 0.2s;
+        transition: background-color 0.3s;
     }
 
     .btn-twitch {
@@ -711,18 +689,6 @@
         background-color: #4752c4;
     }
 
-    .btn-contact {
-        background-color: var(--tactical-blue);
-        color: white;
-    }
-
-    .btn-contact:hover {
-        background-color: #3da8c2;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(82, 182, 202, 0.4);
-    }
-
-    /* Footer */
     footer {
         background-color: var(--base);
         border-top: 1px solid var(--border);
@@ -777,7 +743,6 @@
         color: var(--twitch);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .nav-links {
             display: none;
@@ -794,18 +759,8 @@
         .container {
             padding: 0 1rem;
         }
-
-        .cta-buttons {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .btn {
-            justify-content: center;
-        }
     }
 
-    /* Discord Icon SVG */
     .discord-icon {
         width: 20px;
         height: 20px;
@@ -814,8 +769,8 @@
 </style>
 </head>
 <body>
+
 <script>
-    // Ändere dies zu deiner Domain (z.B. "meine-seite.de" oder "localhost")
     const TWITCH_PARENT = window.location.hostname;
     const TWITCH_CHANNEL = "VenomSnake_Twitch";
     const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
@@ -841,6 +796,10 @@
                 <i data-lucide="user" style="width: 16px; height: 16px;"></i>
                 ÜBER MICH
             </a>
+            <a href="kontakt.html" class="nav-link">
+                <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                KONTAKT
+            </a>
             <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
                 <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                 DISCORD
@@ -860,6 +819,10 @@
         <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
             <i data-lucide="user" style="width: 18px; height: 18px;"></i>
             ÜBER MICH
+        </a>
+        <a href="kontakt.html" onclick="toggleMobileMenu();">
+            <i data-lucide="mail" style="width: 18px; height: 18px;"></i>
+            KONTAKT
         </a>
         <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">
             <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
@@ -1024,10 +987,10 @@
                 <div class="cta-box glow-twitch" style="border: 1px solid rgba(145, 70, 255, 0.3);">
                     <div class="bio-header">
                         <div class="bio-dot bio-dot-live"></div>
-                        <span>EINLADUNG & KONTAKT</span>
+                        <span>EINLADUNG</span>
                     </div>
                     <p style="font-size: 1.125rem;">
-                        Ich bin auch ein echt netter Typ, also schau gerne im Stream vorbei, join Discord oder schreib mir direkt!
+                        Ich bin auch ein echt netter Typ, also schau doch gerne mal bei mir im Stream vorbei oder in meinem Discord!
                     </p>
                     <div class="cta-buttons">
                         <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="btn btn-twitch cut-corner-sm">
@@ -1037,10 +1000,6 @@
                         <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="btn btn-discord cut-corner-sm">
                             <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                             DISCORD BEITRETEN
-                        </a>
-                        <a href="kontakt.html" class="btn btn-contact cut-corner-sm">
-                            <i data-lucide="mail" style="width: 18px; height: 18px;"></i>
-                            KONTAKT
                         </a>
                     </div>
                 </div>
@@ -1068,10 +1027,26 @@
 </footer>
 
 <script>
-    // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Page Navigation
+    function loadTwitchEmbeds() {
+        const parent = window.location.hostname || 'localhost';
+        
+        document.getElementById('twitch-player-container').innerHTML = `
+            <iframe
+                src="https://player.twitch.tv/?channel=VenomSnake_Twitch&parent=${parent}&muted=true"
+                allowfullscreen="true"
+                allow="autoplay; encrypted-media">
+            </iframe>
+        `;
+        
+        document.getElementById('twitch-chat-container').innerHTML = `
+            <iframe
+                src="https://www.twitch.tv/embed/VenomSnake_Twitch/chat?parent=${parent}&darkpopout">
+            </iframe>
+        `;
+    }
+
     function showPage(pageName) {
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
@@ -1096,23 +1071,18 @@
         window.scrollTo(0, 0);
     }
 
-    // Mobile Menu Toggle
     function toggleMobileMenu() {
         const mobileNav = document.getElementById('mobileNav');
         mobileNav.classList.toggle('open');
     }
 
-    // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-        lucide.createIcons();
-        // Twitch-Embeds werden hier initialisiert (dein ursprünglicher Code)
+        loadTwitchEmbeds();
     });
 </script>
 
-<!-- Twitch Embed Script (falls du die offizielle Embed-API nutzen möchtest) -->
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 <script>
-    // Twitch Player & Chat (angepasst an deine Variablen)
     const twitchPlayer = new Twitch.Player("twitch-player-container", {
         channel: TWITCH_CHANNEL,
         parent: [TWITCH_PARENT],
@@ -1128,6 +1098,64 @@
         channel: TWITCH_CHANNEL,
         parent: [TWITCH_PARENT]
     });
+
+    const liveStatusText = document.querySelector(".live-status span");
+    const liveDot = document.querySelector(".live-dot");
+
+    const streamSchedule = [
+        { day: 1, hour: 13, minute: 30 }, // Montag
+        { day: 3, hour: 13, minute: 30 }, // Mittwoch
+        { day: 5, hour: 13, minute: 30 }  // Freitag
+    ];
+
+    function getNextStream() {
+        const now = new Date();
+        let nextStream = null;
+
+        for (let i = 0; i < 7; i++) {
+            const checkDay = (now.getDay() + i) % 7;
+            const schedule = streamSchedule.find(s => s.day === checkDay);
+            if (!schedule) continue;
+
+            let nextDate = new Date(now);
+            nextDate.setDate(now.getDate() + i);
+            nextDate.setHours(schedule.hour, schedule.minute, 0, 0);
+
+            if (nextDate > now) {
+                nextStream = nextDate;
+                break;
+            }
+        }
+
+        return nextStream;
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+        const nextStream = getNextStream();
+        const countdownElement = document.querySelector(".stream-info p");
+
+        if (!nextStream) return;
+
+        const diff = nextStream - now;
+        if (diff <= 0) {
+            liveStatusText.textContent = "IST JETZT LIVE";
+            liveDot.style.backgroundColor = "#ff4444";
+            countdownElement.textContent = "LIVE!";
+        } else {
+            liveStatusText.textContent = "COUNTDOWN";
+            liveDot.style.backgroundColor = "#ff4444";
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            countdownElement.textContent = `Nächster Stream in ${hours}h ${minutes}m ${seconds}s`;
+        }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
 </script>
 
 </body>
