@@ -6,7 +6,6 @@
 <title>VenomSnake Spenden</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
 body {
     margin: 0;
     padding: 0;
@@ -17,7 +16,6 @@ body {
     text-align: center;
     overflow: hidden;
 }
-
 /* HEADER */
 header {
     position: fixed;
@@ -33,29 +31,24 @@ header {
     box-sizing: border-box;
     z-index: 1000;
 }
-
 header .logo-container {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 header .logo-container img {
     height: 45px;
     object-fit: contain;
 }
-
 header .logo-container span {
     font-size: 24px;
     font-weight: bold;
     color: #9146ff;
     text-shadow: 0px 0px 8px #00ffff;
 }
-
 header .logo-container span .snake {
     color: #00ffff;
 }
-
 header nav ul {
     list-style: none;
     display: flex;
@@ -63,19 +56,16 @@ header nav ul {
     margin: 0;
     padding: 0;
 }
-
 header nav ul li a {
     color: #ffffff;
     font-weight: bold;
     text-decoration: none;
     transition: 0.3s;
 }
-
 header nav ul li a:hover {
     color: #88f0ff;
     text-shadow: 0 0 6px #88f0ff;
 }
-
 /* OVERLAY */
 #overlay {
     background: rgba(0,0,50,0.85);
@@ -87,26 +77,22 @@ header nav ul li a:hover {
     padding-top: 100px;
     box-sizing: border-box;
 }
-
 h1 {
     font-size: 38px;
     margin: 0;
     color: #ffffff;
     text-shadow: 0 0 12px #00ffff, 0 0 24px #000044;
 }
-
 #infoText {
     margin-top: 8px;
     font-size: 16px;
     color: #c0c0ff;
 }
-
 /* Player UI */
 audio {
     width: 100%;
     margin-top: 16px;
 }
-
 button, select, #downloadBtn {
     margin: 8px;
     padding: 10px 16px;
@@ -118,13 +104,11 @@ button, select, #downloadBtn {
     cursor: pointer;
     transition: 0.3s;
 }
-
 button:hover, #downloadBtn:hover, select:hover {
     border-color: #9146ff;
     background: rgba(20,20,80,0.9);
     color: #00ffff;
 }
-
 /* Progress + Controls */
 #songControls, #controls, #progressContainer {
     margin-top: 12px;
@@ -133,19 +117,17 @@ button:hover, #downloadBtn:hover, select:hover {
     flex-wrap: wrap;
     justify-content: center;
 }
-
 /* Fortschrittsbalken mit Farbverlauf */
 #progress {
     -webkit-appearance: none;
     appearance: none;
-    width: 300px; /* Breite nach Bedarf anpassen */
+    width: 300px;
     height: 10px;
     border-radius: 5px;
     background: linear-gradient(90deg, #00ffff, #9146ff);
     cursor: pointer;
     outline: none;
 }
-
 /* Webkit-Slider-Thumb */
 #progress::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -158,7 +140,6 @@ button:hover, #downloadBtn:hover, select:hover {
     cursor: pointer;
     margin-top: -3px;
 }
-
 /* Firefox-Thumb */
 #progress::-moz-range-thumb {
     width: 16px;
@@ -168,20 +149,17 @@ button:hover, #downloadBtn:hover, select:hover {
     border: 2px solid #00ffff;
     cursor: pointer;
 }
-
 #volumeContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 #volumeContainer input[type="range"] {
     writing-mode: bt-lr;
     -webkit-appearance: slider-vertical;
     width: 8px;
     height: 100px;
 }
-
 /* Song News Box */
 #infoBox {
     margin-top: 20px;
@@ -193,7 +171,6 @@ button:hover, #downloadBtn:hover, select:hover {
     color: #c8c8ff;
     text-align: left;
 }
-
 /* Zurück Button */
 #backBtn {
     margin-bottom: 16px;
@@ -212,7 +189,6 @@ button:hover, #downloadBtn:hover, select:hover {
 </style>
 </head>
 <body>
-
 <!-- HEADER -->
 <header>
     <div class="logo-container">
@@ -230,12 +206,9 @@ button:hover, #downloadBtn:hover, select:hover {
 
 <!-- OVERLAY -->
 <div id="overlay">
-
     <h1>VenomSnake Spenden</h1>
     <div id="infoText">Unterstütze den Kanal – danke für deine Hilfe!</div>
-
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
-
     <audio id="audioPlayer"></audio>
 
     <div id="songControls">
@@ -250,13 +223,12 @@ button:hover, #downloadBtn:hover, select:hover {
             <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
             <option value="8">Bye Bye Beautiful</option>
             <option value="9">Kettenreaktion (Cover)</option>
-            <option value="10">Straße der Verdammnis (Cover)</option>
+            <option value="10">Straße der Verdammnis</option> <!-- lesbarer Text -->
             <option value="11">Syphon Filter Synth Mix</option>
             <option value="12">VenomSnake Mode Intro song</option>
             <option value="13">Hell March [Retaliation Cover]</option>
         </select>
         <a id="downloadBtn" href="" download>Download</a>
-
         <div id="volumeContainer">
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
             <span>Lautstärke</span>
@@ -297,7 +269,7 @@ const songs = [
     "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
     "ByeByeBeautiful.mp3",
     "Kettenreaktion (Cover).mp3",
-    "Straße der Verdammnis (Cover).mp3",
+    "Strasse der Verdammnis.mp3",   // ← exakt dein neuer Dateiname
     "Syphon Filter Synth Mix.mp3",
     "VenomSnake Mode Intro song.mp3",
     "Hell March [Retaliation Cover].mp3"
@@ -313,18 +285,21 @@ const durationLabel = document.getElementById("durationLabel");
 const volumeSlider = document.getElementById("volumeSlider");
 const downloadBtn = document.getElementById("downloadBtn");
 
-function loadSong(index){
+function loadSong(index) {
     currentIndex = index;
-    audio.src = songs[index];
+    const fileName = songs[index];
+    audio.src = fileName;
+    console.log("Versuche zu laden → Dateiname:", fileName);
+    console.log("Vollständige URL:", window.location.origin + '/' + fileName);
     songSelect.value = index;
-    downloadBtn.href = songs[index];
-    downloadBtn.setAttribute("download", songs[index]);
+    downloadBtn.href = fileName;
+    downloadBtn.setAttribute("download", fileName);
     document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
 }
 
 function togglePlay(){
     if(audio.paused){
-        audio.play();
+        audio.play().catch(e => console.error("Play-Fehler (Browser-Block?):", e));
         playPauseBtn.textContent = "⏸ Pause";
     } else {
         audio.pause();
