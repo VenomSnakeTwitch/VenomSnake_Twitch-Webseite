@@ -87,31 +87,22 @@ button:hover, select:hover {
     color: black;
 }
 
-/* Audio-Controls */
-#controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
+/* Song + Download + Volume Container */
 #songControls {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
     margin-bottom: 10px;
 }
 
-/* Download Link Button */
 #downloadBtn {
-    padding: 10px;
+    padding: 10px 15px;
     text-decoration: none;
     color: #f0f0ff;
     background: #220066;
     border: 2px solid #8888ff;
     border-radius: 5px;
-    transition: all 0.2s ease;
 }
 
 #downloadBtn:hover {
@@ -130,16 +121,16 @@ button:hover, select:hover {
 
 #progress {
     width: 300px;
+    height: 12px; /* dicker */
     -webkit-appearance: none;
-    height: 8px;
     background: #8888ff;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 #progress::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     background: #220066;
     border: 2px solid #f0f0ff;
     border-radius: 50%;
@@ -154,26 +145,19 @@ button:hover, select:hover {
 }
 
 /* Lautstärkeregler horizontal */
-#volumeContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: 10px;
-}
-
 #volumeSlider {
-    width: 100px;
-    height: 10px;
+    width: 150px; /* dicker */
+    height: 14px;
     -webkit-appearance: none;
     background: #8888ff;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
 }
 
 #volumeSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     background: #220066;
     border: 2px solid #f0f0ff;
     border-radius: 50%;
@@ -185,9 +169,9 @@ button:hover, select:hover {
     h1 { font-size: 28px; }
     #infoText { font-size: 14px; }
     button, select { padding: 8px 16px; font-size: 14px; }
-    #progress { width: 200px; }
+    #progress { width: 200px; height: 10px; }
+    #volumeSlider { width: 120px; height: 12px; }
     #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
-    #volumeSlider { width: 80px; height: 8px; }
 }
 </style>
 </head>
@@ -218,10 +202,7 @@ button:hover, select:hover {
             <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
         </select>
         <a id="downloadBtn" href="" download>⬇ Download</a>
-        <div id="volumeContainer">
-            <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
-            <span>Lautstärke</span>
-        </div>
+        <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
     </div>
 
     <div id="progressContainer">
