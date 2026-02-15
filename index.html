@@ -1,252 +1,1212 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VenomSnake_Twitch - Stream, Gaming & Community</title>
-<meta name="description" content="VenomSnake_Twitch - Dein Twitch Streamer für Metal Gear Solid, Resident Evil und mehr. Streams jeden Montag, Mittwoch und Freitag um 13:30 Uhr.">
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<style>
-/* ...Hier kommt dein gesamtes CSS aus dem Original, unverändert... */
-/* Contact-Page-CSS kann entfernt werden */
-</style>
-</head>
-<body>
-
-<script>
-const TWITCH_PARENT = window.location.hostname;
-const TWITCH_CHANNEL = "VenomSnake_Twitch";
-const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png";
-</script>
-
-<!-- Navigation -->
-<nav class="nav glass">
-    <div class="nav-container">
-        <a href="#" class="logo" onclick="showPage('stream'); return false;">
-            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
-            <span class="logo-text">
-                <span class="venom">VENOM</span><span class="snake">SNAKE</span>
-            </span>
-        </a>
-
-        <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">
-                <i data-lucide="tv" style="width: 16px; height: 16px;"></i>
-                STREAM
-            </a>
-            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
-                <i data-lucide="user" style="width: 16px; height: 16px;"></i>
-                ÜBER MICH
-            </a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
-                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/></svg>
-                DISCORD
-            </a>
-        </div>
-
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
-        </button>
-    </div>
-
-    <div class="mobile-nav" id="mobileNav">
-        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
-            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
-            STREAM
-        </a>
-        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
-            <i data-lucide="user" style="width: 18px; height: 18px;"></i>
-            ÜBER MICH
-        </a>
-        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">
-            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/></svg>
-            DISCORD
-        </a>
-    </div>
-</nav>
-
-<!-- Stream Page -->
-<main id="page-stream" class="page active grid-bg">
-    <div class="container">
-        <div class="page-header">
-            <h1>
-                <span class="glow-text" style="color: var(--twitch);">LIVE</span>
-                <span style="color: var(--tactical-blue);"> STREAM</span>
-            </h1>
-            <p class="subtitle">MISSION CONTROL // TACTICAL ENTERTAINMENT</p>
-        </div>
-
-        <div class="stream-grid">
-            <div>
-                <div class="stream-container cut-corner">
-                    <div class="live-status">
-                        <div class="live-dot"></div>
-                        <span>LIVE STATUS</span>
-                    </div>
-                    <div class="twitch-embed" id="twitch-player-container">
-                        <!-- Twitch Player wird per JavaScript eingefügt -->
-                    </div>
-                </div>
-
-                <div class="stream-info">
-                    <div class="stream-info-left">
-                        <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake">
-                        <div>
-                            <h2>VenomSnake_Twitch</h2>
-                            <p>Metal Gear Solid • Resident Evil • Mehr</p>
-                        </div>
-                    </div>
-                    <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="follow-btn cut-corner-sm">
-                        <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
-                        AUF TWITCH FOLGEN
-                    </a>
-                </div>
-            </div>
-
-            <div class="chat-container">
-                <div class="chat-header">
-                    <span>TWITCH CHAT</span>
-                    <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">
-                        <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
-                        Auf Twitch anmelden
-                    </a>
-                </div>
-                <div class="chat-embed" id="twitch-chat-container">
-                    <!-- Twitch Chat wird per JavaScript eingefügt -->
-                </div>
-            </div>
-        </div>
-
-        <div class="schedule-section">
-            <h2>
-                <span style="color: var(--tactical-blue);">STREAM</span>
-                <span style="color: white;"> ZEITPLAN</span>
-            </h2>
-            <div class="schedule-grid">
-                <div class="schedule-card cut-corner">
-                    <div class="schedule-card-header">
-                        <div class="schedule-dot"></div>
-                        <span>SCHEDULE</span>
-                    </div>
-                    <h3>MONTAG</h3>
-                    <p>13:30 UHR</p>
-                </div>
-                <div class="schedule-card cut-corner">
-                    <div class="schedule-card-header">
-                        <div class="schedule-dot"></div>
-                        <span>SCHEDULE</span>
-                    </div>
-                    <h3>MITTWOCH</h3>
-                    <p>13:30 UHR</p>
-                </div>
-                <div class="schedule-card cut-corner">
-                    <div class="schedule-card-header">
-                        <div class="schedule-dot"></div>
-                        <span>SCHEDULE</span>
-                    </div>
-                    <h3>FREITAG</h3>
-                    <p>13:30 UHR</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<!-- About Page -->
-<main id="page-about" class="page grid-bg">
-    <div class="container about-container">
-        <div class="page-header">
-            <h1>
-                <span class="glow-text" style="color: var(--twitch);">ÜBER</span>
-                <span style="color: var(--tactical-blue);"> MICH</span>
-            </h1>
-            <p class="subtitle">AGENT PROFILE // CLASSIFIED INFORMATION</p>
-        </div>
-
-        <div class="about-grid">
-            <div class="profile-card cut-corner">
-                <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake_Twitch">
-                <div class="profile-card-content">
-                    <h2>VenomSnake_Twitch</h2>
-                    <div class="profile-tags">
-                        <span class="tag tag-twitch">STREAMER</span>
-                        <span class="tag tag-tactical">GAMER</span>
-                    </div>
-                    <div class="profile-stats">
-                        <div class="profile-stat">
-                            <span class="profile-stat-label">Alter</span>
-                            <span class="profile-stat-value">31 Jahre</span>
-                        </div>
-                        <div class="profile-stat">
-                            <span class="profile-stat-label">Stream Tage</span>
-                            <span class="profile-stat-value">Mo, Mi, Fr</span>
-                        </div>
-                        <div class="profile-stat">
-                            <span class="profile-stat-label">Stream Zeit</span>
-                            <span class="profile-stat-value">13:30 Uhr</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bio-content">
-                <div class="bio-section bio-main">
-                    <div class="bio-header">
-                        <div class="bio-dot bio-dot-twitch"></div>
-                        <span>BIO // PERSÖNLICH</span>
-                    </div>
-                    <p>
-                        Hey! Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span> und bin 31 Jahre alt. 
-                        Ich streame immer jeden <span class="highlight-tactical">Montag, Mittwoch und Freitag</span>.
-                    </p>
-                </div>
-
-                <div class="bio-section cut-corner" style="border: 1px solid var(--border);">
-                    <div class="bio-header">
-                        <div class="bio-dot bio-dot-tactical"></div>
-                        <span>LIEBLINGSSPIELE</span>
-                    </div>
-                    <div class="games-grid">
-                        <div class="game-card">
-                            <h4 class="twitch">Metal Gear Solid</h4>
-                            <p>Taktische Spionage-Action von Hideo Kojima. Stealth-Gameplay at its finest!</p>
-                        </div>
-                        <div class="game-card">
-                            <h4 class="tactical">Resident Evil</h4>
-                            <p>Survival Horror der Extraklasse. Zombies, Action und pure Spannung!</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cta-box glow-twitch" style="border: 1px solid rgba(145, 70, 255, 0.3);">
-                    <div class="bio-header">
-                        <div class="bio-dot bio-dot-live"></div>
-                        <span>EINLADUNG</span>
-                    </div>
-                    <p style="font-size: 1.125rem;">
-                        Schau gerne mal bei mir im Stream vorbei oder tritt meinem Discord bei!
-                    </p>
-                    <div class="cta-buttons">
-                        <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="btn btn-twitch cut-corner-sm">
-                            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
-                            ZUM STREAM
-                        </a>
-                        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="btn btn-discord cut-corner-sm">
-                            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515..."/></svg>
-                            DISCORD BEITRETEN
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-</body>
-</html>
+1|<!DOCTYPE html>
+2|<html lang="de">
+3|<head>
+4|<meta charset="UTF-8">
+5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
+6|<title>VenomSnake_Twitch - Stream, Gaming & Community</title>
+7|<meta name="description" content="VenomSnake_Twitch - Dein Twitch Streamer für Metal Gear Solid, Resident Evil und mehr. Streams jeden Montag, Mittwoch und Freitag um 13:30 Uhr.">
+8|
+9|<!-- Fonts -->
+10|<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+11|
+12|<!-- Lucide Icons -->
+13|<script src="https://unpkg.com/lucide@latest"></script>
+14|
+15|<style>
+16|    :root {
+17|        --twitch: #9146FF;
+18|        --twitch-dim: #772ce8;
+19|        --tactical-blue: #52b6ca;
+20|        --base: #0a0b0e;
+21|        --surface: #13151a;
+22|        --overlay: #1c1f26;
+23|        --live: #ff4444;
+24|        --text-primary: #e6eef3;
+25|        --text-secondary: #94a3b8;
+26|        --text-muted: #475569;
+27|        --border: rgba(255, 255, 255, 0.08);
+28|    }
+29|
+30|    * {
+31|        margin: 0;
+32|        padding: 0;
+33|        box-sizing: border-box;
+34|    }
+35|
+36|    body {
+37|        font-family: 'Rajdhani', sans-serif;
+38|        font-weight: 500;
+39|        background-color: var(--base);
+40|        color: var(--text-primary);
+41|        min-height: 100vh;
+42|        line-height: 1.6;
+43|    }
+44|
+45|    /* Grid Background */
+46|    .grid-bg {
+47|        background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
+48|        background-size: 40px 40px;
+49|    }
+50|
+51|    /* Glass Effect */
+52|    .glass {
+53|        backdrop-filter: blur(16px);
+54|        background-color: rgba(0, 0, 0, 0.4);
+55|        border-bottom: 1px solid var(--border);
+56|    }
+57|
+58|    /* Cut Corner Effects */
+59|    .cut-corner {
+60|        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+61|    }
+62|
+63|    .cut-corner-sm {
+64|        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+65|    }
+66|
+67|    .cut-corner-top {
+68|        clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
+69|    }
+70|
+71|    /* Glow Effects */
+72|    .glow-text {
+73|        text-shadow: 0 0 20px rgba(145, 70, 255, 0.5);
+74|    }
+75|
+76|    .glow-twitch {
+77|        box-shadow: 0 0 30px rgba(145, 70, 255, 0.3);
+78|    }
+79|
+80|    /* Navigation */
+81|    .nav {
+82|        position: fixed;
+83|        top: 0;
+84|        left: 0;
+85|        width: 100%;
+86|        z-index: 50;
+87|    }
+88|
+89|    .nav-container {
+90|        max-width: 1600px;
+91|        margin: 0 auto;
+92|        padding: 0 2rem;
+93|        display: flex;
+94|        align-items: center;
+95|        justify-content: space-between;
+96|        height: 80px;
+97|    }
+98|
+99|    .logo {
+100|        display: flex;
+101|        align-items: center;
+102|        gap: 0.75rem;
+103|        text-decoration: none;
+104|    }
+105|
+106|    .logo img {
+107|        height: 56px;
+108|        width: auto;
+109|    }
+110|
+111|    .logo-text {
+112|        font-family: 'Chakra Petch', sans-serif;
+113|        font-weight: 700;
+114|        font-size: 1.25rem;
+115|        letter-spacing: 0.1em;
+116|    }
+117|
+118|    .logo-text .venom { color: var(--twitch); }
+119|    .logo-text .snake { color: var(--tactical-blue); }
+120|
+121|    .nav-links {
+122|        display: flex;
+123|        align-items: center;
+124|        gap: 2rem;
+125|    }
+126|
+127|    .nav-link {
+128|        font-family: 'Chakra Petch', sans-serif;
+129|        font-size: 0.875rem;
+130|        letter-spacing: 0.2em;
+131|        color: var(--text-secondary);
+132|        text-decoration: none;
+133|        display: flex;
+134|        align-items: center;
+135|        gap: 0.5rem;
+136|        transition: color 0.3s;
+137|        position: relative;
+138|    }
+139|
+140|    .nav-link:hover, .nav-link.active {
+141|        color: var(--twitch);
+142|    }
+143|
+144|    .nav-link::after {
+145|        content: "";
+146|        position: absolute;
+147|        bottom: -4px;
+148|        left: 0;
+149|        width: 0;
+150|        height: 2px;
+151|        background-color: var(--twitch);
+152|        transition: width 0.3s ease;
+153|    }
+154|
+155|    .nav-link:hover::after, .nav-link.active::after {
+156|        width: 100%;
+157|    }
+158|
+159|    .discord-btn {
+160|        background-color: #5865F2;
+161|        color: white;
+162|        padding: 0.5rem 1rem;
+163|        font-family: 'Chakra Petch', sans-serif;
+164|        font-size: 0.875rem;
+165|        letter-spacing: 0.1em;
+166|        text-decoration: none;
+167|        display: flex;
+168|        align-items: center;
+169|        gap: 0.5rem;
+170|        transition: background-color 0.3s;
+171|    }
+172|
+173|    .discord-btn:hover {
+174|        background-color: #4752c4;
+175|    }
+176|
+177|    /* Mobile Menu */
+178|    .mobile-menu-btn {
+179|        display: none;
+180|        background: none;
+181|        border: none;
+182|        color: white;
+183|        cursor: pointer;
+184|    }
+185|
+186|    .mobile-nav {
+187|        display: none;
+188|        padding: 1rem 0;
+189|        border-top: 1px solid var(--border);
+190|    }
+191|
+192|    .mobile-nav.open {
+193|        display: block;
+194|    }
+195|
+196|    .mobile-nav a {
+197|        display: flex;
+198|        align-items: center;
+199|        gap: 0.75rem;
+200|        padding: 0.75rem 0.5rem;
+201|        font-family: 'Chakra Petch', sans-serif;
+202|        letter-spacing: 0.1em;
+203|        color: var(--text-secondary);
+204|        text-decoration: none;
+205|    }
+206|
+207|    .mobile-nav a.active {
+208|        color: var(--twitch);
+209|    }
+210|
+211|    /* Page Container */
+212|    .page {
+213|        display: none;
+214|        min-height: 100vh;
+215|        padding-top: 96px;
+216|        padding-bottom: 3rem;
+217|    }
+218|
+219|    .page.active {
+220|        display: block;
+221|    }
+222|
+223|    .container {
+224|        max-width: 1600px;
+225|        margin: 0 auto;
+226|        padding: 0 1rem;
+227|    }
+228|
+229|    /* Page Header */
+230|    .page-header {
+231|        margin-bottom: 2rem;
+232|    }
+233|
+234|    .page-header h1 {
+235|        font-family: 'Chakra Petch', sans-serif;
+236|        font-weight: 700;
+237|        font-size: 2.5rem;
+238|        text-transform: uppercase;
+239|        letter-spacing: -0.025em;
+240|    }
+241|
+242|    .page-header .subtitle {
+243|        font-family: 'JetBrains Mono', monospace;
+244|        font-size: 0.75rem;
+245|        letter-spacing: 0.2em;
+246|        color: var(--text-secondary);
+247|        margin-top: 0.5rem;
+248|    }
+249|
+250|    /* Stream Page Grid */
+251|    .stream-grid {
+252|        display: grid;
+253|        grid-template-columns: 1fr;
+254|        gap: 1.5rem;
+255|    }
+256|
+257|    @media (min-width: 1024px) {
+258|        .stream-grid {
+259|            grid-template-columns: 2fr 1fr;
+260|        }
+261|    }
+262|
+263|    /* Twitch Embed */
+264|    .stream-container {
+265|        background-color: var(--surface);
+266|        border: 1px solid var(--border);
+267|        position: relative;
+268|    }
+269|
+270|    .live-status {
+271|        position: absolute;
+272|        top: 1rem;
+273|        left: 1rem;
+274|        z-index: 10;
+275|        display: flex;
+276|        align-items: center;
+277|        gap: 0.5rem;
+278|        background-color: rgba(0, 0, 0, 0.6);
+279|        padding: 0.25rem 0.75rem;
+280|    }
+281|
+282|    .live-dot {
+283|        width: 8px;
+284|        height: 8px;
+285|        background-color: var(--live);
+286|        border-radius: 50%;
+287|        animation: pulse 2s ease-in-out infinite;
+288|    }
+289|
+290|    @keyframes pulse {
+291|        0%, 100% { opacity: 1; transform: scale(1); }
+292|        50% { opacity: 0.6; transform: scale(1.1); }
+293|    }
+294|
+295|    .live-status span {
+296|        font-family: 'JetBrains Mono', monospace;
+297|        font-size: 0.75rem;
+298|        color: var(--live);
+299|        letter-spacing: 0.1em;
+300|    }
+301|
+302|    .twitch-embed {
+303|        position: relative;
+304|        padding-bottom: 56.25%;
+305|        height: 0;
+306|        overflow: hidden;
+307|    }
+308|
+309|    .twitch-embed iframe {
+310|        position: absolute;
+311|        top: 0;
+312|        left: 0;
+313|        width: 100%;
+314|        height: 100%;
+315|        border: none;
+316|    }
+317|
+318|    /* Stream Info */
+319|    .stream-info {
+320|        margin-top: 1rem;
+321|        background-color: var(--surface);
+322|        border: 1px solid var(--border);
+323|        padding: 1rem;
+324|        display: flex;
+325|        align-items: center;
+326|        justify-content: space-between;
+327|        flex-wrap: wrap;
+328|        gap: 1rem;
+329|    }
+330|
+331|    .stream-info-left {
+332|        display: flex;
+333|        align-items: center;
+334|        gap: 1rem;
+335|    }
+336|
+337|    .stream-info img {
+338|        width: 48px;
+339|        height: 48px;
+340|        border: 2px solid var(--twitch);
+341|    }
+342|
+343|    .stream-info h2 {
+344|        font-family: 'Chakra Petch', sans-serif;
+345|        font-weight: 700;
+346|        font-size: 1.125rem;
+347|    }
+348|
+349|    .stream-info p {
+350|        color: var(--text-secondary);
+351|        font-size: 0.875rem;
+352|    }
+353|
+354|    .follow-btn {
+355|        background-color: var(--twitch);
+356|        color: white;
+357|        padding: 0.5rem 1.5rem;
+358|        font-family: 'Chakra Petch', sans-serif;
+359|        font-size: 0.875rem;
+360|        letter-spacing: 0.1em;
+361|        text-decoration: none;
+362|        display: flex;
+363|        align-items: center;
+364|        gap: 0.5rem;
+365|        transition: background-color 0.3s;
+366|    }
+367|
+368|    .follow-btn:hover {
+369|        background-color: var(--twitch-dim);
+370|    }
+371|
+372|    /* Chat Container */
+373|    .chat-container {
+374|        background-color: var(--surface);
+375|        border: 1px solid var(--border);
+376|        height: 500px;
+377|        display: flex;
+378|        flex-direction: column;
+379|        overflow: hidden;
+380|    }
+381|
+382|    @media (min-width: 1024px) {
+383|        .chat-container {
+384|            height: 600px;
+385|        }
+386|    }
+387|
+388|    .chat-header {
+389|        padding: 0.75rem 1rem;
+390|        border-bottom: 1px solid var(--border);
+391|        display: flex;
+392|        align-items: center;
+393|        justify-content: space-between;
+394|        flex-shrink: 0;
+395|    }
+396|
+397|    .chat-header span {
+398|        font-family: 'Chakra Petch', sans-serif;
+399|        font-size: 0.875rem;
+400|        letter-spacing: 0.1em;
+401|        color: var(--tactical-blue);
+402|    }
+403|
+404|    .chat-header a {
+405|        font-size: 0.75rem;
+406|        color: var(--text-secondary);
+407|        text-decoration: none;
+408|        display: flex;
+409|        align-items: center;
+410|        gap: 0.25rem;
+411|    }
+412|
+413|    .chat-header a:hover {
+414|        color: var(--twitch);
+415|    }
+416|
+417|    .chat-embed {
+418|        flex: 1;
+419|        position: relative;
+420|        min-height: 0;
+421|    }
+422|
+423|    .chat-embed iframe {
+424|        position: absolute;
+425|        inset: 0;
+426|        width: 100%;
+427|        height: 100%;
+428|        border: none;
+429|    }
+430|
+431|    /* Schedule */
+432|    .schedule-section {
+433|        margin-top: 3rem;
+434|    }
+435|
+436|    .schedule-section h2 {
+437|        font-family: 'Chakra Petch', sans-serif;
+438|        font-weight: 700;
+439|        font-size: 1.5rem;
+440|        text-transform: uppercase;
+441|        margin-bottom: 1.5rem;
+442|    }
+443|
+444|    .schedule-grid {
+445|        display: grid;
+446|        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+447|        gap: 1rem;
+448|    }
+449|
+450|    .schedule-card {
+451|        background-color: var(--surface);
+452|        border: 1px solid var(--border);
+453|        padding: 1.5rem;
+454|        transition: border-color 0.3s;
+455|    }
+456|
+457|    .schedule-card:hover {
+458|        border-color: rgba(145, 70, 255, 0.5);
+459|    }
+460|
+461|    .schedule-card-header {
+462|        display: flex;
+463|        align-items: center;
+464|        gap: 0.75rem;
+465|        margin-bottom: 0.5rem;
+466|    }
+467|
+468|    .schedule-dot {
+469|        width: 12px;
+470|        height: 12px;
+471|        background-color: var(--twitch);
+472|    }
+473|
+474|    .schedule-card:hover .schedule-dot {
+475|        background-color: var(--live);
+476|    }
+477|
+478|    .schedule-card-header span {
+479|        font-family: 'JetBrains Mono', monospace;
+480|        font-size: 0.75rem;
+481|        color: var(--text-secondary);
+482|        letter-spacing: 0.2em;
+483|    }
+484|
+485|    .schedule-card h3 {
+486|        font-family: 'Chakra Petch', sans-serif;
+487|        font-weight: 700;
+488|        font-size: 1.5rem;
+489|        color: white;
+490|        margin-bottom: 0.25rem;
+491|    }
+492|
+493|    .schedule-card p {
+494|        font-family: 'Chakra Petch', sans-serif;
+495|        font-size: 1.25rem;
+496|        color: var(--tactical-blue);
+497|    }
+498|
+499|    /* About Page */
+500|    .about-grid {
+501|        display: grid;
+502|        grid-template-columns: 1fr;
+503|        gap: 2rem;
+504|    }
+505|
+506|    @media (min-width: 1024px) {
+507|        .about-grid {
+508|            grid-template-columns: 1fr 2fr;
+509|        }
+510|
+511|        .about-container {
+512|            max-width: 1200px;
+513|        }
+514|    }
+515|
+516|    /* Profile Card */
+517|    .profile-card {
+518|        background-color: var(--surface);
+519|        border: 1px solid var(--border);
+520|        overflow: hidden;
+521|    }
+522|
+523|    .profile-card img {
+524|        width: 100%;
+525|        aspect-ratio: 1;
+526|        object-fit: cover;
+527|    }
+528|
+529|    .profile-card-content {
+530|        padding: 1.5rem;
+531|    }
+532|
+533|    .profile-card h2 {
+534|        font-family: 'Chakra Petch', sans-serif;
+535|        font-weight: 700;
+536|        font-size: 1.5rem;
+537|        color: white;
+538|        margin-bottom: 0.5rem;
+539|    }
+540|
+541|    .profile-tags {
+542|        display: flex;
+543|        gap: 0.5rem;
+544|        margin-bottom: 1rem;
+545|    }
+546|
+547|    .tag {
+548|        font-family: 'JetBrains Mono', monospace;
+549|        font-size: 0.75rem;
+550|        padding: 0.25rem 0.5rem;
+551|    }
+552|
+553|    .tag-twitch {
+554|        background-color: rgba(145, 70, 255, 0.2);
+555|        color: var(--twitch);
+556|    }
+557|
+558|    .tag-tactical {
+559|        background-color: rgba(82, 182, 202, 0.2);
+560|        color: var(--tactical-blue);
+561|    }
+562|
+563|    .profile-stats {
+564|        font-size: 0.875rem;
+565|    }
+566|
+567|    .profile-stat {
+568|        display: flex;
+569|        justify-content: space-between;
+570|        padding: 0.5rem 0;
+571|        border-bottom: 1px solid var(--border);
+572|    }
+573|
+574|    .profile-stat:last-child {
+575|        border-bottom: none;
+576|    }
+577|
+578|    .profile-stat-label {
+579|        color: var(--text-secondary);
+580|    }
+581|
+582|    .profile-stat-value {
+583|        font-family: 'Chakra Petch', sans-serif;
+584|        color: white;
+585|    }
+586|
+587|    /* Bio Section */
+588|    .bio-content {
+589|        display: flex;
+590|        flex-direction: column;
+591|        gap: 1.5rem;
+592|    }
+593|
+594|    .bio-section {
+595|        background-color: var(--surface);
+596|        padding: 1.5rem;
+597|    }
+598|
+599|    .bio-main {
+600|        border-left: 4px solid var(--twitch);
+601|    }
+602|
+603|    .bio-header {
+604|        display: flex;
+605|        align-items: center;
+606|        gap: 0.5rem;
+607|        margin-bottom: 1rem;
+608|    }
+609|
+610|    .bio-dot {
+611|        width: 8px;
+612|        height: 8px;
+613|    }
+614|
+615|    .bio-dot-twitch { background-color: var(--twitch); }
+616|    .bio-dot-tactical { background-color: var(--tactical-blue); }
+617|    .bio-dot-live { background-color: var(--live); animation: pulse 2s ease-in-out infinite; }
+618|
+619|    .bio-header span {
+620|        font-family: 'JetBrains Mono', monospace;
+621|        font-size: 0.75rem;
+622|        color: var(--text-secondary);
+623|        letter-spacing: 0.2em;
+624|    }
+625|
+626|    .bio-section p {
+627|        font-size: 1.125rem;
+628|        color: var(--text-primary);
+629|        line-height: 1.8;
+630|    }
+631|
+632|    .bio-section .highlight-twitch {
+633|        color: var(--twitch);
+634|        font-weight: 700;
+635|    }
+636|
+637|    .bio-section .highlight-tactical {
+638|        color: var(--tactical-blue);
+639|        font-weight: 700;
+640|    }
+641|
+642|    /* Games Grid */
+643|    .games-grid {
+644|        display: grid;
+645|        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+646|        gap: 1rem;
+647|    }
+648|
+649|    .game-card {
+650|        background-color: rgba(10, 11, 14, 0.5);
+651|        padding: 1rem;
+652|        border: 1px solid var(--border);
+653|    }
+654|
+655|    .game-card h4 {
+656|        font-family: 'Chakra Petch', sans-serif;
+657|        font-weight: 700;
+658|        font-size: 1.25rem;
+659|        margin-bottom: 0.5rem;
+660|    }
+661|
+662|    .game-card h4.twitch { color: var(--twitch); }
+663|    .game-card h4.tactical { color: var(--tactical-blue); }
+664|
+665|    .game-card p {
+666|        font-size: 0.875rem;
+667|        color: var(--text-secondary);
+668|    }
+669|
+670|    /* CTA Box */
+671|    .cta-box {
+672|        background-color: var(--overlay);
+673|        border: 1px solid rgba(145, 70, 255, 0.3);
+674|        padding: 1.5rem;
+675|    }
+676|
+677|    .cta-buttons {
+678|        display: flex;
+679|        flex-wrap: wrap;
+680|        gap: 1rem;
+681|        margin-top: 1.5rem;
+682|    }
+683|
+684|    .btn {
+685|        padding: 0.75rem 1.5rem;
+686|        font-family: 'Chakra Petch', sans-serif;
+687|        font-size: 0.875rem;
+688|        letter-spacing: 0.1em;
+689|        text-decoration: none;
+690|        display: inline-flex;
+691|        align-items: center;
+692|        gap: 0.5rem;
+693|        transition: background-color 0.3s;
+694|    }
+695|
+696|    .btn-twitch {
+697|        background-color: var(--twitch);
+698|        color: white;
+699|    }
+700|
+701|    .btn-twitch:hover {
+702|        background-color: var(--twitch-dim);
+703|    }
+704|
+705|    .btn-discord {
+706|        background-color: #5865F2;
+707|        color: white;
+708|    }
+709|
+710|    .btn-discord:hover {
+711|        background-color: #4752c4;
+712|    }
+713|
+714|    /* Footer */
+715|    footer {
+716|        background-color: var(--base);
+717|        border-top: 1px solid var(--border);
+718|        padding: 1.5rem 0;
+719|    }
+720|
+721|    .footer-content {
+722|        max-width: 1600px;
+723|        margin: 0 auto;
+724|        padding: 0 1rem;
+725|        display: flex;
+726|        flex-direction: column;
+727|        align-items: center;
+728|        gap: 1rem;
+729|    }
+730|
+731|    @media (min-width: 768px) {
+732|        .footer-content {
+733|            flex-direction: row;
+734|            justify-content: space-between;
+735|        }
+736|    }
+737|
+738|    .footer-left {
+739|        display: flex;
+740|        align-items: center;
+741|        gap: 0.75rem;
+742|    }
+743|
+744|    .footer-left img {
+745|        height: 32px;
+746|        width: auto;
+747|    }
+748|
+749|    .footer-left span {
+750|        font-family: 'JetBrains Mono', monospace;
+751|        font-size: 0.75rem;
+752|        color: var(--text-muted);
+753|    }
+754|
+755|    .footer-links {
+756|        display: flex;
+757|        gap: 1.5rem;
+758|    }
+759|
+760|    .footer-links a {
+761|        color: var(--text-muted);
+762|        transition: color 0.3s;
+763|    }
+764|
+765|    .footer-links a:hover {
+766|        color: var(--twitch);
+767|    }
+768|
+769|    /* Responsive */
+770|    @media (max-width: 768px) {
+771|        .nav-links {
+772|            display: none;
+773|        }
+774|
+775|        .mobile-menu-btn {
+776|            display: block;
+777|        }
+778|
+779|        .page-header h1 {
+780|            font-size: 2rem;
+781|        }
+782|
+783|        .container {
+784|            padding: 0 1rem;
+785|        }
+786|    }
+787|
+788|    /* Discord Icon SVG */
+789|    .discord-icon {
+790|        width: 20px;
+791|        height: 20px;
+792|        fill: currentColor;
+793|    }
+794|</style>
+795|</head>
+796|<body>
+797|<script>
+798|    // Ändere dies zu deiner Domain (z.B. "meine-seite.de" oder "localhost")
+799|    const TWITCH_PARENT = window.location.hostname;
+800|    const TWITCH_CHANNEL = "VenomSnake_Twitch";
+801|    const DISCORD_LINK = "https://discord.gg/SFzk4YxgRv";
+802|    const LOGO_URL = "https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png";
+803|</script>
+804|
+805|<!-- Navigation -->
+806|<nav class="nav glass">
+807|    <div class="nav-container">
+808|        <a href="#" class="logo" onclick="showPage('stream'); return false;">
+809|            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
+810|            <span class="logo-text">
+811|                <span class="venom">VENOM</span><span class="snake">SNAKE</span>
+812|            </span>
+813|        </a>
+814|
+815|        <div class="nav-links">
+816|            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;">
+817|                <i data-lucide="tv" style="width: 16px; height: 16px;"></i>
+818|                STREAM
+819|            </a>
+820|            <a href="#" class="nav-link" data-page="about" onclick="showPage('about'); return false;">
+821|                <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+822|                ÜBER MICH
+823|            </a>
+824|            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
+825|                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+826|                DISCORD
+827|            </a>
+828|        </div>
+829|
+830|        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+831|            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+832|        </button>
+833|    </div>
+834|
+835|    <div class="mobile-nav" id="mobileNav">
+836|        <a href="#" class="active" data-page="stream" onclick="showPage('stream'); toggleMobileMenu(); return false;">
+837|            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
+838|            STREAM
+839|        </a>
+840|        <a href="#" data-page="about" onclick="showPage('about'); toggleMobileMenu(); return false;">
+841|            <i data-lucide="user" style="width: 18px; height: 18px;"></i>
+842|            ÜBER MICH
+843|        </a>
+844|        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">
+845|            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+846|            DISCORD
+847|        </a>
+848|    </div>
+849|</nav>
+850|
+851|<!-- Stream Page -->
+852|<main id="page-stream" class="page active grid-bg">
+853|    <div class="container">
+854|        <div class="page-header">
+855|            <h1>
+856|                <span class="glow-text" style="color: var(--twitch);">LIVE</span>
+857|                <span style="color: var(--tactical-blue);"> STREAM</span>
+858|            </h1>
+859|            <p class="subtitle">MISSION CONTROL // TACTICAL ENTERTAINMENT</p>
+860|        </div>
+861|
+862|        <div class="stream-grid">
+863|            <div>
+864|                <div class="stream-container cut-corner">
+865|                    <div class="live-status">
+866|                        <div class="live-dot"></div>
+867|                        <span>LIVE STATUS</span>
+868|                    </div>
+869|                    <div class="twitch-embed" id="twitch-player-container">
+870|                        <!-- Twitch Player wird per JavaScript eingefügt -->
+871|                    </div>
+872|                </div>
+873|
+874|                <div class="stream-info">
+875|                    <div class="stream-info-left">
+876|                        <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake">
+877|                        <div>
+878|                            <h2>VenomSnake_Twitch</h2>
+879|                            <p>Metal Gear Solid • Resident Evil • Mehr</p>
+880|                        </div>
+881|                    </div>
+882|                    <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="follow-btn cut-corner-sm">
+883|                        <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+884|                        AUF TWITCH FOLGEN
+885|                    </a>
+886|                </div>
+887|            </div>
+888|
+889|            <div class="chat-container">
+890|                <div class="chat-header">
+891|                    <span>TWITCH CHAT</span>
+892|                    <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">
+893|                        <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+894|                        Auf Twitch anmelden
+895|                    </a>
+896|                </div>
+897|                <div class="chat-embed" id="twitch-chat-container">
+898|                    <!-- Twitch Chat wird per JavaScript eingefügt -->
+899|                </div>
+900|            </div>
+901|        </div>
+902|
+903|        <div class="schedule-section">
+904|            <h2>
+905|                <span style="color: var(--tactical-blue);">STREAM</span>
+906|                <span style="color: white;"> ZEITPLAN</span>
+907|            </h2>
+908|            <div class="schedule-grid">
+909|                <div class="schedule-card cut-corner">
+910|                    <div class="schedule-card-header">
+911|                        <div class="schedule-dot"></div>
+912|                        <span>SCHEDULE</span>
+913|                    </div>
+914|                    <h3>MONTAG</h3>
+915|                    <p>13:30 UHR</p>
+916|                </div>
+917|                <div class="schedule-card cut-corner">
+918|                    <div class="schedule-card-header">
+919|                        <div class="schedule-dot"></div>
+920|                        <span>SCHEDULE</span>
+921|                    </div>
+922|                    <h3>MITTWOCH</h3>
+923|                    <p>13:30 UHR</p>
+924|                </div>
+925|                <div class="schedule-card cut-corner">
+926|                    <div class="schedule-card-header">
+927|                        <div class="schedule-dot"></div>
+928|                        <span>SCHEDULE</span>
+929|                    </div>
+930|                    <h3>FREITAG</h3>
+931|                    <p>13:30 UHR</p>
+932|                </div>
+933|            </div>
+934|        </div>
+935|    </div>
+936|</main>
+937|
+938|<!-- About Page -->
+939|<main id="page-about" class="page grid-bg">
+940|    <div class="container about-container">
+941|        <div class="page-header">
+942|            <h1>
+943|                <span class="glow-text" style="color: var(--twitch);">ÜBER</span>
+944|                <span style="color: var(--tactical-blue);"> MICH</span>
+945|            </h1>
+946|            <p class="subtitle">AGENT PROFILE // CLASSIFIED INFORMATION</p>
+947|        </div>
+948|
+949|        <div class="about-grid">
+950|            <div class="profile-card cut-corner">
+951|                <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake_Twitch">
+952|                <div class="profile-card-content">
+953|                    <h2>VenomSnake_Twitch</h2>
+954|                    <div class="profile-tags">
+955|                        <span class="tag tag-twitch">STREAMER</span>
+956|                        <span class="tag tag-tactical">GAMER</span>
+957|                    </div>
+958|                    <div class="profile-stats">
+959|                        <div class="profile-stat">
+960|                            <span class="profile-stat-label">Alter</span>
+961|                            <span class="profile-stat-value">31 Jahre</span>
+962|                        </div>
+963|                        <div class="profile-stat">
+964|                            <span class="profile-stat-label">Stream Tage</span>
+965|                            <span class="profile-stat-value">Mo, Mi, Fr</span>
+966|                        </div>
+967|                        <div class="profile-stat">
+968|                            <span class="profile-stat-label">Stream Zeit</span>
+969|                            <span class="profile-stat-value">13:30 Uhr</span>
+970|                        </div>
+971|                    </div>
+972|                </div>
+973|            </div>
+974|
+975|            <div class="bio-content">
+976|                <div class="bio-section bio-main">
+977|                    <div class="bio-header">
+978|                        <div class="bio-dot bio-dot-twitch"></div>
+979|                        <span>BIO // PERSÖNLICH</span>
+980|                    </div>
+981|                    <p>
+982|                        Hey! Ich bin <span class="highlight-twitch">VenomSnake_Twitch</span> und bin 31 Jahre alt. 
+983|                        Ich bin Dialyse-Patient (Blutwäsche) und streame immer jeden <span class="highlight-tactical">Montag, Mittwoch und Freitag</span>.
+984|                    </p>
+985|                </div>
+986|
+987|                <div class="bio-section cut-corner" style="border: 1px solid var(--border);">
+988|                    <div class="bio-header">
+989|                        <div class="bio-dot bio-dot-tactical"></div>
+990|                        <span>LIEBLINGSSPIELE</span>
+991|                    </div>
+992|                    <div class="games-grid">
+993|                        <div class="game-card">
+994|                            <h4 class="twitch">Metal Gear Solid</h4>
+995|                            <p>Taktische Spionage-Action von Hideo Kojima. Stealth-Gameplay at its finest!</p>
+996|                        </div>
+997|                        <div class="game-card">
+998|                            <h4 class="tactical">Resident Evil</h4>
+999|                            <p>Survival Horror der Extraklasse. Zombies, Action und pure Spannung!</p>
+1000|                        </div>
+1001|                    </div>
+1002|                </div>
+1003|
+1004|                <div class="cta-box glow-twitch" style="border: 1px solid rgba(145, 70, 255, 0.3);">
+1005|                    <div class="bio-header">
+1006|                        <div class="bio-dot bio-dot-live"></div>
+1007|                        <span>EINLADUNG</span>
+1008|                    </div>
+1009|                    <p style="font-size: 1.125rem;">
+1010|                        Ich bin auch ein echt netter Typ, also schau doch gerne mal bei mir im Stream vorbei oder in meinem Discord!
+1011|                    </p>
+1012|                    <div class="cta-buttons">
+1013|                        <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="btn btn-twitch cut-corner-sm">
+1014|                            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
+1015|                            ZUM STREAM
+1016|                        </a>
+1017|                        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="btn btn-discord cut-corner-sm">
+1018|                            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+1019|                            DISCORD BEITRETEN
+1020|                        </a>
+1021|                    </div>
+1022|                </div>
+1023|            </div>
+1024|        </div>
+1025|    </div>
+1026|</main>
+1027|
+1028|<!-- Footer -->
+1029|<footer>
+1030|    <div class="footer-content">
+1031|        <div class="footer-left">
+1032|            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake">
+1033|            <span>© 2025 VenomSnake_Twitch</span>
+1034|        </div>
+1035|        <div class="footer-links">
+1036|            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">
+1037|                <i data-lucide="tv" style="width: 20px; height: 20px;"></i>
+1038|            </a>
+1039|            <a href="https://discord.gg/SFzk4YxgRv" target="_blank">
+1040|                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+1041|            </a>
+1042|        </div>
+1043|    </div>
+1044|</footer>
+1045|
+1046|<script>
+1047|    // Initialize Lucide Icons
+1048|    lucide.createIcons();
+1049|
+1050|    // Load Twitch Embeds
+1051|    function loadTwitchEmbeds() {
+1052|        const parent = window.location.hostname || 'localhost';
+1053|        
+1054|        // Player
+1055|        document.getElementById('twitch-player-container').innerHTML = `
+1056|            <iframe
+1057|                src="https://player.twitch.tv/?channel=VenomSnake_Twitch&parent=${parent}&muted=true"
+1058|                allowfullscreen="true"
+1059|                allow="autoplay; encrypted-media">
+1060|            </iframe>
+1061|        `;
+1062|        
+1063|        // Chat
+1064|        document.getElementById('twitch-chat-container').innerHTML = `
+1065|            <iframe
+1066|                src="https://www.twitch.tv/embed/VenomSnake_Twitch/chat?parent=${parent}&darkpopout">
+1067|            </iframe>
+1068|        `;
+1069|    }
+1070|
+1071|    // Page Navigation
+1072|    function showPage(pageName) {
+1073|        // Hide all pages
+1074|        document.querySelectorAll('.page').forEach(page => {
+1075|            page.classList.remove('active');
+1076|        });
+1077|        
+1078|        // Show selected page
+1079|        document.getElementById('page-' + pageName).classList.add('active');
+1080|        
+1081|        // Update nav links
+1082|        document.querySelectorAll('.nav-link').forEach(link => {
+1083|            link.classList.remove('active');
+1084|            if (link.getAttribute('data-page') === pageName) {
+1085|                link.classList.add('active');
+1086|            }
+1087|        });
+1088|        
+1089|        // Update mobile nav
+1090|        document.querySelectorAll('.mobile-nav a').forEach(link => {
+1091|            link.classList.remove('active');
+1092|            if (link.getAttribute('data-page') === pageName) {
+1093|                link.classList.add('active');
+1094|            }
+1095|        });
+1096|        
+1097|        // Scroll to top
+1098|        window.scrollTo(0, 0);
+1099|    }
+1100|
+1101|    // Mobile Menu Toggle
+1102|    function toggleMobileMenu() {
+1103|        const mobileNav = document.getElementById('mobileNav');
+1104|        mobileNav.classList.toggle('open');
+1105|    }
+1106|
+1107|    // Initialize on page load
+1108|    document.addEventListener('DOMContentLoaded', function() {
+1109|        loadTwitchEmbeds();
+1110|    });
+1111|</script>
+1112|<script src="https://player.twitch.tv/js/embed/v1.js"></script>
+1113|<script>
+1114|    // =========================
+1115|    // 1. Seitensteuerung
+1116|    // =========================
+1117|    function showPage(pageId) {
+1118|        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+1119|        document.getElementById('page-' + pageId).classList.add('active');
+1120|
+1121|        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+1122|        document.querySelector(`.nav-link[data-page="${pageId}"]`)?.classList.add('active');
+1123|    }
+1124|
+1125|    function toggleMobileMenu() {
+1126|        document.getElementById('mobileNav').classList.toggle('open');
+1127|    }
+1128|
+1129|    // =========================
+1130|    // 2. Twitch Player und Chat
+1131|    // =========================
+1132|    const twitchPlayer = new Twitch.Player("twitch-player-container", {
+1133|        channel: TWITCH_CHANNEL,
+1134|        parent: [TWITCH_PARENT],
+1135|        width: "100%",
+1136|        height: "100%",
+1137|        autoplay: false,
+1138|        muted: false
+1139|    });
+1140|
+1141|    const twitchChat = new Twitch.Embed("twitch-chat-container", {
+1142|        width: "100%",
+1143|        height: "100%",
+1144|        channel: TWITCH_CHANNEL,
+1145|        parent: [TWITCH_PARENT]
+1146|    });
+1147|
+1148|    // =========================
+1149|    // 3. Live Status & Countdown
+1150|    // =========================
+1151|    const liveStatusText = document.querySelector(".live-status span");
+1152|    const liveDot = document.querySelector(".live-dot");
+1153|
+1154|    // Hier definierst du deine Stream-Zeiten
+1155|    const streamSchedule = [
+1156|        { day: 1, hour: 13, minute: 30 }, // Montag
+1157|        { day: 3, hour: 13, minute: 30 }, // Mittwoch
+1158|        { day: 5, hour: 13, minute: 30 }  // Freitag
+1159|    ];
+1160|
+1161|    function getNextStream() {
+1162|        const now = new Date();
+1163|        let nextStream = null;
+1164|
+1165|        for (let i = 0; i < 7; i++) {
+1166|            const checkDay = (now.getDay() + i) % 7;
+1167|            const schedule = streamSchedule.find(s => s.day === checkDay);
+1168|            if (!schedule) continue;
+1169|
+1170|            let nextDate = new Date(now);
+1171|            nextDate.setDate(now.getDate() + i);
+1172|            nextDate.setHours(schedule.hour, schedule.minute, 0, 0);
+1173|
+1174|            if (nextDate > now) {
+1175|                nextStream = nextDate;
+1176|                break;
+1177|            }
+1178|        }
+1179|
+1180|        return nextStream;
+1181|    }
+1182|
+1183|    function updateCountdown() {
+1184|        const now = new Date();
+1185|        const nextStream = getNextStream();
+1186|        const countdownElement = document.querySelector(".stream-info p");
+1187|
+1188|        if (!nextStream) return;
+1189|
+1190|        const diff = nextStream - now;
+1191|        if (diff <= 0) {
+1192|            liveStatusText.textContent = "IST JETZT LIVE";
+1193|            liveDot.style.backgroundColor = "#ff4444";
+1194|            countdownElement.textContent = "LIVE!";
+1195|        } else {
+1196|            liveStatusText.textContent = "COUNTDOWN";
+1197|            liveDot.style.backgroundColor = "#ff4444";
+1198|
+1199|            const hours = Math.floor(diff / (1000 * 60 * 60));
+1200|            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+1201|            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+1202|
+1203|            countdownElement.textContent = `Nächster Stream in ${hours}h ${minutes}m ${seconds}s`;
+1204|        }
+1205|    }
+1206|
+1207|    setInterval(updateCountdown, 1000);
+1208|    updateCountdown();
+1209|</script>
+1210|</body>
+1211|</html>
+1212|
