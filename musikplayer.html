@@ -147,6 +147,7 @@ button:hover, #downloadBtn:hover, select:hover {
     height: 100px;
 }
 
+/* Song News Box */
 #infoBox {
     margin-top: 20px;
     background: rgba(10,10,30,0.9);
@@ -155,6 +156,23 @@ button:hover, #downloadBtn:hover, select:hover {
     border-radius: 6px;
     max-width: 600px;
     color: #c8c8ff;
+    text-align: left;
+}
+
+/* Zurück Button */
+#backBtn {
+    margin-bottom: 16px;
+    padding: 8px 14px;
+    font-size: 14px;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    background: rgba(0,0,50,0.8);
+    color: #fff;
+    cursor: pointer;
+}
+#backBtn:hover {
+    background: rgba(20,20,80,0.9);
+    color: #00ffff;
 }
 </style>
 </head>
@@ -177,6 +195,8 @@ button:hover, #downloadBtn:hover, select:hover {
 
 <!-- OVERLAY -->
 <div id="overlay">
+    <button id="backBtn" onclick="window.location.href='index.html'">← Zurück zur Startseite</button>
+
     <h1>VenomSnake Spenden</h1>
     <div id="infoText">Unterstütze den Kanal – danke für deine Hilfe!</div>
 
@@ -224,10 +244,10 @@ button:hover, #downloadBtn:hover, select:hover {
     </div>
 
     <div id="infoBox">
-        <h3>Song News</h3>
-        <p>Neu: Hell March [Retaliation Cover]</p>
-        <p>Neu: Syphon Filter Synth Mix</p>
-        <p>Weitere Tracks folgen bald.</p>
+        <h3>Song News</h3>
+        <p>Neu: Hell March [Retaliation Cover]</p>
+        <p>Neu: Syphon Filter Synth Mix</p>
+        <p>Weitere Tracks folgen bald.</p>
     </div>
 </div>
 
