@@ -51,7 +51,7 @@ h1 {
     text-shadow: 0 0 5px #000044;
 }
 
-form, button, select, input, textarea {
+form, button, select, input {
     font-family: 'Orbitron', sans-serif;
 }
 
@@ -86,23 +86,12 @@ button:hover, select:hover {
     color: black;
 }
 
-#controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
 #songControls {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     margin-bottom: 10px;
-}
-
-#downloadBtn {
-    padding: 10px;
 }
 
 #volumeContainer {
@@ -122,16 +111,6 @@ button:hover, select:hover {
     cursor: pointer;
 }
 
-#volumeSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 25px;
-    height: 25px;
-    background: #220066;
-    border: 2px solid #f0f0ff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
 #progressContainer {
     display: flex;
     align-items: center;
@@ -142,48 +121,22 @@ button:hover, select:hover {
 
 #progress {
     width: 300px;
-    -webkit-appearance: none;
-    height: 8px;
-    background: #8888ff;
-    border-radius: 4px;
-}
-
-#progress::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    background: #220066;
-    border: 2px solid #f0f0ff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-#timeLabel, #durationLabel {
-    width: 50px;
-    text-align: center;
-    font-size: 14px;
-    color: #ffffff;
-}
-
-@media (max-width: 600px){
-    h1 { font-size: 28px; }
-    #infoText { font-size: 14px; }
-    button, select { padding: 8px 16px; font-size: 14px; }
-    #progress { width: 200px; }
-    #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
-    #volumeSlider { height: 100px; width: 12px; }
 }
 </style>
 </head>
+
 <body>
 <div id="overlay">
+
 <h1>VenomSnake Musikplayer</h1>
 
 <div id="infoText">
 🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
 </div>
 
-<button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
+<button id="backButton" onclick="window.location.href='index.html'">
+🏠 Zurück zur Startseite
+</button>
 
 <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
@@ -201,29 +154,28 @@ button:hover, select:hover {
 <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
 </select>
 
-<button id="downloadBtn" onclick="downloadSong()">⬇ Download</button>
+<button onclick="downloadSong()">⬇ Download</button>
 
 <div id="volumeContainer">
-<input type="range" min="0" max="1" step="0.01" value="0.5"
-id="volumeSlider" oninput="setVolume(this.value)">
+<input type="range" min="0" max="1" step="0.01"
+value="0.5" id="volumeSlider"
+oninput="audio.volume=this.value">
 <span>Lautstärke</span>
 </div>
 </div>
 
 <div id="progressContainer">
-<span id="timeLabel">0:00</span>
 <input type="range" id="progress" min="0" max="100"
 value="0" oninput="seekSong(this.value)">
-<span id="durationLabel">0:00</span>
 </div>
 
-<div id="controls">
-<button onclick="prevSong()">⏮ Vorheriger</button>
-<button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
-<button onclick="stopSong()">⏹ Stop</button>
-<button onclick="nextSong()">⏭ Nächster</button>
-<button onclick="toggleFullscreen()">🖵 Vollbild</button>
+<div>
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()">▶ / ⏸</button>
+<button onclick="stopSong()">⏹</button>
+<button onclick="nextSong()">⏭</button>
 </div>
+
 </div>
 
 <script>
@@ -240,36 +192,31 @@ const songs = [
 
 let currentIndex = 0;
 const audio = document.getElementById("audioPlayer");
-const currentSongLabel = document.getElementById("currentSong");
-const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
+const currentSongLabel = document.getElementById("currentSong");
 const progress = document.getElementById("progress");
-const timeLabel = document.getElementById("timeLabel");
-const durationLabel = document.getElementById("durationLabel");
 
 function loadSong(index){
 currentIndex = index;
 audio.src = songs[index];
 currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
-audio.pause();
-audio.currentTime = 0;
-playPauseBtn.textContent = "▶ Play";
+}
+
+function selectSong(){
+loadSong(parseInt(songSelect.value));
 }
 
 function togglePlay(){
 if(audio.paused){
 audio.play();
-playPauseBtn.textContent = "⏸ Pause";
-} else {
+}else{
 audio.pause();
-playPauseBtn.textContent = "▶ Play";
 }
 }
 
 function stopSong(){
 audio.pause();
 audio.currentTime = 0;
-playPauseBtn.textContent = "▶ Play";
 }
 
 function nextSong(){
@@ -284,26 +231,28 @@ songSelect.value = currentIndex;
 loadSong(currentIndex);
 }
 
-function setVolume(value){
-audio.volume = value;
-}
-
-function selectSong(){
-loadSong(parseInt(songSelect.value));
-}
-
+/* 🔥 FIXED DOWNLOAD FUNCTION */
 function downloadSong(){
-const link = document.createElement("a");
-link.href = songs[currentIndex];
-link.download = songs[currentIndex];
-link.click();
+if (!songs[currentIndex]) {
+alert("Kein Song ausgewählt!");
+return;
 }
 
-audio.addEventListener("timeupdate", () => {
+const fileUrl = window.location.origin +
+window.location.pathname.replace("musicplayer.html","") +
+songs[currentIndex];
+
+const link = document.createElement("a");
+link.href = fileUrl;
+link.setAttribute("download", songs[currentIndex]);
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+}
+
+audio.addEventListener("timeupdate", ()=>{
 if(!audio.duration) return;
 progress.value = (audio.currentTime / audio.duration) * 100;
-timeLabel.textContent = formatTime(audio.currentTime);
-durationLabel.textContent = formatTime(audio.duration);
 });
 
 function seekSong(value){
@@ -311,21 +260,8 @@ if(!audio.duration) return;
 audio.currentTime = (value / 100) * audio.duration;
 }
 
-function formatTime(seconds){
-const m = Math.floor(seconds / 60);
-const s = Math.floor(seconds % 60);
-return m + ":" + s.toString().padStart(2,'0');
-}
-
-function toggleFullscreen(){
-if (!document.fullscreenElement) {
-document.documentElement.requestFullscreen();
-} else {
-document.exitFullscreen();
-}
-}
-
 loadSong(0);
 </script>
+
 </body>
 </html>
