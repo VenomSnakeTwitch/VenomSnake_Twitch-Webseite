@@ -101,26 +101,26 @@ header nav ul li a:hover {
 
 h1 {
     font-size: 36px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-shadow: 0 0 15px #a020f0, 0 0 30px #00ffff;
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 input, textarea {
-    padding: 10px;
+    padding: 15px;
     border: 2px solid #a020f0;
     border-radius: 5px;
     background: black;
     color: #f0f0ff;
     font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     resize: none;
 }
 
@@ -133,11 +133,11 @@ button {
     background: black;
     border: 2px solid #a020f0;
     color: #f0f0ff;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 25px;
+    font-size: 18px;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 button:hover {
@@ -146,18 +146,14 @@ button:hover {
 }
 
 #messageStatus {
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.backButton {
-    margin-bottom: 20px;
+    font-size: 16px;
+    margin-top: 15px;
 }
 
 @media (max-width: 600px){
     h1 { font-size: 28px; }
     form { max-width: 90%; }
-    input, textarea, button { font-size: 14px; }
+    input, textarea, button { font-size: 16px; padding: 12px; }
 }
 </style>
 </head>
@@ -185,13 +181,10 @@ button:hover {
 <div id="overlay">
     <h1>Kontakt</h1>
     
-    <!-- Rückkehr Button -->
-    <button class="backButton" onclick="window.location.href='index.html'">Zurück zur Startseite</button>
-    
     <form id="contactForm">
         <input type="text" name="from_name" placeholder="Dein Name" required>
         <input type="email" name="reply_to" placeholder="Deine E-Mail" required>
-        <textarea name="message" placeholder="Deine Nachricht" rows="5" required></textarea>
+        <textarea name="message" placeholder="Deine Nachricht" rows="7" required></textarea>
         <button type="submit">Nachricht senden</button>
         <div id="messageStatus"></div>
     </form>
