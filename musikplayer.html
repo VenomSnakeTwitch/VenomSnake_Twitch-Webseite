@@ -134,6 +134,41 @@ button:hover, #downloadBtn:hover, select:hover {
     justify-content: center;
 }
 
+/* Fortschrittsbalken mit Farbverlauf */
+#progress {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 300px; /* Breite nach Bedarf anpassen */
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #00ffff, #9146ff);
+    cursor: pointer;
+    outline: none;
+}
+
+/* Webkit-Slider-Thumb */
+#progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #00ffff;
+    cursor: pointer;
+    margin-top: -3px;
+}
+
+/* Firefox-Thumb */
+#progress::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #00ffff;
+    cursor: pointer;
+}
+
 #volumeContainer {
     display: flex;
     flex-direction: column;
