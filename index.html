@@ -823,6 +823,7 @@
         color: var(--twitch);
     }
 
+    /* NEU: Versionsnummer-Styling */
     .footer-version {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.75rem;
@@ -860,25 +861,6 @@
         width: 20px;
         height: 20px;
         fill: currentColor;
-    }
-
-    /* Styling für nächsten Stream */
-    .next-stream {
-        margin-top: 12px;
-        padding: 8px 12px;
-        background: rgba(145, 70, 255, 0.08);
-        border-radius: 6px;
-        border-left: 4px solid var(--tactical-blue);
-    }
-
-    .next-stream strong {
-        color: var(--text-primary);
-        font-size: 1.1rem;
-    }
-
-    .next-stream .game {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
     }
 </style>
 </head>
@@ -1178,7 +1160,7 @@
         
         document.getElementById('twitch-player-container').innerHTML = `
             <iframe
-                src="https://player.twitch.tv/?channel=\( {TWITCH_CHANNEL}&parent= \){parent}&muted=true"
+                src="https://player.twitch.tv/?channel=VenomSnake_Twitch&parent=${parent}&muted=true"
                 allowfullscreen="true"
                 allow="autoplay; encrypted-media">
             </iframe>
@@ -1186,26 +1168,32 @@
         
         document.getElementById('twitch-chat-container').innerHTML = `
             <iframe
-                src="https://www.twitch.tv/embed/\( {TWITCH_CHANNEL}/chat?parent= \){parent}&darkpopout"
+                src="https://www.twitch.tv/embed/VenomSnake_Twitch/chat?parent=${parent}&darkpopout"
                 frameborder="0">
             </iframe>
         `;
     }
 
     function showPage(pageName) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        
         document.getElementById('page-' + pageName).classList.add('active');
         
         document.querySelectorAll('.nav-link, .dropdown-content a[data-page], .mobile-nav a[data-page]').forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('data-page') === pageName) link.classList.add('active');
+            if (link.getAttribute('data-page') === pageName) {
+                link.classList.add('active');
+            }
         });
         
         window.scrollTo(0, 0);
     }
 
     function toggleMobileMenu() {
-        document.getElementById('mobileNav').classList.toggle('open');
+        const mobileNav = document.getElementById('mobileNav');
+        mobileNav.classList.toggle('open');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1214,7 +1202,6 @@
 </script>
 
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
-
 <script>
     const twitchPlayer = new Twitch.Player("twitch-player-container", {
         channel: TWITCH_CHANNEL,
@@ -1282,77 +1269,6 @@
 
     setInterval(updateCountdown, 1000);
     updateCountdown();
-
-    // =============================================
-    // Nächster Stream: Titel + Kategorie (Game)
-    // =============================================
-
-    const BROADCASTER_ID = '240384287';
-    const CLIENT_ID      = '9lmir4fqe1jyzk1egtpvug9kn0ks5e';
-    const ACCESS_TOKEN   = '96ya916kbyikg34v2e76ztd97uv0i1';
-
-    async function loadNextStreamInfo() {
-        try {
-            const res = await fetch(
-                `https://api.twitch.tv/helix/schedule?broadcaster_id=${BROADCASTER_ID}&first=5`,
-                {
-                    headers: {
-                        'Client-Id': CLIENT_ID,
-                        'Authorization': `Bearer ${ACCESS_TOKEN}`
-                    }
-                }
-            );
-
-            if (!res.ok) {
-                console.log('Twitch Schedule API Fehler:', res.status, await res.text());
-                return;
-            }
-
-            const data = await res.json();
-            const segments = data?.data?.segments || [];
-
-            const now = new Date();
-            const future = segments.filter(s => new Date(s.start_time) > now);
-
-            const countdownP = document.querySelector('.stream-info p');
-            if (!countdownP) return;
-
-            if (future.length === 0) {
-                countdownP.insertAdjacentHTML('afterend', `
-                    <div class="next-stream">
-                        <span>Kein Stream geplant</span>
-                    </div>
-                `);
-                return;
-            }
-
-            const next = future.sort((a,b) => new Date(a.start_time) - new Date(b.start_time))[0];
-
-            const title = next.title?.trim() || 'Noch kein Titel gesetzt';
-            const game  = next.category?.name || 'Kategorie offen';
-
-            countdownP.insertAdjacentHTML('afterend', `
-                <div class="next-stream">
-                    <strong>${title}</strong><br>
-                    <span class="game">${game}</span>
-                </div>
-            `);
-        } catch (err) {
-            console.error('Fehler beim Laden von Titel + Game:', err);
-            document.querySelector('.stream-info p')?.insertAdjacentHTML('afterend', `
-                <div class="next-stream" style="color:#ff4444;">
-                    Stream-Info konnte nicht geladen werden
-                </div>
-            `);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadTwitchEmbeds();
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-        loadNextStreamInfo();
-    });
 </script>
 
 </body>
