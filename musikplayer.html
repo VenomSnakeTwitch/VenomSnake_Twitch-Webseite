@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VenomSnake Musikplayer</title>
+<title>VenomSnake Spenden</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
@@ -18,121 +18,128 @@ body {
     overflow: hidden;
 }
 
-/* HEADER FIXIEREN UND TRANSPARENT */
+/* HEADER */
 header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 12px 24px;
     box-sizing: border-box;
     z-index: 1000;
-    backdrop-filter: blur(5px);
 }
 
-/* Logo + Schriftzug */
 header .logo-container {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
 header .logo-container img {
-    height: 50px;
+    height: 45px;
     object-fit: contain;
 }
+
 header .logo-container span {
     font-size: 24px;
     font-weight: bold;
-    color: #a020f0; /* Twitch-Lila */
-    text-shadow: 0 0 5px #00ffff;
-}
-header .logo-container span span {
-    color: #00ffff; /* Hellblau für SNΛKE */
+    color: #9146ff;
+    text-shadow: 0px 0px 8px #00ffff;
 }
 
-/* Navigation */
+header .logo-container span .snake {
+    color: #00ffff;
+}
+
 header nav ul {
     list-style: none;
     display: flex;
-    gap: 15px;
+    gap: 20px;
     margin: 0;
     padding: 0;
 }
+
 header nav ul li a {
-    text-decoration: none;
-    color: #f0f0ff;
+    color: #ffffff;
     font-weight: bold;
-    transition: color 0.3s, text-shadow 0.3s;
-}
-header nav ul li a:hover {
-    color: #88f0ff;
-    text-shadow: 0 0 8px #88f0ff;
+    text-decoration: none;
+    transition: 0.3s;
 }
 
-/* MUSIKPLAYER OVERLAY */
+header nav ul li a:hover {
+    color: #88f0ff;
+    text-shadow: 0 0 6px #88f0ff;
+}
+
+/* OVERLAY */
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
-    padding: 100px 20px 20px 20px;
+    padding-top: 100px;
     box-sizing: border-box;
-    position: relative;
 }
 
 h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-    text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
+    font-size: 38px;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 0 12px #00ffff, 0 0 24px #000044;
 }
 
-/* Buttons, Selects, Download */
-button, select, #downloadBtn {
-    margin: 10px;
-    padding: 8px 15px;
+#infoText {
+    margin-top: 8px;
     font-size: 16px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background: #222244;
-    color: #f0f0ff;
-    transition: background 0.3s, color 0.3s;
-}
-button:hover, #downloadBtn:hover, select:hover {
-    background: #4444aa;
-    color: #fff;
+    color: #c0c0ff;
 }
 
+/* Player UI */
 audio {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 16px;
 }
 
-/* Songcontrols */
+button, select, #downloadBtn {
+    margin: 8px;
+    padding: 10px 16px;
+    font-size: 16px;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    background: rgba(0,0,50,0.8);
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover, #downloadBtn:hover, select:hover {
+    border-color: #9146ff;
+    background: rgba(20,20,80,0.9);
+    color: #00ffff;
+}
+
+/* Progress + Controls */
 #songControls, #controls, #progressContainer {
-    margin-top: 15px;
+    margin-top: 12px;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
-/* Vertikaler Lautstärkeregler */
 #volumeContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
-    margin-top: 10px;
 }
+
 #volumeContainer input[type="range"] {
     writing-mode: bt-lr;
     -webkit-appearance: slider-vertical;
@@ -140,14 +147,32 @@ audio {
     height: 100px;
 }
 
-/* Info Box */
+/* Song News Box */
 #infoBox {
     margin-top: 20px;
-    text-align: left;
+    background: rgba(10,10,30,0.9);
+    padding: 12px;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
     max-width: 600px;
+    color: #c8c8ff;
+    text-align: left;
 }
-#infoBox h3 {
-    margin-bottom: 5px;
+
+/* Zurück Button */
+#backBtn {
+    margin-bottom: 16px;
+    padding: 8px 14px;
+    font-size: 14px;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    background: rgba(0,0,50,0.8);
+    color: #fff;
+    cursor: pointer;
+}
+#backBtn:hover {
+    background: rgba(20,20,80,0.9);
+    color: #00ffff;
 }
 </style>
 </head>
@@ -157,7 +182,7 @@ audio {
 <header>
     <div class="logo-container">
         <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
-        <span>VENOM<span>SNΛKE</span></span>
+        <span>VENOM<span class="snake">SNΛKE</span></span>
     </div>
     <nav>
         <ul>
@@ -170,11 +195,10 @@ audio {
 
 <!-- OVERLAY -->
 <div id="overlay">
-    <h1>VenomSnake Musikplayer</h1>
+    <button id="backBtn" onclick="window.location.href='index.html'">← Zurück zur Startseite</button>
 
-    <div id="infoText">
-        Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
-    </div>
+    <h1>VenomSnake Spenden</h1>
+    <div id="infoText">Unterstütze den Kanal – danke für deine Hilfe!</div>
 
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
