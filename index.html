@@ -27,7 +27,11 @@
         --border: rgba(255, 255, 255, 0.08);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
     body {
         font-family: 'Rajdhani', sans-serif;
@@ -57,12 +61,19 @@
         clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
     }
 
-    .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
-    .glow-twitch { box-shadow: 0 0 30px rgba(145, 70, 255, 0.3); }
+    .glow-text {
+        text-shadow: 0 0 20px rgba(145, 70, 255, 0.5);
+    }
+
+    .glow-twitch {
+        box-shadow: 0 0 30px rgba(145, 70, 255, 0.3);
+    }
 
     .nav {
         position: fixed;
-        top: 0; left: 0; width: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
         z-index: 50;
     }
 
@@ -83,7 +94,10 @@
         text-decoration: none;
     }
 
-    .logo img { height: 56px; width: auto; }
+    .logo img {
+        height: 56px;
+        width: auto;
+    }
 
     .logo-text {
         font-family: 'Chakra Petch', sans-serif;
@@ -98,13 +112,13 @@
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 2rem;
+        gap: 1.25rem;           /* kleinerer Abstand horizontal */
     }
 
     .nav-link {
         font-family: 'Chakra Petch', sans-serif;
         font-size: 0.875rem;
-        letter-spacing: 0.2em;
+        letter-spacing: 0.15em;
         color: var(--text-secondary);
         text-decoration: none;
         display: flex;
@@ -121,13 +135,17 @@
     .nav-link::after {
         content: "";
         position: absolute;
-        bottom: -4px; left: 0;
-        width: 0; height: 2px;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
         background-color: var(--twitch);
         transition: width 0.3s ease;
     }
 
-    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    .nav-link:hover::after, .nav-link.active::after {
+        width: 100%;
+    }
 
     .discord-btn {
         background-color: #5865F2;
@@ -141,9 +159,12 @@
         align-items: center;
         gap: 0.5rem;
         transition: background-color 0.3s;
+        border-radius: 6px;
     }
 
-    .discord-btn:hover { background-color: #4752c4; }
+    .discord-btn:hover {
+        background-color: #4752c4;
+    }
 
     .mobile-menu-btn {
         display: none;
@@ -155,24 +176,49 @@
 
     .mobile-nav {
         display: none;
-        padding: 1rem 0;
+        padding: 1.5rem 1rem;
         border-top: 1px solid var(--border);
+        max-height: 75vh;
+        overflow-y: auto;
     }
 
-    .mobile-nav.open { display: block; }
+    .mobile-nav.open {
+        display: block;
+    }
 
     .mobile-nav a {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 0.75rem 0.5rem;
+        padding: 1rem 1.25rem;
         font-family: 'Chakra Petch', sans-serif;
         letter-spacing: 0.1em;
         color: var(--text-secondary);
         text-decoration: none;
+        border-bottom: 1px solid var(--border);
     }
 
-    .mobile-nav a.active { color: var(--twitch); }
+    .mobile-nav a:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-nav a.active {
+        color: var(--twitch);
+    }
+
+    .mobile-nav a[href*="discord.gg"] {
+        margin-top: 1.5rem;
+        background-color: #5865F2;
+        color: white !important;
+        border-radius: 8px;
+        justify-content: center;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+    }
+
+    .mobile-nav a[href*="discord.gg"]:hover {
+        background-color: #4752c4;
+    }
 
     .page {
         display: none;
@@ -181,7 +227,9 @@
         padding-bottom: 3rem;
     }
 
-    .page.active { display: block; }
+    .page.active {
+        display: block;
+    }
 
     .container {
         max-width: 1600px;
@@ -189,7 +237,9 @@
         padding: 0 1rem;
     }
 
-    .page-header { margin-bottom: 2rem; }
+    .page-header {
+        margin-bottom: 2rem;
+    }
 
     .page-header h1 {
         font-family: 'Chakra Petch', sans-serif;
@@ -214,7 +264,9 @@
     }
 
     @media (min-width: 1024px) {
-        .stream-grid { grid-template-columns: 2fr 1fr; }
+        .stream-grid {
+            grid-template-columns: 2fr 1fr;
+        }
     }
 
     .stream-container {
@@ -320,7 +372,9 @@
         transition: background-color 0.3s;
     }
 
-    .follow-btn:hover { background-color: var(--twitch-dim); }
+    .follow-btn:hover {
+        background-color: var(--twitch-dim);
+    }
 
     .chat-container {
         background-color: var(--surface);
@@ -332,7 +386,9 @@
     }
 
     @media (min-width: 1024px) {
-        .chat-container { height: 600px; }
+        .chat-container {
+            height: 600px;
+        }
     }
 
     .chat-header {
@@ -360,7 +416,9 @@
         gap: 0.25rem;
     }
 
-    .chat-header a:hover { color: var(--twitch); }
+    .chat-header a:hover {
+        color: var(--twitch);
+    }
 
     .chat-embed {
         flex: 1;
@@ -376,7 +434,9 @@
         border: none;
     }
 
-    .schedule-section { margin-top: 3rem; }
+    .schedule-section {
+        margin-top: 3rem;
+    }
 
     .schedule-section h2 {
         font-family: 'Chakra Petch', sans-serif;
@@ -399,7 +459,9 @@
         transition: border-color 0.3s;
     }
 
-    .schedule-card:hover { border-color: rgba(145, 70, 255, 0.5); }
+    .schedule-card:hover {
+        border-color: rgba(145, 70, 255, 0.5);
+    }
 
     .schedule-card-header {
         display: flex;
@@ -414,7 +476,9 @@
         background-color: var(--twitch);
     }
 
-    .schedule-card:hover .schedule-dot { background-color: var(--live); }
+    .schedule-card:hover .schedule-dot {
+        background-color: var(--live);
+    }
 
     .schedule-card-header span {
         font-family: 'JetBrains Mono', monospace;
@@ -444,8 +508,13 @@
     }
 
     @media (min-width: 1024px) {
-        .about-grid { grid-template-columns: 1fr 2fr; }
-        .about-container { max-width: 1200px; }
+        .about-grid {
+            grid-template-columns: 1fr 2fr;
+        }
+
+        .about-container {
+            max-width: 1200px;
+        }
     }
 
     .profile-card {
@@ -460,7 +529,9 @@
         object-fit: cover;
     }
 
-    .profile-card-content { padding: 1.5rem; }
+    .profile-card-content {
+        padding: 1.5rem;
+    }
 
     .profile-card h2 {
         font-family: 'Chakra Petch', sans-serif;
@@ -482,10 +553,19 @@
         padding: 0.25rem 0.5rem;
     }
 
-    .tag-twitch { background-color: rgba(145, 70, 255, 0.2); color: var(--twitch); }
-    .tag-tactical { background-color: rgba(82, 182, 202, 0.2); color: var(--tactical-blue); }
+    .tag-twitch {
+        background-color: rgba(145, 70, 255, 0.2);
+        color: var(--twitch);
+    }
 
-    .profile-stats { font-size: 0.875rem; }
+    .tag-tactical {
+        background-color: rgba(82, 182, 202, 0.2);
+        color: var(--tactical-blue);
+    }
+
+    .profile-stats {
+        font-size: 0.875rem;
+    }
 
     .profile-stat {
         display: flex;
@@ -494,9 +574,13 @@
         border-bottom: 1px solid var(--border);
     }
 
-    .profile-stat:last-child { border-bottom: none; }
+    .profile-stat:last-child {
+        border-bottom: none;
+    }
 
-    .profile-stat-label { color: var(--text-secondary); }
+    .profile-stat-label {
+        color: var(--text-secondary);
+    }
 
     .profile-stat-value {
         font-family: 'Chakra Petch', sans-serif;
@@ -514,7 +598,9 @@
         padding: 1.5rem;
     }
 
-    .bio-main { border-left: 4px solid var(--twitch); }
+    .bio-main {
+        border-left: 4px solid var(--twitch);
+    }
 
     .bio-header {
         display: flex;
@@ -612,14 +698,18 @@
         color: white;
     }
 
-    .btn-twitch:hover { background-color: var(--twitch-dim); }
+    .btn-twitch:hover {
+        background-color: var(--twitch-dim);
+    }
 
     .btn-discord {
         background-color: #5865F2;
         color: white;
     }
 
-    .btn-discord:hover { background-color: #4752c4; }
+    .btn-discord:hover {
+        background-color: #4752c4;
+    }
 
     footer {
         background-color: var(--base);
@@ -650,7 +740,10 @@
         gap: 0.75rem;
     }
 
-    .footer-left img { height: 32px; width: auto; }
+    .footer-left img {
+        height: 32px;
+        width: auto;
+    }
 
     .footer-left span {
         font-family: 'JetBrains Mono', monospace;
@@ -668,13 +761,26 @@
         transition: color 0.3s;
     }
 
-    .footer-links a:hover { color: var(--twitch); }
+    .footer-links a:hover {
+        color: var(--twitch);
+    }
 
     @media (max-width: 768px) {
-        .nav-links { display: none; }
-        .mobile-menu-btn { display: block; }
-        .page-header h1 { font-size: 2rem; }
-        .container { padding: 0 1rem; }
+        .nav-links {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .container {
+            padding: 0 1rem;
+        }
     }
 
     .discord-icon {
@@ -720,7 +826,6 @@
                 <i data-lucide="music" style="width: 16px; height: 16px;"></i>
                 MUSIK PLAYER
             </a>
-            <!-- NEUER BUTTON: Spenden -->
             <a href="donation.html" class="nav-link">
                 <i data-lucide="heart-handshake" style="width: 16px; height: 16px;"></i>
                 SPENDEN
@@ -753,13 +858,12 @@
             <i data-lucide="music" style="width: 18px; height: 18px;"></i>
             MUSIK PLAYER
         </a>
-        <!-- NEUER BUTTON im Mobile-Menü -->
         <a href="donation.html" onclick="toggleMobileMenu();">
             <i data-lucide="heart-handshake" style="width: 18px; height: 18px;"></i>
             SPENDEN
         </a>
-        <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color: #5865F2;">
-            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515... (dein voller Pfad)"></path></svg>
+        <a href="https://discord.gg/SFzk4YxgRv" target="_blank">
+            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
             DISCORD
         </a>
     </div>
