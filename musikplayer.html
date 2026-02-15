@@ -223,7 +223,7 @@ button:hover, #downloadBtn:hover, select:hover {
             <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
             <option value="8">Bye Bye Beautiful</option>
             <option value="9">Kettenreaktion (Cover)</option>
-            <option value="10">Straße der Verdammnis(Cover)</option>
+            <option value="10">Straße der Verdammnis (Cover)</option> <!-- lesbarer Text -->
             <option value="11">Syphon Filter Synth Mix</option>
             <option value="12">VenomSnake Mode Intro song</option>
             <option value="13">Hell March [Retaliation Cover]</option>
@@ -269,7 +269,7 @@ const songs = [
     "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
     "ByeByeBeautiful.mp3",
     "Kettenreaktion (Cover).mp3",
-    "Straße der Verdammnis(Cover).mp3",  // ← exakt so, wie du es angegeben hast
+    "StrassederVerdammnis(Cover).mp3",   // ← exakt dein neuer Dateiname
     "Syphon Filter Synth Mix.mp3",
     "VenomSnake Mode Intro song.mp3",
     "Hell March [Retaliation Cover].mp3"
@@ -287,18 +287,19 @@ const downloadBtn = document.getElementById("downloadBtn");
 
 function loadSong(index) {
     currentIndex = index;
-    audio.src = songs[index];
-    console.log("Versuche zu laden:", songs[index]);           // Debug: sieh in F12 → Console
-    console.log("Vollständige URL:", window.location.href + songs[index]);
+    const fileName = songs[index];
+    audio.src = fileName;
+    console.log("Versuche zu laden → Dateiname:", fileName);
+    console.log("Vollständige URL:", window.location.origin + '/' + fileName);
     songSelect.value = index;
-    downloadBtn.href = songs[index];
-    downloadBtn.setAttribute("download", songs[index]);
+    downloadBtn.href = fileName;
+    downloadBtn.setAttribute("download", fileName);
     document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
 }
 
 function togglePlay(){
     if(audio.paused){
-        audio.play().catch(e => console.error("Play-Fehler:", e));
+        audio.play().catch(e => console.error("Play-Fehler (Browser-Block?):", e));
         playPauseBtn.textContent = "⏸ Pause";
     } else {
         audio.pause();
