@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VenomSnake_Twitch - Spenden</title>
+<meta name="description" content="VenomSnake_Twitch - Spenden Seite. Seite noch in Arbeit.">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+    --twitch: #9146FF;
+    --twitch-dim: #772ce8;
+    --tactical-blue: #52b6ca;
+    --base: #0a0b0e;
+    --surface: #13151a;
+    --overlay: #1c1f26;
+    --live: #ff4444;
+    --text-primary: #e6eef3;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    background-color: var(--base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    margin: 0;
+}
+
+a { text-decoration: none; }
+
+.nav { position: fixed; top: 0; width: 100%; z-index: 50; }
+.nav-container { max-width: 1600px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; }
+.logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+.logo-text { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.1em; }
+.logo-text .venom { color: var(--twitch); }
+.logo-text .snake { color: var(--tactical-blue); }
+.nav-links { display: flex; align-items: center; gap: 1.25rem; }
+.nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
+.nav-link:hover, .nav-link.active { color: var(--twitch); }
+
+footer { background-color: var(--base); border-top: 1px solid var(--border); padding: 1.5rem 0; text-align: center; }
+footer span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+
+.page { padding-top: 96px; min-height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; }
+.placeholder-box { background-color: var(--surface); padding: 3rem 2rem; border: 1px solid var(--border); border-radius: 12px; max-width: 500px; }
+.placeholder-box h1 { font-family: 'Chakra Petch', sans-serif; font-size: 2rem; margin-bottom: 1rem; color: var(--twitch); }
+.placeholder-box p { font-size: 1.125rem; color: var(--text-primary); line-height: 1.6; }
+.back-button { display: inline-block; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background-color: var(--twitch); color: var(--text-primary); font-weight: 600; font-family: 'Chakra Petch', sans-serif; border-radius: 8px; transition: background-color 0.3s, transform 0.2s; }
+.back-button:hover { background-color: var(--twitch-dim); transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav glass">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo" style="height: 56px;">
+            <span class="logo-text">
+                <span class="venom">VENOM</span><span class="snake">SNAKE</span>
+            </span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">STARTSEITE</a>
+            <a href="donation.html" class="nav-link active">SPENDEN</a>
+            <a href="kontakt.html" class="nav-link">KONTAKT</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Placeholder Content -->
+<main class="page">
+    <div class="placeholder-box">
+        <h1>Seite in Arbeit</h1>
+        <p>Danke, dass du diese Seite besuchst, aber sie ist noch in Arbeit. 🙏<br>
+        Schau später gerne wieder vorbei!</p>
+        <a href="index.html" class="back-button">Zurück zur Startseite</a>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <span>© 2025 VenomSnake_Twitch</span>
+</footer>
+
+</body>
+</html>
