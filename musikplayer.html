@@ -51,7 +51,8 @@ h1 {
     text-shadow: 0 0 5px #000044;
 }
 
-form, button, select, input {
+/* Buttons */
+form, button, select, input, textarea {
     font-family: 'Orbitron', sans-serif;
 }
 
@@ -86,6 +87,14 @@ button:hover, select:hover {
     color: black;
 }
 
+/* Audio-Controls */
+#controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
 #songControls {
     display: flex;
     align-items: center;
@@ -94,23 +103,23 @@ button:hover, select:hover {
     margin-bottom: 10px;
 }
 
-#volumeContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 20px;
-}
-
-#volumeSlider {
-    -webkit-appearance: slider-vertical;
-    writing-mode: bt-lr;
-    width: 15px;
-    height: 150px;
-    background: #8888ff;
+/* Download Link Button */
+#downloadBtn {
+    padding: 10px;
+    text-decoration: none;
+    color: #f0f0ff;
+    background: #220066;
+    border: 2px solid #8888ff;
     border-radius: 5px;
-    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
+#downloadBtn:hover {
+    background: #8888ff;
+    color: #220066;
+}
+
+/* Fortschrittsleiste */
 #progressContainer {
     display: flex;
     align-items: center;
@@ -121,147 +130,179 @@ button:hover, select:hover {
 
 #progress {
     width: 300px;
+    -webkit-appearance: none;
+    height: 8px;
+    background: #8888ff;
+    border-radius: 4px;
+}
+
+#progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #220066;
+    border: 2px solid #f0f0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#timeLabel, #durationLabel {
+    width: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 600px){
+    h1 { font-size: 28px; }
+    #infoText { font-size: 14px; }
+    button, select { padding: 8px 16px; font-size: 14px; }
+    #progress { width: 200px; }
+    #timeLabel, #durationLabel { font-size: 12px; width: 40px; }
 }
 </style>
 </head>
-
 <body>
 <div id="overlay">
+    <h1>VenomSnake Musikplayer</h1>
+    <div id="infoText">
+        🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
+    </div>
 
-<h1>VenomSnake Musikplayer</h1>
+    <button id="backButton" onclick="window.location.href='index.html'">🏠 Zurück zur Startseite</button>
 
-<div id="infoText">
-🎵 Alle Songs hier wurden von mir selbst erstellt über <strong>Suno.com</strong>
-</div>
+    <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
 
-<button id="backButton" onclick="window.location.href='index.html'">
-🏠 Zurück zur Startseite
-</button>
+    <audio id="audioPlayer">
+        Dein Browser unterstützt kein Audio-Element.
+    </audio>
 
-<h2 id="currentSong">▶ Kein Song ausgewählt</h2>
+    <div id="songControls">
+        <select id="songSelect" onchange="selectSong()">
+            <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
+            <option value="1">Ghost Town by VenomSnake_Twitch</option>
+            <option value="2">Wreckfest</option>
+            <option value="3">In The Air Tonight by VenomSnake_Twitch</option>
+            <option value="4">Paradies City</option>
+            <option value="5">Parasitäres Bewustsein</option>
+            <option value="6">Still Alive (Voiced)</option>
+            <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
+        </select>
+        <a id="downloadBtn" href="" download>⬇ Download</a>
+    </div>
 
-<audio id="audioPlayer"></audio>
+    <div id="progressContainer">
+        <span id="timeLabel">0:00</span>
+        <input type="range" id="progress" min="0" max="100" value="0" oninput="seekSong(this.value)">
+        <span id="durationLabel">0:00</span>
+    </div>
 
-<div id="songControls">
-<select id="songSelect" onchange="selectSong()">
-<option value="0">Snake Eater VenomSnake_Twitch Mix</option>
-<option value="1">Ghost Town by VenomSnake_Twitch</option>
-<option value="2">Wreckfest</option>
-<option value="3">In The Air Tonight by VenomSnake_Twitch</option>
-<option value="4">Paradies City</option>
-<option value="5">Parasitäres Bewustsein</option>
-<option value="6">Still Alive (Voiced)</option>
-<option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
-</select>
-
-<button onclick="downloadSong()">⬇ Download</button>
-
-<div id="volumeContainer">
-<input type="range" min="0" max="1" step="0.01"
-value="0.5" id="volumeSlider"
-oninput="audio.volume=this.value">
-<span>Lautstärke</span>
-</div>
-</div>
-
-<div id="progressContainer">
-<input type="range" id="progress" min="0" max="100"
-value="0" oninput="seekSong(this.value)">
-</div>
-
-<div>
-<button onclick="prevSong()">⏮</button>
-<button onclick="togglePlay()">▶ / ⏸</button>
-<button onclick="stopSong()">⏹</button>
-<button onclick="nextSong()">⏭</button>
-</div>
-
+    <div id="controls">
+        <button onclick="prevSong()">⏮ Vorheriger</button>
+        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
+        <button onclick="stopSong()">⏹ Stop</button>
+        <button onclick="nextSong()">⏭ Nächster</button>
+        <button onclick="toggleFullscreen()">🖵 Vollbild</button>
+    </div>
 </div>
 
 <script>
 const songs = [
-"Snake Eater VenomSnake_Twitch Mix.mp3",
-"Ghost Town by VenomSnake_Twitch.mp3",
-"Wreckfest.mp3",
-"In The Air Tonight by VenomSnake_Twitch.mp3",
-"Paradies City.mp3",
-"Parasitäres Bewustsein.mp3",
-"Still Alive (Voiced).mp3",
-"Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3"
+    "Snake Eater VenomSnake_Twitch Mix.mp3",
+    "Ghost Town by VenomSnake_Twitch.mp3",
+    "Wreckfest.mp3",
+    "In The Air Tonight by VenomSnake_Twitch.mp3",
+    "Paradies City.mp3",
+    "Parasitäres Bewustsein.mp3",
+    "Still Alive (Voiced).mp3",
+    "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3"
 ];
 
 let currentIndex = 0;
 const audio = document.getElementById("audioPlayer");
-const songSelect = document.getElementById("songSelect");
 const currentSongLabel = document.getElementById("currentSong");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const songSelect = document.getElementById("songSelect");
 const progress = document.getElementById("progress");
+const timeLabel = document.getElementById("timeLabel");
+const durationLabel = document.getElementById("durationLabel");
+const downloadBtn = document.getElementById("downloadBtn");
 
 function loadSong(index){
-currentIndex = index;
-audio.src = songs[index];
-currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
-}
+    currentIndex = index;
+    audio.src = songs[index];
+    currentSongLabel.textContent = "▶ " + songSelect.options[index].text;
+    playPauseBtn.textContent = "▶ Play";
 
-function selectSong(){
-loadSong(parseInt(songSelect.value));
+    // Download-Link aktualisieren
+    downloadBtn.href = songs[index];
+    downloadBtn.setAttribute("download", songs[index]);
 }
 
 function togglePlay(){
-if(audio.paused){
-audio.play();
-}else{
-audio.pause();
-}
+    if(!audio.src) return alert("Bitte zuerst einen Song auswählen!");
+    if(audio.paused){
+        audio.play();
+        playPauseBtn.textContent = "⏸ Pause";
+    } else {
+        audio.pause();
+        playPauseBtn.textContent = "▶ Play";
+    }
 }
 
 function stopSong(){
-audio.pause();
-audio.currentTime = 0;
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = "▶ Play";
 }
 
 function nextSong(){
-currentIndex = (currentIndex + 1) % songs.length;
-songSelect.value = currentIndex;
-loadSong(currentIndex);
+    currentIndex = (currentIndex + 1) % songs.length;
+    songSelect.value = currentIndex;
+    loadSong(currentIndex);
 }
 
 function prevSong(){
-currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-songSelect.value = currentIndex;
-loadSong(currentIndex);
+    currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+    songSelect.value = currentIndex;
+    loadSong(currentIndex);
 }
 
-/* 🔥 FIXED DOWNLOAD FUNCTION */
-function downloadSong(){
-if (!songs[currentIndex]) {
-alert("Kein Song ausgewählt!");
-return;
+function selectSong(){
+    const index = parseInt(songSelect.value);
+    loadSong(index);
 }
 
-const fileUrl = window.location.origin +
-window.location.pathname.replace("musicplayer.html","") +
-songs[currentIndex];
-
-const link = document.createElement("a");
-link.href = fileUrl;
-link.setAttribute("download", songs[currentIndex]);
-document.body.appendChild(link);
-link.click();
-document.body.removeChild(link);
-}
-
-audio.addEventListener("timeupdate", ()=>{
-if(!audio.duration) return;
-progress.value = (audio.currentTime / audio.duration) * 100;
+audio.addEventListener("timeupdate", () => {
+    if(!audio.duration) return;
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.value = percent;
+    timeLabel.textContent = formatTime(audio.currentTime);
+    durationLabel.textContent = formatTime(audio.duration);
 });
 
 function seekSong(value){
-if(!audio.duration) return;
-audio.currentTime = (value / 100) * audio.duration;
+    if(!audio.duration) return;
+    audio.currentTime = (value / 100) * audio.duration;
 }
 
+function formatTime(seconds){
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function toggleFullscreen(){
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+// initial load
 loadSong(0);
 </script>
-
 </body>
 </html>
