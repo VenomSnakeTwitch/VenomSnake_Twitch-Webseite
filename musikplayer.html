@@ -18,27 +18,43 @@ body {
     overflow: hidden;
 }
 
-/* HEADER FIXIEREN UND TRANSPARENT MACHEN */
+/* HEADER FIXIEREN UND TRANSPARENT */
 header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(0,0,0,0.7); /* halbtransparent */
+    background: rgba(0,0,0,0.7);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     box-sizing: border-box;
-    z-index: 1000; /* Header bleibt über Overlay */
-    backdrop-filter: blur(5px); /* leichte Unschärfe für Eleganz */
+    z-index: 1000;
+    backdrop-filter: blur(5px);
 }
 
-header .logo img {
+/* Logo + Schriftzug */
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+header .logo-container img {
     height: 50px;
     object-fit: contain;
 }
+header .logo-container span {
+    font-size: 24px;
+    font-weight: bold;
+    color: #a020f0; /* lila */
+    text-shadow: 0 0 5px #00ffff;
+}
+header .logo-container span span {
+    color: #00ffff; /* cyan für SNΛKE */
+}
 
+/* Navigation */
 header nav ul {
     list-style: none;
     display: flex;
@@ -46,19 +62,18 @@ header nav ul {
     margin: 0;
     padding: 0;
 }
-
 header nav ul li a {
     text-decoration: none;
     color: #f0f0ff;
     font-weight: bold;
-    transition: color 0.3s;
+    transition: color 0.3s, text-shadow 0.3s;
 }
-
 header nav ul li a:hover {
     color: #88f0ff;
+    text-shadow: 0 0 8px #88f0ff;
 }
 
-/* OVERLAY MUSIKPLAYER */
+/* MUSIKPLAYER OVERLAY */
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
@@ -67,7 +82,7 @@ header nav ul li a:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 100px 20px 20px 20px; /* Platz für fixierten Header */
+    padding: 100px 20px 20px 20px;
     box-sizing: border-box;
     position: relative;
 }
@@ -78,7 +93,7 @@ h1 {
     text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
 }
 
-/* Buttons und Controls */
+/* Buttons, Selects, Download */
 button, select, #downloadBtn {
     margin: 10px;
     padding: 8px 15px;
@@ -91,7 +106,6 @@ button, select, #downloadBtn {
     color: #f0f0ff;
     transition: background 0.3s, color 0.3s;
 }
-
 button:hover, #downloadBtn:hover, select:hover {
     background: #4444aa;
     color: #fff;
@@ -102,7 +116,8 @@ audio {
     margin-top: 10px;
 }
 
-#songControls, #controls, #progressContainer, #volumeContainer {
+/* Songcontrols */
+#songControls, #controls, #progressContainer {
     margin-top: 15px;
     display: flex;
     align-items: center;
@@ -110,10 +125,22 @@ audio {
     flex-wrap: wrap;
 }
 
-#progressContainer input[type="range"], #volumeContainer input[type="range"] {
-    width: 200px;
+/* Vertikaler Lautstärkeregler */
+#volumeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+#volumeContainer input[type="range"] {
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+    width: 8px;
+    height: 100px;
 }
 
+/* Info Box */
 #infoBox {
     margin-top: 20px;
     text-align: left;
@@ -128,8 +155,9 @@ audio {
 
 <!-- HEADER -->
 <header>
-    <div class="logo">
-        <img src="DogVenomsnake Logo.png" alt="VenomSnake Logo">
+    <div class="logo-container">
+        <img src="99374818-779c-4574-91d5-cd9479234595.png" alt="VenomSnake Logo">
+        <span>VENOM<span>SNΛKE</span></span>
     </div>
     <nav>
         <ul>
@@ -140,7 +168,7 @@ audio {
     </nav>
 </header>
 
-<!-- MUSIKPLAYER OVERLAY -->
+<!-- OVERLAY -->
 <div id="overlay">
     <h1>VenomSnake Musikplayer</h1>
 
