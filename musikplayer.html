@@ -15,7 +15,7 @@ body {
     background-size: cover;
     color: #f0f0ff;
     text-align: center;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* HEADER FIXIEREN UND TRANSPARENT */
@@ -24,14 +24,14 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.7);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     box-sizing: border-box;
     z-index: 1000;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(5px);
 }
 
 /* Logo + Schriftzug */
@@ -45,14 +45,13 @@ header .logo-container img {
     object-fit: contain;
 }
 header .logo-container span {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: bold;
-    color: #9146FF; /* Twitch Lila */
-    text-shadow: 0 0 8px #9146FF, 0 0 15px #00ffff;
+    color: #a020f0; /* Twitch lila */
+    text-shadow: 0 0 5px #00ffff; /* hellblau */
 }
 header .logo-container span span {
-    color: #00ffff; /* Hellblau für SNΛKE */
-    text-shadow: 0 0 10px #00ffff;
+    color: #00ffff; /* cyan für SNΛKE */
 }
 
 /* Navigation */
@@ -71,7 +70,7 @@ header nav ul li a {
 }
 header nav ul li a:hover {
     color: #88f0ff;
-    text-shadow: 0 0 12px #88f0ff, 0 0 20px #9146FF;
+    text-shadow: 0 0 8px #88f0ff;
 }
 
 /* MUSIKPLAYER OVERLAY */
@@ -83,43 +82,38 @@ header nav ul li a:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 120px 20px 20px 20px;
+    padding: 100px 20px 20px 20px;
     box-sizing: border-box;
     position: relative;
 }
 
-/* Titel */
 h1 {
-    font-size: 38px;
-    margin-bottom: 15px;
-    text-shadow: 0 0 20px #9146FF, 0 0 35px #00ffff, 0 0 50px #000044;
+    font-size: 36px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px #a0a0ff, 0 0 30px #000044;
 }
 
 /* Buttons, Selects, Download */
 button, select, #downloadBtn {
     margin: 10px;
-    padding: 10px 18px;
+    padding: 8px 15px;
     font-size: 16px;
     font-family: 'Orbitron', sans-serif;
     cursor: pointer;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     background: #222244;
     color: #f0f0ff;
-    transition: all 0.3s;
-    box-shadow: 0 0 5px #00ffff;
+    transition: background 0.3s, color 0.3s;
 }
 button:hover, #downloadBtn:hover, select:hover {
     background: #4444aa;
     color: #fff;
-    box-shadow: 0 0 15px #00ffff, 0 0 25px #9146FF;
 }
 
-/* Audio */
 audio {
     width: 100%;
-    margin-top: 15px;
-    outline: none;
+    margin-top: 10px;
 }
 
 /* Songcontrols */
@@ -142,27 +136,8 @@ audio {
 #volumeContainer input[type="range"] {
     writing-mode: bt-lr;
     -webkit-appearance: slider-vertical;
-    width: 10px;
+    width: 8px;
     height: 100px;
-}
-
-/* Fortschrittsbalken animiert */
-#progress {
-    width: 300px;
-    appearance: none;
-    height: 10px;
-    border-radius: 5px;
-    background: linear-gradient(to right, #9146FF 0%, #00ffff 100%);
-    outline: none;
-}
-#progress::-webkit-slider-thumb {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #ffffff;
-    cursor: pointer;
-    box-shadow: 0 0 8px #00ffff, 0 0 12px #9146FF;
 }
 
 /* Info Box */
@@ -170,23 +145,9 @@ audio {
     margin-top: 20px;
     text-align: left;
     max-width: 600px;
-    background: rgba(0,0,0,0.6);
-    padding: 10px;
-    border-radius: 6px;
-    box-shadow: 0 0 10px #9146FF;
 }
 #infoBox h3 {
     margin-bottom: 5px;
-}
-
-/* Mobile Anpassungen */
-@media (max-width:768px){
-    #overlay {
-        padding-top: 160px;
-    }
-    #progress {
-        width: 90%;
-    }
 }
 </style>
 </head>
@@ -270,20 +231,20 @@ audio {
 
 <script>
 const songs = [
-    "music/Snake Eater VenomSnake_Twitch Mix.mp3",
-    "music/Ghost Town by VenomSnake_Twitch.mp3",
-    "music/Wreckfest.mp3",
-    "music/In The Air Tonight(VenomSnake_Twitch).mp3",
-    "music/Paradies City.mp3",
-    "music/Parasitäres Bewustsein.mp3",
-    "music/Still Alive (Voiced).mp3",
-    "music/Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
-    "music/ByeByeBeautiful.mp3",
-    "music/Kettenreaktion (Cover).mp3",
-    "music/Straße der Verdammnis (Cover).mp3",
-    "music/Syphon Filter Synth Mix.mp3",
-    "music/VenomSnake Mode Intro song.mp3",
-    "music/Hell March [Retaliation Cover].mp3"
+    "Snake Eater VenomSnake_Twitch Mix.mp3",
+    "Ghost Town by VenomSnake_Twitch.mp3",
+    "Wreckfest.mp3",
+    "In The Air Tonight(VenomSnake_Twitch).mp3",
+    "Paradies City.mp3",
+    "Parasitäres Bewustsein.mp3",
+    "Still Alive (Voiced).mp3",
+    "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
+    "ByeByeBeautiful.mp3",
+    "Kettenreaktion (Cover).mp3",
+    "Straße der Verdammnis (Cover).mp3",
+    "Syphon Filter Synth Mix.mp3",
+    "VenomSnake Mode Intro song.mp3",
+    "Hell March [Retaliation Cover].mp3"
 ];
 
 let currentIndex = 0;
