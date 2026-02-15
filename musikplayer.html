@@ -65,6 +65,7 @@ button:hover, select:hover {
     color: #220066;
 }
 
+/* Fortschrittsleiste */
 input[type=range] {
     -webkit-appearance: none;
     width: 100%;
@@ -86,6 +87,30 @@ input[type=range]::-webkit-slider-thumb {
     cursor: pointer;
 }
 
+/* Lautstärkeregler vertikal */
+#volumeSlider {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 150px;
+    background: #8888ff;
+    border-radius: 5px;
+    cursor: pointer;
+    writing-mode: bt-lr; /* Vertikal */
+    transform: rotate(-90deg); /* Drehen um Hochkant zu machen */
+    margin-left: 20px;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #220066;
+    border: 2px solid #c8c8ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Fortschrittsleiste Container */
 #progressContainer {
     display: flex;
     align-items: center;
@@ -97,11 +122,12 @@ input[type=range]::-webkit-slider-thumb {
     color: #c8c8ff;
 }
 
+/* Song-Auswahl + Download + Lautstärke */
 #songControls {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
     margin-top: 15px;
     width: 80%;
     max-width: 500px;
@@ -151,12 +177,7 @@ input[type=range]::-webkit-slider-thumb {
         <button onclick="toggleFullscreen()">🖵 Vollbild</button>
     </div>
 
-    <div>
-        Lautstärke:
-        <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
-    </div>
-
-    <!-- Song auswählen + Download-Button -->
+    <!-- Song auswählen + Download + Lautstärke -->
     <div id="songControls">
         <select id="songSelect" onchange="selectSong()">
             <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
@@ -164,6 +185,7 @@ input[type=range]::-webkit-slider-thumb {
             <option value="2">Wreckfest</option>
         </select>
         <button id="downloadBtn" onclick="downloadSong()">⬇ Download</button>
+        <input type="range" min="0" max="1" step="0.01" value="0.5" id="volumeSlider" oninput="setVolume(this.value)">
     </div>
 
     <!-- Musik-Fortschrittsleiste -->
@@ -184,7 +206,7 @@ const songs = [
     "Wreckfest.mp3"
 ];
 
-let currentIndex = 0; // Standardmäßig erster Song ausgewählt
+let currentIndex = 0;
 const audio = document.getElementById("audioPlayer");
 const currentSongLabel = document.getElementById("currentSong");
 const playPauseBtn = document.getElementById("playPauseBtn");
@@ -275,7 +297,7 @@ function toggleFullscreen(){
     }
 }
 
-// Lade den ersten Song beim Start
+// Lade ersten Song beim Start
 loadSong(currentIndex);
 </script>
 </body>
