@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VenomSnake_Twitch - Spenden</title>
-<meta name="description" content="VenomSnake_Twitch - Spenden Seite. Seite noch in Arbeit.">
+<meta name="description" content="VenomSnake_Twitch - Spenden Seite. Unterstütze mich direkt über PayPal.">
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -52,11 +52,11 @@ footer { background-color: var(--base); border-top: 1px solid var(--border); pad
 footer span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
 
 .page { padding-top: 96px; min-height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; }
-.placeholder-box { background-color: var(--surface); padding: 3rem 2rem; border: 1px solid var(--border); border-radius: 12px; max-width: 500px; }
-.placeholder-box h1 { font-family: 'Chakra Petch', sans-serif; font-size: 2rem; margin-bottom: 1rem; color: var(--twitch); }
-.placeholder-box p { font-size: 1.125rem; color: var(--text-primary); line-height: 1.6; }
-.back-button { display: inline-block; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background-color: var(--twitch); color: var(--text-primary); font-weight: 600; font-family: 'Chakra Petch', sans-serif; border-radius: 8px; transition: background-color 0.3s, transform 0.2s; }
-.back-button:hover { background-color: var(--twitch-dim); transform: scale(1.05); }
+.donation-box { background-color: var(--surface); padding: 3rem 2rem; border: 1px solid var(--border); border-radius: 12px; max-width: 500px; }
+.donation-box h1 { font-family: 'Chakra Petch', sans-serif; font-size: 2rem; margin-bottom: 1rem; color: var(--twitch); }
+.donation-box p { font-size: 1.125rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 2rem; }
+.back-button, .donate-button { display: inline-block; margin: 0.5rem 0; padding: 0.75rem 1.5rem; background-color: var(--twitch); color: var(--text-primary); font-weight: 600; font-family: 'Chakra Petch', sans-serif; border-radius: 8px; transition: background-color 0.3s, transform 0.2s; }
+.back-button:hover, .donate-button:hover { background-color: var(--twitch-dim); transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -72,18 +72,25 @@ footer span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; colo
         </a>
         <div class="nav-links">
             <a href="index.html" class="nav-link">STARTSEITE</a>
-            <a href="donation.html" class="nav-link active">SPENDEN</a>
+            <a href="musikplayer.html" class="nav-link">MUSIKPLAYER</a>
             <a href="kontakt.html" class="nav-link">KONTAKT</a>
         </div>
     </div>
 </nav>
 
-<!-- Placeholder Content -->
+<!-- Donation Content -->
 <main class="page">
-    <div class="placeholder-box">
-        <h1>Seite in Arbeit</h1>
-        <p>Danke, dass du diese Seite besuchst, aber sie ist noch in Arbeit. 🙏<br>
-        Schau später gerne wieder vorbei!</p>
+    <div class="donation-box">
+        <h1>Unterstütze VenomSnake_Twitch</h1>
+        <p>Wenn dir mein Content gefällt und du mich gerne unterstützen möchtest, kannst du das hier unten tun.  
+        Bedenke, das ist freiwillig. Niemand zwingt dich dazu.</p>
+
+        <!-- PayPal.Me Button -->
+        <a href="https://www.paypal.me/VenomSnakeTwitch" target="_blank" class="donate-button">
+            Jetzt direkt spenden 💳
+        </a>
+
+        <!-- Back Button -->
         <a href="index.html" class="back-button">Zurück zur Startseite</a>
     </div>
 </main>
