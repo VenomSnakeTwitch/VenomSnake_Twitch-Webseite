@@ -7,9 +7,7 @@
     <meta name="description" content="VenomSnake_Twitch - Dein Twitch Streamer für Metal Gear Solid, Resident Evil und mehr. Streams jeden Montag, Mittwoch und Freitag um 13:30 Uhr.">
 
     <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <!-- Optional: Falls du später auch ein SVG-Favicon hast -->
-    <!-- <link rel="icon" href="/favicon.svg" type="image/svg+xml"> -->
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -192,7 +190,8 @@
 <script>
     const TWITCH_CHANNEL = "VenomSnake_Twitch";
 </script>
-<!-- Navigation -->
+
+<!-- Navigation mit Impressum -->
 <nav class="nav glass">
     <div class="nav-container">
         <a href="#" class="logo" onclick="showPage('stream'); return false;">
@@ -228,6 +227,10 @@
                     <a href="donation.html">
                         <i data-lucide="heart-handshake" style="width: 16px; height: 16px;"></i>
                         SPENDEN
+                    </a>
+                    <a href="impressum.html">
+                        <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                        IMPRESSUM
                     </a>
                 </div>
             </div>
@@ -265,8 +268,13 @@
             <i data-lucide="heart-handshake" style="width: 18px; height: 18px;"></i>
             SPENDEN
         </a>
+        <a href="impressum.html" onclick="toggleMobileMenu();">
+            <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
+            IMPRESSUM
+        </a>
     </div>
 </nav>
+
 <!-- Stream Page -->
 <main id="page-stream" class="page active grid-bg">
     <div class="container">
@@ -345,6 +353,7 @@
         </div>
     </div>
 </main>
+
 <!-- About Page -->
 <main id="page-about" class="page grid-bg">
     <div class="container about-container">
@@ -430,6 +439,7 @@
         </div>
     </div>
 </main>
+
 <!-- Footer -->
 <footer>
     <div class="footer-content">
@@ -450,6 +460,7 @@
         </div>
     </div>
 </footer>
+
 <script>
     lucide.createIcons();
     function showPage(pageName) {
@@ -476,11 +487,10 @@
         return age;
     }
     const birthDate = "1994-06-08";
-    // Twitch Player & Chat (nur iframe – repariert)
+    // Twitch Player & Chat
     function loadTwitchEmbeds() {
         const parent = window.location.hostname || 'localhost';
         const channel = "VenomSnake_Twitch";
-        // Player
         const playerContainer = document.getElementById('twitch-player-container');
         if (playerContainer) {
             playerContainer.innerHTML = `
@@ -495,7 +505,6 @@
                 ></iframe>
             `;
         }
-        // Chat
         const chatContainer = document.getElementById('twitch-chat-container');
         if (chatContainer) {
             chatContainer.innerHTML = `
@@ -517,7 +526,8 @@
         });
     });
 </script>
-<!-- Countdown -->
+
+<!-- Countdown Script -->
 <script>
     const liveStatusText = document.querySelector(".live-status span");
     const liveDot = document.querySelector(".live-dot");
