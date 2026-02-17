@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressum - VenomSnake_Twitch (kommt bald)</title>
+    <!-- Favicon -->
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --twitch: #9146FF;
+            --twitch-dim: #772ce8;
+            --tactical-blue: #52b6ca;
+            --base: #0a0b0e;
+            --surface: #13151a;
+            --overlay: #1c1f26;
+            --live: #ff4444;
+            --text-primary: #e6eef3;
+            --text-secondary: #94a3b8;
+            --text-muted: #475569;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            background-color: var(--base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+        .grid-bg {
+            background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            flex: 1;
+        }
+        .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
+        .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
+        .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
+        .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; }
+        .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .logo img { height: 56px; width: auto; }
+        .logo-text { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.1em; }
+        .logo-text .venom { color: var(--twitch); }
+        .logo-text .snake { color: var(--tactical-blue); }
+        .nav-links { display: flex; align-items: center; gap: 1.25rem; }
+        .nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
+        .nav-link:hover, .nav-link.active { color: var(--twitch); }
+        .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--twitch); transition: width 0.3s ease; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .discord-btn { background-color: #5865F2; color: white; padding: 0.5rem 1rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.1em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s; border-radius: 6px; }
+        .discord-btn:hover { background-color: #4752c4; }
+        .dropdown { position: relative; }
+        .dropdown-btn { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+        .dropdown-btn:hover, .dropdown-btn:focus { color: var(--twitch); }
+        .dropdown-content { display: none; position: absolute; top: 100%; right: 0; min-width: 200px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 100; margin-top: 6px; }
+        .dropdown-content a { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.25rem; color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; letter-spacing: 0.1em; }
+        .dropdown-content a:hover { background-color: rgba(145, 70, 255, 0.15); color: var(--twitch); }
+        .dropdown:hover .dropdown-content, .dropdown:focus-within .dropdown-content { display: block; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
+        .mobile-nav { display: none; padding: 1.5rem 1rem; border-top: 1px solid var(--border); max-height: 75vh; overflow-y: auto; }
+        .mobile-nav.open { display: block; }
+        .mobile-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; font-family: 'Chakra Petch', sans-serif; letter-spacing: 0.1em; color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid var(--border); }
+        .mobile-nav a:last-child { border-bottom: none; }
+        .mobile-nav a[href="impressum.html"] { color: var(--twitch); font-weight: 600; }
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .coming-soon-box {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            padding: 3rem 2.5rem;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+        }
+        .coming-soon-box h1 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--twitch);
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+        }
+        .coming-soon-box .glow {
+            text-shadow: 0 0 25px rgba(145, 70, 255, 0.6);
+        }
+        .coming-soon-box p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background-color: var(--twitch);
+            color: white;
+            text-decoration: none;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background-color: var(--twitch-dim);
+            transform: translateY(-2px);
+        }
+        footer { background-color: var(--base); border-top: 1px solid var(--border); padding: 1.5rem 0; }
+        .footer-content { max-width: 1600px; margin: 0 auto; padding: 0 1rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        @media (min-width: 768px) { .footer-content { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .footer-left { display: flex; align-items: center; gap: 0.75rem; }
+        .footer-left img { height: 32px; width: auto; }
+        .footer-left span { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a { color: var(--text-muted); transition: color 0.3s; }
+        .footer-links a:hover { color: var(--twitch); }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .coming-soon-box h1 { font-size: 2.8rem; }
+            .coming-soon-box { padding: 2.5rem 1.8rem; }
+        }
+        .discord-icon { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body class="grid-bg">
+
+<!-- Navigation -->
+<nav class="nav glass">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake Logo">
+            <span class="logo-text">
+                <span class="venom">VENOM</span><span class="snake">SNAKE</span>
+            </span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">
+                <i data-lucide="tv" style="width: 16px; height: 16px;"></i>
+                STREAM
+            </a>
+            <div class="dropdown">
+                <button class="dropdown-btn nav-link" type="button">
+                    <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
+                    MEHR
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="index.html#about">
+                        <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                        ÜBER MICH
+                    </a>
+                    <a href="kontakt.html">
+                        <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                        KONTAKT
+                    </a>
+                    <a href="musikplayer.html">
+                        <i data-lucide="music" style="width: 16px; height: 16px;"></i>
+                        MUSIK PLAYER
+                    </a>
+                    <a href="donation.html">
+                        <i data-lucide="heart-handshake" style="width: 16px; height: 16px;"></i>
+                        SPENDEN
+                    </a>
+                    <a href="impressum.html" style="color: var(--twitch);">
+                        <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                        IMPRESSUM
+                    </a>
+                </div>
+            </div>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">
+                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                DISCORD
+            </a>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+        </button>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+        <a href="index.html">
+            <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
+            STREAM
+        </a>
+        <a href="https://discord.gg/SFzk4YxgRv" target="_blank">
+            <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            DISCORD
+        </a>
+        <a href="index.html#about">
+            <i data-lucide="user" style="width: 18px; height: 18px;"></i>
+            ÜBER MICH
+        </a>
+        <a href="kontakt.html">
+            <i data-lucide="mail" style="width: 18px; height: 18px;"></i>
+            KONTAKT
+        </a>
+        <a href="musikplayer.html">
+            <i data-lucide="music" style="width: 18px; height: 18px;"></i>
+            MUSIK PLAYER
+        </a>
+        <a href="donation.html">
+            <i data-lucide="heart-handshake" style="width: 18px; height: 18px;"></i>
+            SPENDEN
+        </a>
+        <a href="impressum.html">
+            <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
+            IMPRESSUM
+        </a>
+    </div>
+</nav>
+
+<!-- Hauptinhalt – Coming Soon -->
+<main class="main-content">
+    <div class="coming-soon-box cut-corner">
+        <h1><span class="glow">IMPRESSUM</span></h1>
+        <p>Diese Seite kommt demnächst!</p>
+        <p>Das vollständige Impressum wird in Kürze hier verfügbar sein.<br>
+           Bis dahin findest du alle wichtigen Infos auf der Hauptseite.</p>
+        
+        <a href="index.html" class="back-link">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+            Zurück zur Hauptseite
+        </a>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-left">
+            <img src="https://customer-assets.emergentagent.com/job_e904fb4f-623b-4db4-a233-abfe9217b422/artifacts/5y81atfn_DogVenomsnake.png" alt="VenomSnake">
+            <span>© 2026 VenomSnake_Twitch</span>
+        </div>
+        <div class="footer-links">
+            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank">
+                <i data-lucide="tv" style="width: 20px; height: 20px;"></i>
+            </a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank">
+                <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            </a>
+        </div>
+        <div class="footer-version">
+            <span>Version 1.4</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    lucide.createIcons();
+    
+    function toggleMobileMenu() {
+        document.getElementById('mobileNav').classList.toggle('open');
+    }
+</script>
+
+</body>
+</html>

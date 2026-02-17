@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VenomSnake Spenden</title>
+    <!-- Favicon -->
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
+<title>Musikplayer Test – Radiomodus</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 body {
@@ -16,7 +18,6 @@ body {
     text-align: center;
     overflow: hidden;
 }
-/* HEADER */
 header {
     position: fixed;
     top: 0;
@@ -36,19 +37,14 @@ header .logo-container {
     align-items: center;
     gap: 10px;
 }
-header .logo-container img {
-    height: 45px;
-    object-fit: contain;
-}
+header .logo-container img { height: 45px; object-fit: contain; }
 header .logo-container span {
     font-size: 24px;
     font-weight: bold;
     color: #9146ff;
     text-shadow: 0px 0px 8px #00ffff;
 }
-header .logo-container span .snake {
-    color: #00ffff;
-}
+header .logo-container span .snake { color: #00ffff; }
 header nav ul {
     list-style: none;
     display: flex;
@@ -66,7 +62,6 @@ header nav ul li a:hover {
     color: #88f0ff;
     text-shadow: 0 0 6px #88f0ff;
 }
-/* OVERLAY */
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
@@ -77,22 +72,9 @@ header nav ul li a:hover {
     padding-top: 100px;
     box-sizing: border-box;
 }
-h1 {
-    font-size: 38px;
-    margin: 0;
-    color: #ffffff;
-    text-shadow: 0 0 12px #00ffff, 0 0 24px #000044;
-}
-#infoText {
-    margin-top: 8px;
-    font-size: 16px;
-    color: #c0c0ff;
-}
-/* Player UI */
-audio {
-    width: 100%;
-    margin-top: 16px;
-}
+h1 { font-size: 38px; margin: 0; color: #ffffff; text-shadow: 0 0 12px #00ffff, 0 0 24px #000044; }
+#infoText { margin-top: 8px; font-size: 16px; color: #c0c0ff; }
+audio { width: 100%; margin-top: 16px; }
 button, select, #downloadBtn {
     margin: 8px;
     padding: 10px 16px;
@@ -104,20 +86,8 @@ button, select, #downloadBtn {
     cursor: pointer;
     transition: 0.3s;
 }
-button:hover, #downloadBtn:hover, select:hover {
-    border-color: #9146ff;
-    background: rgba(20,20,80,0.9);
-    color: #00ffff;
-}
-/* Progress + Controls */
-#songControls, #controls, #progressContainer {
-    margin-top: 12px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-/* Fortschrittsbalken mit Farbverlauf */
+button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; background: rgba(20,20,80,0.9); color: #00ffff; }
+#songControls, #controls, #progressContainer { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 #progress {
     -webkit-appearance: none;
     appearance: none;
@@ -128,7 +98,6 @@ button:hover, #downloadBtn:hover, select:hover {
     cursor: pointer;
     outline: none;
 }
-/* Webkit-Slider-Thumb */
 #progress::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -140,27 +109,9 @@ button:hover, #downloadBtn:hover, select:hover {
     cursor: pointer;
     margin-top: -3px;
 }
-/* Firefox-Thumb */
-#progress::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #00ffff;
-    cursor: pointer;
-}
-#volumeContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-#volumeContainer input[type="range"] {
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical;
-    width: 8px;
-    height: 100px;
-}
-/* Song News Box */
+#progress::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #ffffff; border: 2px solid #00ffff; cursor: pointer; }
+#volumeContainer { display: flex; flex-direction: column; align-items: center; }
+#volumeContainer input[type="range"] { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; }
 #infoBox {
     margin-top: 20px;
     background: rgba(10,10,30,0.9);
@@ -171,25 +122,11 @@ button:hover, #downloadBtn:hover, select:hover {
     color: #c8c8ff;
     text-align: left;
 }
-/* Zurück Button */
-#backBtn {
-    margin-bottom: 16px;
-    padding: 8px 14px;
-    font-size: 14px;
-    border: 2px solid #00ffff;
-    border-radius: 6px;
-    background: rgba(0,0,50,0.8);
-    color: #fff;
-    cursor: pointer;
-}
-#backBtn:hover {
-    background: rgba(20,20,80,0.9);
-    color: #00ffff;
-}
+#backBtn { margin-bottom: 16px; padding: 8px 14px; font-size: 14px; border: 2px solid #00ffff; border-radius: 6px; background: rgba(0,0,50,0.8); color: #fff; cursor: pointer; }
+#backBtn:hover { background: rgba(20,20,80,0.9); color: #00ffff; }
 </style>
 </head>
 <body>
-<!-- HEADER -->
 <header>
     <div class="logo-container">
         <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
@@ -198,16 +135,15 @@ button:hover, #downloadBtn:hover, select:hover {
     <nav>
         <ul>
             <li><a href="index.html">Startseite</a></li>
-            <li><a href="donation.html">Spenden</a></li>
+            <li><a href="musikplayer.html">Musikplayer</a></li>
             <li><a href="kontakt.html">Kontakt</a></li>
         </ul>
     </nav>
 </header>
 
-<!-- OVERLAY -->
 <div id="overlay">
-    <h1>VenomSnake Spenden</h1>
-    <div id="infoText">Unterstütze den Kanal – danke für deine Hilfe!</div>
+    <h1>Musikplayer</h1>
+    <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
     <audio id="audioPlayer"></audio>
 
@@ -223,10 +159,12 @@ button:hover, #downloadBtn:hover, select:hover {
             <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
             <option value="8">Bye Bye Beautiful</option>
             <option value="9">Kettenreaktion (Cover)</option>
-            <option value="10">Straße der Verdammnis</option> <!-- lesbarer Text -->
+            <option value="10">Straße der Verdammnis</option>
             <option value="11">Syphon Filter Synth Mix</option>
             <option value="12">VenomSnake Mode Intro song</option>
             <option value="13">Hell March [Retaliation Cover]</option>
+            <option value="14">Dance hall Dance(Cover)</option>
+            <option value="15">Resident Evil 5 Desperate Escape Main Theme Music(Remix)</option>
         </select>
         <a id="downloadBtn" href="" download>Download</a>
         <div id="volumeContainer">
@@ -247,13 +185,14 @@ button:hover, #downloadBtn:hover, select:hover {
         <button onclick="stopSong()">⏹ Stop</button>
         <button onclick="nextSong()">⏭ Nächster</button>
         <button onclick="toggleFullscreen()">Vollbild</button>
+        <button onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
 
     <div id="infoBox">
         <h3>Song News</h3>
-        <p>Neu: Hell March [Retaliation Cover]</p>
-        <p>Neu: Syphon Filter Synth Mix</p>
-        <p>Weitere Tracks folgen bald.</p>
+        <p>Neue Songs Sind Da!</p>
+        <p>Neu: Dance hall Dance(Cover)</p>
+        <p>Neu: Resident Evil 5 Desperate Escape Main Theme Music(Remix)</p>
     </div>
 </div>
 
@@ -269,13 +208,17 @@ const songs = [
     "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
     "ByeByeBeautiful.mp3",
     "Kettenreaktion (Cover).mp3",
-    "Strasse der Verdammnis.mp3",   // ← exakt dein neuer Dateiname
+    "Strasse der Verdammnis.mp3",
     "Syphon Filter Synth Mix.mp3",
     "VenomSnake Mode Intro song.mp3",
-    "Hell March [Retaliation Cover].mp3"
+    "Hell March [Retaliation Cover].mp3",
+    "Dance hall Dance(Cover).mp3",
+    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3"
 ];
 
 let currentIndex = 0;
+let radioMode = false;
+
 const audio = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
@@ -289,8 +232,6 @@ function loadSong(index) {
     currentIndex = index;
     const fileName = songs[index];
     audio.src = fileName;
-    console.log("Versuche zu laden → Dateiname:", fileName);
-    console.log("Vollständige URL:", window.location.origin + '/' + fileName);
     songSelect.value = index;
     downloadBtn.href = fileName;
     downloadBtn.setAttribute("download", fileName);
@@ -314,7 +255,11 @@ function stopSong(){
 }
 
 function nextSong(){
-    loadSong((currentIndex + 1) % songs.length);
+    if(radioMode){
+        loadSong(Math.floor(Math.random() * songs.length));
+    } else {
+        loadSong((currentIndex + 1) % songs.length);
+    }
     audio.play();
     playPauseBtn.textContent = "⏸ Pause";
 }
@@ -329,6 +274,18 @@ function selectSong(){
     loadSong(parseInt(songSelect.value));
     audio.play();
     playPauseBtn.textContent = "⏸ Pause";
+}
+
+function toggleRadioMode(){
+    radioMode = !radioMode;
+    if(radioMode){
+        alert("Radio-Modus aktiviert! Songs werden zufällig abgespielt.");
+        loadSong(Math.floor(Math.random() * songs.length));
+        audio.play();
+        playPauseBtn.textContent = "⏸ Pause";
+    } else {
+        alert("Radio-Modus deaktiviert.");
+    }
 }
 
 function toggleFullscreen(){
