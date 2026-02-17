@@ -87,6 +87,14 @@ button, select, #downloadBtn {
     transition: 0.3s;
 }
 button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; background: rgba(20,20,80,0.9); color: #00ffff; }
+button:disabled, button:disabled:hover {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #555;
+    color: #888;
+    background: rgba(0,0,30,0.7);
+    box-shadow: none;
+}
 #songControls, #controls, #progressContainer { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 #progress {
     -webkit-appearance: none;
@@ -122,12 +130,8 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
     color: #c8c8ff;
     text-align: left;
 }
-#backBtn { margin-bottom: 16px; padding: 8px 14px; font-size: 14px; border: 2px solid #00ffff; border-radius: 6px; background: rgba(0,0,50,0.8); color: #fff; cursor: pointer; }
-#backBtn:hover { background: rgba(20,20,80,0.9); color: #00ffff; }
 
-/* ──────────────────────────────────────────────── */
-/*           Styling für den neuen Loop-Button      */
-/* ──────────────────────────────────────────────── */
+/* Loop-Button Styling */
 .loop-btn {
     width: 38px;
     height: 38px;
@@ -143,20 +147,17 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
     cursor: pointer;
     transition: all 0.25s;
 }
-
-.loop-btn:hover {
+.loop-btn:hover:not(:disabled) {
     background: rgba(20,20,80,0.9);
     color: #00ffff;
     border-color: #9146ff;
 }
-
 .loop-btn.active {
     color: #ffdd00;
     background: rgba(80,60,0,0.5);
     border-color: #ffdd00;
     box-shadow: 0 0 12px #ffdd00aa;
 }
-
 #progressContainer {
     gap: 10px;
     align-items: center;
@@ -214,7 +215,7 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
     <div id="progressContainer">
         <span id="timeLabel">0:00</span>
         <input type="range" id="progress" min="0" max="100" value="0">
-        <button id="loopBtn" type="button" title="Aktuellen Song wiederholen" class="loop-btn">🔁</button>
+        <button id="loopBtn" type="button" title="Aktuellen Song wiederholen (nicht im Radio-Modus möglich)" class="loop-btn">🔁</button>
         <span id="durationLabel">0:00</span>
     </div>
     <div id="controls">
@@ -223,7 +224,7 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
         <button onclick="stopSong()">⏹ Stop</button>
         <button onclick="nextSong()">⏭ Nächster</button>
         <button onclick="toggleFullscreen()">Vollbild</button>
-        <button onclick="toggleRadioMode()">🎧 Radio-Modus</button>
+        <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
     <div id="infoBox">
         <h3>Song News</h3>
@@ -266,6 +267,17 @@ const durationLabel = document.getElementById("durationLabel");
 const volumeSlider = document.getElementById("volumeSlider");
 const downloadBtn = document.getElementById("downloadBtn");
 const loopBtn = document.getElementById("loopBtn");
+const radioToggle = document.getElementById("radioToggle");
+
+function updateLoopButtonState() {
+    if (radioMode) {
+        loopCurrent = false;
+        loopBtn.classList.remove("active");
+        loopBtn.disabled = true;
+    } else {
+        loopBtn.disabled = false;
+    }
+}
 
 function loadSong(index) {
     currentIndex = index;
@@ -277,9 +289,9 @@ function loadSong(index) {
     document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
 }
 
-function togglePlay(){
-    if(audio.paused){
-        audio.play().catch(e => console.error("Play-Fehler (Browser-Block?):", e));
+function togglePlay() {
+    if (audio.paused) {
+        audio.play().catch(e => console.error("Play-Fehler:", e));
         playPauseBtn.textContent = "⏸ Pause";
     } else {
         audio.pause();
@@ -287,14 +299,14 @@ function togglePlay(){
     }
 }
 
-function stopSong(){
+function stopSong() {
     audio.pause();
     audio.currentTime = 0;
     playPauseBtn.textContent = "▶ Play";
 }
 
-function nextSong(){
-    if(radioMode){
+function nextSong() {
+    if (radioMode) {
         loadSong(Math.floor(Math.random() * songs.length));
     } else {
         loadSong((currentIndex + 1) % songs.length);
@@ -303,48 +315,54 @@ function nextSong(){
     playPauseBtn.textContent = "⏸ Pause";
 }
 
-function prevSong(){
+function prevSong() {
+    if (radioMode) return; // im Radio-Modus kein Zurück
     loadSong((currentIndex - 1 + songs.length) % songs.length);
     audio.play();
     playPauseBtn.textContent = "⏸ Pause";
 }
 
-function selectSong(){
+function selectSong() {
     loadSong(parseInt(songSelect.value));
     audio.play();
     playPauseBtn.textContent = "⏸ Pause";
 }
 
-function toggleRadioMode(){
+function toggleRadioMode() {
     radioMode = !radioMode;
-    if(radioMode){
-        alert("Radio-Modus aktiviert! Songs werden zufällig abgespielt.");
+    
+    if (radioMode) {
+        alert("Radio-Modus aktiviert!\nSongs werden nun zufällig abgespielt.");
+        loopCurrent = false;
+        updateLoopButtonState();
         loadSong(Math.floor(Math.random() * songs.length));
         audio.play();
         playPauseBtn.textContent = "⏸ Pause";
+        radioToggle.textContent = "🎧 Radio aus";
     } else {
-        alert("Radio-Modus deaktiviert.");
+        alert("Radio-Modus deaktiviert.\nNormale Playlist-Wiedergabe.");
+        updateLoopButtonState();
+        radioToggle.textContent = "🎧 Radio-Modus";
     }
 }
 
-function toggleFullscreen(){
-    if(!document.fullscreenElement){
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
     } else {
         document.exitFullscreen();
     }
 }
 
-// ────────────────────────────────────────────────
-//             Loop-Button Funktionalität
-// ────────────────────────────────────────────────
+// Loop-Button
 loopBtn.addEventListener("click", () => {
+    if (radioMode) return;
     loopCurrent = !loopCurrent;
     loopBtn.classList.toggle("active", loopCurrent);
 });
 
 audio.addEventListener("timeupdate", () => {
-    if(!audio.duration) return;
+    if (!audio.duration) return;
     progress.value = (audio.currentTime / audio.duration) * 100;
     timeLabel.textContent = formatTime(audio.currentTime);
     durationLabel.textContent = formatTime(audio.duration);
@@ -358,16 +376,15 @@ volumeSlider.addEventListener("input", () => {
     audio.volume = volumeSlider.value;
 });
 
-function formatTime(time){
-    if(isNaN(time)) return "0:00";
+function formatTime(time) {
+    if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60).toString().padStart(2, "0");
     return minutes + ":" + seconds;
 }
 
-// Wichtig: Ende-Logik mit Loop-Bedingung
 audio.addEventListener("ended", () => {
-    if (loopCurrent) {
+    if (loopCurrent && !radioMode) {
         audio.currentTime = 0;
         audio.play();
     } else {
@@ -375,7 +392,9 @@ audio.addEventListener("ended", () => {
     }
 });
 
+// Initialisierung
 loadSong(0);
+updateLoopButtonState();
 </script>
 </body>
 </html>
