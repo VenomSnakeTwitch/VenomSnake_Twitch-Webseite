@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>Impressum - VenomSnake_Twitch</title>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -42,6 +42,10 @@
             background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
             background-size: 40px 40px;
         }
+
+        .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
+        .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
+        .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
 
         /* ──── LOGIN OVERLAY ──────────────────────────────────────── */
         #login-overlay {
@@ -125,15 +129,12 @@
             min-height: 1.3rem;
         }
 
-        /* Dein restlicher Style (angepasst & vervollständigt) */
-        .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
-        .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
-        .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
         .page { min-height: 100vh; padding-top: 96px; padding-bottom: 4rem; }
         .container { max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; }
         .page-header { margin-bottom: 3rem; text-align: center; }
         .page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 3.2rem; text-transform: uppercase; letter-spacing: -0.025em; }
         .page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 1rem; letter-spacing: 0.25em; color: var(--text-secondary); margin-top: 0.75rem; }
+
         .impressum-content {
             max-width: 900px;
             margin: 0 auto;
@@ -142,6 +143,7 @@
             padding: 3rem 2.5rem;
             border-radius: 12px;
         }
+
         .impressum-content h2 {
             font-family: 'Chakra Petch', sans-serif;
             color: var(--twitch);
@@ -150,18 +152,24 @@
             border-bottom: 2px solid var(--border);
             padding-bottom: 0.75rem;
         }
+
         .impressum-content p, .impressum-content address {
             font-size: 1.125rem;
             margin-bottom: 1.5rem;
             color: var(--text-primary);
         }
-        /* ... hier kommen deine restlichen Styles rein (nav, footer, mobile etc.) ... */
-        /* Kopiere sie einfach aus deiner alten Datei wieder rein, falls sie fehlen */
+
+        .impressum-content address {
+            font-style: normal;
+            line-height: 1.9;
+        }
+
+        /* Hier fehlen noch deine Nav-, Footer-, Mobile-Styles etc. – kopiere sie aus deiner Originaldatei rein! */
     </style>
 </head>
 <body class="grid-bg">
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN OVERLAY -->
 <div id="login-overlay">
     <div class="login-box">
         <h2>SECURED ACCESS</h2>
@@ -174,14 +182,10 @@
     </div>
 </div>
 
-<!-- Navigation – kopiere hier deinen kompletten <nav>-Block rein -->
-<!-- (damit die Seite wieder vollständig aussieht) -->
-<nav class="nav glass">
-    <!-- ... dein Navigation-Code hier einfügen ... -->
-    <!-- z. B. Logo, Links, Discord-Button, Mobile-Menu etc. -->
-</nav>
+<!-- Navigation – HIER DEINEN ORIGINAL NAV-CODE EINFÜGEN -->
+<!-- <nav class="nav glass"> ... </nav> -->
 
-<!-- Hauptinhalt – wird erst nach richtigem Passwort sichtbar -->
+<!-- Hauptinhalt -->
 <main class="page" id="main-content" style="display: none; opacity: 0; transition: opacity 0.8s ease;">
     <div class="container">
         <div class="page-header">
@@ -192,21 +196,24 @@
         <div class="impressum-content cut-corner">
             <h2>Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG)</h2>
             <address>
-                <strong>[Dein Vor- und Nachname]</strong><br>
-                [Deine Straße und Hausnummer]<br>
-                [PLZ Ort]<br><br>
-                E-Mail: <a href="mailto:[deine@email.de]" style="color: var(--tactical-blue);">[deine@email.de]</a><br>
-                Telefon: [Deine Telefonnummer]<br>
+                <strong>Kevin Hilgert</strong><br>
+                Göbensiedlung 3/2<br>
+                56077 Koblenz<br><br>
+                E-Mail: <a href="mailto:VenomSnakeTwitch@gmail.com" style="color: var(--tactical-blue);">VenomSnakeTwitch@gmail.com</a><br>
+                Telefon: <a href="tel:+4915120519920" style="color: var(--tactical-blue);">+49 151 20519920</a>
             </address>
 
             <h2>Vertretungsberechtigte Person</h2>
-            <p>[Dein Vor- und Nachname] (Inhaber / Einzelunternehmer)</p>
+            <p><strong>Kevin Hilgert</strong> (Webseiten Betreiber)</p>
 
             <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
-            <p>[Dein Vor- und Nachname]<br>[gleiche Adresse wie oben]</p>
+            <p>Kevin Hilgert<br>
+            Göbensiedlung 3/2<br>
+            56077 Koblenz</p>
 
             <h2>Hinweis zur Online-Streitbeilegung</h2>
-            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" style="color: var(--tactical-blue);">https://ec.europa.eu/consumers/odr/</a><br>Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" style="color: var(--tactical-blue);">https://ec.europa.eu/consumers/odr/</a><br>
+            Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 
             <h2>Haftungsausschluss & Urheberrecht</h2>
             <p>Die Inhalte dieser Seiten wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr.</p>
@@ -215,21 +222,23 @@
     </div>
 </main>
 
-<!-- Footer – ebenfalls wieder reinkopieren, falls weg -->
-<footer>
-    <!-- ... dein Footer-Code hier ... -->
-</footer>
+<!-- Footer – HIER DEINEN ORIGINAL FOOTER-CODE EINFÜGEN -->
+<!-- <footer> ... </footer> -->
 
 <script>
     lucide.createIcons();
 
-    // ──── PASSWORT-LOGIK ────────────────────────────────────────
+    function toggleMobileMenu() {
+        document.getElementById('mobileNav').classList.toggle('open');
+    }
+
+    // Passwort-Logik
     const CORRECT_PW = "VenomSnake";
-    const overlay   = document.getElementById('login-overlay');
-    const main      = document.getElementById('main-content');
-    const input     = document.getElementById('password');
-    const btn       = document.getElementById('login-btn');
-    const error     = document.getElementById('error-msg');
+    const overlay = document.getElementById('login-overlay');
+    const main = document.getElementById('main-content');
+    const input = document.getElementById('password');
+    const btn = document.getElementById('login-btn');
+    const error = document.getElementById('error-msg');
 
     function tryLogin() {
         if (input.value === CORRECT_PW) {
@@ -251,7 +260,7 @@
         if (e.key === 'Enter') tryLogin();
     });
 
-    // Direkt fokussieren beim Laden
+    // Direkt fokussieren
     input.focus();
 </script>
 
