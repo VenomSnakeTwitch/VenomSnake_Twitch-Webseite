@@ -124,6 +124,47 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
 }
 #backBtn { margin-bottom: 16px; padding: 8px 14px; font-size: 14px; border: 2px solid #00ffff; border-radius: 6px; background: rgba(0,0,50,0.8); color: #fff; cursor: pointer; }
 #backBtn:hover { background: rgba(20,20,80,0.9); color: #00ffff; }
+
+/* ──────────────────────────────────────────────── */
+/*           Styling für den neuen Loop-Button      */
+/* ──────────────────────────────────────────────── */
+.loop-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0 8px;
+    border: 2px solid #00ffff;
+    border-radius: 50%;
+    background: rgba(0,0,50,0.7);
+    color: #a0f0ff;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+.loop-btn:hover {
+    background: rgba(20,20,80,0.9);
+    color: #00ffff;
+    border-color: #9146ff;
+}
+
+.loop-btn.active {
+    color: #ffdd00;
+    background: rgba(80,60,0,0.5);
+    border-color: #ffdd00;
+    box-shadow: 0 0 12px #ffdd00aa;
+}
+
+#progressContainer {
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    max-width: 520px;
+    margin: 20px auto 12px auto;
+}
 </style>
 </head>
 <body>
@@ -140,13 +181,11 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
         </ul>
     </nav>
 </header>
-
 <div id="overlay">
     <h1>Musikplayer</h1>
     <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
     <audio id="audioPlayer"></audio>
-
     <div id="songControls">
         <select id="songSelect" onchange="selectSong()">
             <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
@@ -172,13 +211,12 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
             <span>Lautstärke</span>
         </div>
     </div>
-
     <div id="progressContainer">
         <span id="timeLabel">0:00</span>
         <input type="range" id="progress" min="0" max="100" value="0">
+        <button id="loopBtn" type="button" title="Aktuellen Song wiederholen" class="loop-btn">🔁</button>
         <span id="durationLabel">0:00</span>
     </div>
-
     <div id="controls">
         <button onclick="prevSong()">⏮ Vorheriger</button>
         <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
@@ -187,7 +225,6 @@ button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; backgrou
         <button onclick="toggleFullscreen()">Vollbild</button>
         <button onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
-
     <div id="infoBox">
         <h3>Song News</h3>
         <p>Neue Songs Sind Da!</p>
@@ -218,6 +255,7 @@ const songs = [
 
 let currentIndex = 0;
 let radioMode = false;
+let loopCurrent = false;
 
 const audio = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
@@ -227,6 +265,7 @@ const timeLabel = document.getElementById("timeLabel");
 const durationLabel = document.getElementById("durationLabel");
 const volumeSlider = document.getElementById("volumeSlider");
 const downloadBtn = document.getElementById("downloadBtn");
+const loopBtn = document.getElementById("loopBtn");
 
 function loadSong(index) {
     currentIndex = index;
@@ -296,6 +335,14 @@ function toggleFullscreen(){
     }
 }
 
+// ────────────────────────────────────────────────
+//             Loop-Button Funktionalität
+// ────────────────────────────────────────────────
+loopBtn.addEventListener("click", () => {
+    loopCurrent = !loopCurrent;
+    loopBtn.classList.toggle("active", loopCurrent);
+});
+
 audio.addEventListener("timeupdate", () => {
     if(!audio.duration) return;
     progress.value = (audio.currentTime / audio.duration) * 100;
@@ -318,7 +365,16 @@ function formatTime(time){
     return minutes + ":" + seconds;
 }
 
-audio.addEventListener("ended", nextSong);
+// Wichtig: Ende-Logik mit Loop-Bedingung
+audio.addEventListener("ended", () => {
+    if (loopCurrent) {
+        audio.currentTime = 0;
+        audio.play();
+    } else {
+        nextSong();
+    }
+});
+
 loadSong(0);
 </script>
 </body>
