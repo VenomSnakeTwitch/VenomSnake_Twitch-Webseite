@@ -38,19 +38,22 @@
             line-height: 1.8;
         }
 
-        /* ──────────────────────────────────────── */
-        /*          PASSWORT-LOGIN OVERLAY          */
-        /* ──────────────────────────────────────── */
+        .grid-bg {
+            background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* ──── LOGIN OVERLAY ──────────────────────────────────────── */
         #login-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(10, 11, 14, 0.96);
-            backdrop-filter: blur(8px);
+            background: rgba(10, 11, 14, 0.97);
+            backdrop-filter: blur(10px);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.5s ease;
         }
 
         #login-overlay.hidden {
@@ -66,88 +69,116 @@
             width: 100%;
             max-width: 420px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
         .login-box h2 {
             font-family: 'Chakra Petch', sans-serif;
             color: var(--twitch);
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            letter-spacing: 0.08em;
+            font-size: 2.4rem;
+            margin-bottom: 1.2rem;
+            letter-spacing: 0.1em;
         }
 
         .login-box input {
             width: 100%;
-            padding: 0.9rem 1.2rem;
-            margin: 1rem 0 1.5rem;
-            background: var(--overlay);
+            padding: 1rem;
+            margin: 1.2rem 0;
+            background: #0f1117;
             border: 1px solid var(--border);
             border-radius: 8px;
-            color: var(--text-primary);
+            color: white;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             text-align: center;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
         }
 
         .login-box input:focus {
             outline: none;
             border-color: var(--twitch);
-            box-shadow: 0 0 0 3px rgba(145, 70, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(145,70,255,0.3);
         }
 
         #login-btn {
             background: var(--twitch);
             color: white;
             border: none;
-            padding: 0.9rem 2rem;
+            padding: 1rem 2.5rem;
             font-family: 'Chakra Petch', sans-serif;
-            font-size: 1.1rem;
-            letter-spacing: 0.12em;
+            font-size: 1.15rem;
+            letter-spacing: 0.15em;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
         }
 
         #login-btn:hover {
             background: var(--twitch-dim);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
 
         #error-msg {
             color: #ff5555;
             font-size: 0.95rem;
-            margin-top: 1rem;
-            min-height: 1.4rem;
+            margin-top: 1.2rem;
+            min-height: 1.3rem;
         }
 
-        /* Restlicher Style (unverändert) */
-        .grid-bg { background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
+        /* Dein restlicher Style (angepasst & vervollständigt) */
         .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
         .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
         .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
-        /* ... der Rest deines bisherigen CSS ... bleibt gleich ... */
+        .page { min-height: 100vh; padding-top: 96px; padding-bottom: 4rem; }
+        .container { max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; }
+        .page-header { margin-bottom: 3rem; text-align: center; }
+        .page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 3.2rem; text-transform: uppercase; letter-spacing: -0.025em; }
+        .page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 1rem; letter-spacing: 0.25em; color: var(--text-secondary); margin-top: 0.75rem; }
+        .impressum-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            padding: 3rem 2.5rem;
+            border-radius: 12px;
+        }
+        .impressum-content h2 {
+            font-family: 'Chakra Petch', sans-serif;
+            color: var(--twitch);
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1.25rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.75rem;
+        }
+        .impressum-content p, .impressum-content address {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        /* ... hier kommen deine restlichen Styles rein (nav, footer, mobile etc.) ... */
+        /* Kopiere sie einfach aus deiner alten Datei wieder rein, falls sie fehlen */
     </style>
 </head>
 <body class="grid-bg">
 
-<!-- ──── PASSWORT-SCREEN ──────────────────────────────────────── -->
+<!-- LOGIN SCREEN -->
 <div id="login-overlay">
     <div class="login-box">
-        <h2>ACCESS GRANTED?</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-            VenomSnake autorisiert
+        <h2>SECURED ACCESS</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">
+            VenomSnake autorisiert – Passwort eingeben
         </p>
-        <input type="password" id="password" placeholder="PASSWORT EINGEBEN" autocomplete="off">
-        <button id="login-btn">LOGIN</button>
+        <input type="password" id="password" placeholder="PASSWORT" autocomplete="off">
+        <button id="login-btn">→ EINLOGGEN</button>
         <div id="error-msg"></div>
     </div>
 </div>
 
-<!-- Navigation (wie vorher) -->
+<!-- Navigation – kopiere hier deinen kompletten <nav>-Block rein -->
+<!-- (damit die Seite wieder vollständig aussieht) -->
 <nav class="nav glass">
-    <!-- ... dein kompletter Nav-Code bleibt unverändert ... -->
+    <!-- ... dein Navigation-Code hier einfügen ... -->
+    <!-- z. B. Logo, Links, Discord-Button, Mobile-Menu etc. -->
 </nav>
 
 <!-- Hauptinhalt – wird erst nach richtigem Passwort sichtbar -->
@@ -157,60 +188,71 @@
             <h1><span class="glow-text" style="color: var(--twitch);">IMPRESSUM</span></h1>
             <p class="subtitle">ANBIETERKENNZEICHNUNG NACH § 5 DDG</p>
         </div>
+
         <div class="impressum-content cut-corner">
-            <!-- ... dein gesamter Impressum-Inhalt bleibt gleich ... -->
+            <h2>Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG)</h2>
+            <address>
+                <strong>[Dein Vor- und Nachname]</strong><br>
+                [Deine Straße und Hausnummer]<br>
+                [PLZ Ort]<br><br>
+                E-Mail: <a href="mailto:[deine@email.de]" style="color: var(--tactical-blue);">[deine@email.de]</a><br>
+                Telefon: [Deine Telefonnummer]<br>
+            </address>
+
+            <h2>Vertretungsberechtigte Person</h2>
+            <p>[Dein Vor- und Nachname] (Inhaber / Einzelunternehmer)</p>
+
+            <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+            <p>[Dein Vor- und Nachname]<br>[gleiche Adresse wie oben]</p>
+
+            <h2>Hinweis zur Online-Streitbeilegung</h2>
+            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" style="color: var(--tactical-blue);">https://ec.europa.eu/consumers/odr/</a><br>Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+
+            <h2>Haftungsausschluss & Urheberrecht</h2>
+            <p>Die Inhalte dieser Seiten wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr.</p>
+            <p>Alle innerhalb dieses Angebots genannten und ggf. durch Dritte geschützten Marken- und Warenzeichen unterliegen uneingeschränkt den Bestimmungen des jeweils gültigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigentümer.</p>
         </div>
     </div>
 </main>
 
-<!-- Footer -->
+<!-- Footer – ebenfalls wieder reinkopieren, falls weg -->
 <footer>
-    <!-- ... dein Footer bleibt gleich ... -->
+    <!-- ... dein Footer-Code hier ... -->
 </footer>
 
 <script>
     lucide.createIcons();
 
-    function toggleMobileMenu() {
-        document.getElementById('mobileNav').classList.toggle('open');
-    }
+    // ──── PASSWORT-LOGIK ────────────────────────────────────────
+    const CORRECT_PW = "VenomSnake";
+    const overlay   = document.getElementById('login-overlay');
+    const main      = document.getElementById('main-content');
+    const input     = document.getElementById('password');
+    const btn       = document.getElementById('login-btn');
+    const error     = document.getElementById('error-msg');
 
-    // Passwort-Logik
-    const correctPassword = "VenomSnake";
-    const loginOverlay = document.getElementById('login-overlay');
-    const mainContent = document.getElementById('main-content');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('login-btn');
-    const errorMsg = document.getElementById('error-msg');
-
-    function checkPassword() {
-        if (passwordInput.value === correctPassword) {
-            loginOverlay.classList.add('hidden');
+    function tryLogin() {
+        if (input.value === CORRECT_PW) {
+            overlay.classList.add('hidden');
             setTimeout(() => {
-                loginOverlay.style.display = 'none';
-                mainContent.style.display = 'block';
-                setTimeout(() => {
-                    mainContent.style.opacity = '1';
-                }, 100);
-            }, 600);
+                overlay.style.display = 'none';
+                main.style.display = 'block';
+                setTimeout(() => main.style.opacity = '1', 50);
+            }, 500);
         } else {
-            errorMsg.textContent = "Falsches Passwort. Versuch's nochmal.";
-            passwordInput.value = '';
-            passwordInput.focus();
+            error.textContent = "Falsches Passwort – erneut versuchen";
+            input.value = "";
+            input.focus();
         }
     }
 
-    loginBtn.addEventListener('click', checkPassword);
-
-    // Enter-Taste auch möglich
-    passwordInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            checkPassword();
-        }
+    btn.addEventListener('click', tryLogin);
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') tryLogin();
     });
 
-    // Optional: Fokus direkt setzen
-    passwordInput.focus();
+    // Direkt fokussieren beim Laden
+    input.focus();
 </script>
 
 </body>
