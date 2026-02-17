@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
 <title>Musikplayer Test – Radiomodus</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
 body {
     margin: 0;
     padding: 0;
@@ -130,7 +131,6 @@ button:disabled, button:disabled:hover {
     color: #c8c8ff;
     text-align: left;
 }
-
 /* Loop-Button Styling */
 .loop-btn {
     width: 38px;
@@ -166,9 +166,69 @@ button:disabled, button:disabled:hover {
     max-width: 520px;
     margin: 20px auto 12px auto;
 }
+
+/* ────────────────────────────────────────────── */
+/*          Light / Dark Mode Ergänzung           */
+/* ────────────────────────────────────────────── */
+[data-theme="light"] #overlay {
+    background: rgba(245,245,255,0.88);
+}
+[data-theme="light"] header {
+    background: rgba(255,255,255,0.75);
+}
+[data-theme="light"] body {
+    color: #1a1a40;
+}
+[data-theme="light"] #infoText {
+    color: #3a3a70;
+}
+[data-theme="light"] h1,
+[data-theme="light"] #currentSong {
+    color: #1a1a40;
+    text-shadow: 0 0 8px rgba(65,105,225,0.5);
+}
+[data-theme="light"] button,
+[data-theme="light"] select,
+[data-theme="light"] #downloadBtn {
+    background: rgba(230,230,255,0.9);
+    border-color: #4169e1;
+    color: #1a1a40;
+}
+[data-theme="light"] button:hover,
+[data-theme="light"] #downloadBtn:hover,
+[data-theme="light"] select:hover {
+    background: rgba(210,210,255,0.95);
+    border-color: #6a0dad;
+    color: #000033;
+}
+[data-theme="light"] .loop-btn {
+    border-color: #4169e1;
+    background: rgba(230,230,255,0.8);
+    color: #1a1a40;
+}
+[data-theme="light"] .loop-btn:hover:not(:disabled) {
+    border-color: #6a0dad;
+    background: rgba(210,210,255,0.9);
+}
+[data-theme="light"] .loop-btn.active {
+    border-color: #cc9900;
+    color: #cc9900;
+}
+
+/* Speziell für die Info-Box im Light-Modus */
+[data-theme="light"] #infoBox {
+    background: rgba(240, 240, 255, 0.92);
+    border: 1px solid #4169e1;
+    color: #1a1a40;
+}
+[data-theme="light"] #infoBox h3,
+[data-theme="light"] #infoBox p {
+    color: #1a1a40;
+}
 </style>
 </head>
 <body>
+
 <header>
     <div class="logo-container">
         <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
@@ -181,7 +241,11 @@ button:disabled, button:disabled:hover {
             <li><a href="kontakt.html">Kontakt</a></li>
         </ul>
     </nav>
+    <button id="themeBtn" onclick="toggleTheme()" style="padding: 6px 12px; font-size: 1.2rem; background: rgba(145,70,255,0.3); border: 1px solid #9146ff; border-radius: 6px; color: white; cursor: pointer;">
+        🌙
+    </button>
 </header>
+
 <div id="overlay">
     <h1>VenomSnake_Twitch´s Musikplayer</h1>
     <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
@@ -253,11 +317,9 @@ const songs = [
     "Dance hall Dance(Cover).mp3",
     "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3"
 ];
-
 let currentIndex = 0;
 let radioMode = false;
 let loopCurrent = false;
-
 const audio = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
@@ -316,7 +378,7 @@ function nextSong() {
 }
 
 function prevSong() {
-    if (radioMode) return; // im Radio-Modus kein Zurück
+    if (radioMode) return;
     loadSong((currentIndex - 1 + songs.length) % songs.length);
     audio.play();
     playPauseBtn.textContent = "⏸ Pause";
@@ -330,7 +392,7 @@ function selectSong() {
 
 function toggleRadioMode() {
     radioMode = !radioMode;
-    
+   
     if (radioMode) {
         alert("Radio-Modus aktiviert!\nSongs werden nun zufällig abgespielt.");
         loopCurrent = false;
@@ -392,9 +454,30 @@ audio.addEventListener("ended", () => {
     }
 });
 
-// Initialisierung
-loadSong(0);
-updateLoopButtonState();
+// Theme Toggle
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', next);
+    
+    const btn = document.getElementById('themeBtn');
+    btn.textContent = next === 'light' ? '☀️' : '🌙';
+    
+    localStorage.setItem('playerTheme', next);
+}
+
+// Theme beim Laden wiederherstellen
+window.addEventListener('load', () => {
+    const saved = localStorage.getItem('playerTheme');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+    loadSong(0);
+    updateLoopButtonState();
+});
 </script>
 </body>
 </html>
