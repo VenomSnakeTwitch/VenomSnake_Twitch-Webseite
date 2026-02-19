@@ -122,7 +122,9 @@ button:disabled, button:disabled:hover {
 #volumeContainer { display: flex; flex-direction: column; align-items: center; }
 #volumeContainer input[type="range"] { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; }
 #infoBox {
-    margin-top: 20px;
+    display: flex;
+    gap: 20px; /* Abstand zwischen den Spalten */
+    justify-content: space-between;
     background: rgba(10,10,30,0.9);
     padding: 12px;
     border: 1px solid #00ffff;
@@ -130,7 +132,20 @@ button:disabled, button:disabled:hover {
     max-width: 600px;
     color: #c8c8ff;
     text-align: left;
+    flex-wrap: wrap; /* falls Bildschirm zu klein ist */
 }
+
+#infoBox .infoColumn {
+    flex: 1; /* beide Spalten gleich breit */
+    min-width: 200px; /* verhindert zu enge Darstellung auf kleinen Screens */
+}
+
+#infoBox .infoColumn h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #00ffff;
+}
+
 /* Loop-Button Styling */
 .loop-btn {
     width: 38px;
@@ -296,21 +311,23 @@ button:disabled, button:disabled:hover {
         <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
     <div id="infoBox">
-        <h3>Song News</h3>
-        <p>Neue Songs Sind Da!</p>
-        <p>Neu: Bleed out My Frend</p>
-        <p>Neu: Revange</p>
-        <p>Neu: Revange 2</p>
-        <p>Neu: Survival Of Death</p>
-        <p>Neu: Pile of Total Wreck</p>
-        
-        <p>Bald Erscheinende Songs</p>
+    <div class="infoColumn">
+        <h3>Neue Songs Sind Da!</h3>
+        <p>Bleed out My Frend</p>
+        <p>Revange</p>
+        <p>Revange 2</p>
+        <p>Survival Of Death</p>
+        <p>Pile of Total Wreck</p>
+    </div>
+    <div class="infoColumn">
+        <h3>Bald Erscheinende Songs</h3>
         <p>Industrial Breakdown</p>
         <p>Mental Breakdown</p>
         <p>Operation Stealth Destruction</p>
         <p>Desert Storm Ahead</p>
     </div>
 </div>
+
 
 <script>
 const songs = [
