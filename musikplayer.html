@@ -133,7 +133,25 @@ button:disabled, button:disabled:hover {
     color: #c8c8ff;
     text-align: left;
     flex-wrap: wrap; /* falls Bildschirm zu klein ist */
+    
+    height: 250px;          /* feste Höhe */
+    overflow-y: auto;       /* scrollen, wenn Inhalt größer wird */
+    scrollbar-width: thin;  /* für Firefox */
+    scrollbar-color: #00ffff rgba(10,10,30,0.7); /* Farbe des Scrollbars */
 }
+
+/* Optional: schöner Scrollbar für Webkit-Browser */
+#infoBox::-webkit-scrollbar {
+    width: 8px;
+}
+#infoBox::-webkit-scrollbar-thumb {
+    background-color: #00ffff;
+    border-radius: 4px;
+}
+#infoBox::-webkit-scrollbar-track {
+    background: rgba(10,10,30,0.7);
+}
+
 
 #infoBox .infoColumn {
     flex: 1; /* beide Spalten gleich breit */
