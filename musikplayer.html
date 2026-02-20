@@ -442,63 +442,66 @@ function drawRing() {
     
     analyser.getByteFrequencyData(dataArray);
     
-    // Durchschnittlicher Bass für Puls und Ring-Stärke
+    // Durchschnittlicher Bass für Gesamtintensität
     let totalBass = 0;
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 60; i++) {  // mehr Frequenzen für glatteren Puls
         totalBass += dataArray[i];
     }
-    const avgBass = totalBass / 40 / 255;  // 0 bis 1
+    const avgBass = totalBass / 60 / 255;  // 0 bis 1
     
-    // Logo-Größe pulsiert mit Bass
-    const logoSizeBase = Math.min(canvas.width, canvas.height) * 0.35;
-    const logoPulse = logoSizeBase * (1 + avgBass * 0.4);
+    // Logo-Größe pulsiert
+    const logoBaseSize = Math.min(canvas.width, canvas.height) * 0.32;
+    const logoSize = logoBaseSize * (1 + avgBass * 0.35);
     
     // Logo zeichnen
     if (logoImg.complete) {
-        ctx.shadowBlur = 40 + avgBass * 80;
-        ctx.shadowColor = `rgba(0, 255, 255, ${0.5 + avgBass * 0.5})`;
-        ctx.drawImage(logoImg, centerX - logoPulse/2, centerY - logoPulse/2, logoPulse, logoPulse);
+        ctx.shadowBlur = 35 + avgBass * 70;
+        ctx.shadowColor = `rgba(0, 255, 255, ${0.4 + avgBass * 0.6})`;
+        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
     }
     
-    // Ring um das Logo
-    const ringRadius = logoPulse * 0.55 + avgBass * logoPulse * 0.35;
-    const ringThickness = 8 + avgBass * 20;
+    // Basis-Ring-Radius (direkt um das Logo)
+    const ringRadius = logoSize * 0.58;
     
-    // Farbverlauf für den Ring (von Cyan zu Lila)
-    const gradient = ctx.createRadialGradient(
+    // Geschlossener Ring (durchgehend)
+    const ringThickness = 6 + avgBass * 18;
+    const ringGradient = ctx.createRadialGradient(
         centerX, centerY, ringRadius - ringThickness/2,
         centerX, centerY, ringRadius + ringThickness/2
     );
-    gradient.addColorStop(0, `hsla(180, 100%, 70%, ${0.4 + avgBass * 0.6})`);
-    gradient.addColorStop(0.5, `hsla(270, 100%, 60%, ${0.6 + avgBass * 0.4})`);
-    gradient.addColorStop(1, `hsla(300, 100%, 70%, ${0.3 + avgBass * 0.7})`);
+    ringGradient.addColorStop(0, `hsla(180, 100%, 70%, ${0.35 + avgBass * 0.65})`);
+    ringGradient.addColorStop(1, `hsla(270, 100%, 65%, ${0.6 + avgBass * 0.4})`);
     
     ctx.beginPath();
     ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
     ctx.lineWidth = ringThickness;
-    ctx.strokeStyle = gradient;
-    ctx.shadowBlur = 35 + avgBass * 70;
-    ctx.shadowColor = `rgba(0, 255, 255, ${0.6 + avgBass * 0.4})`;
+    ctx.strokeStyle = ringGradient;
+    ctx.shadowBlur = 30 + avgBass * 60;
+    ctx.shadowColor = `rgba(0, 255, 255, ${0.5 + avgBass * 0.5})`;
     ctx.stroke();
     
-    // Kleine Wellen/Ausläufer bei starkem Bass
-    if (avgBass > 0.4) {
-        const waveCount = 8 + Math.floor(avgBass * 12);
-        for (let i = 0; i < waveCount; i++) {
-            const angle = (i / waveCount) * Math.PI * 2;
-            const waveLength = 20 + avgBass * 60;
-            const waveOffset = Math.sin(Date.now() * 0.003 + i * 1.5) * waveLength * avgBass;
-            
-            ctx.beginPath();
-            ctx.arc(
-                centerX + Math.cos(angle) * (ringRadius + waveOffset/2),
-                centerY + Math.sin(angle) * (ringRadius + waveOffset/2),
-                4 + avgBass * 12,
-                0, Math.PI * 2
-            );
-            ctx.fillStyle = `hsla(${180 + i * 20}, 100%, 70%, ${0.5 + avgBass * 0.5})`;
-            ctx.fill();
-        }
+    // Radiale Balken (Strahlen) – wie vorher, aber starten am Ring
+    const barCount = bufferLength;
+    for (let i = 0; i < barCount; i++) {
+        const angle = (i / barCount) * Math.PI * 2;
+        const amp = dataArray[i] / 255;
+        const barHeight = amp * (ringRadius * 0.8 + avgBass * ringRadius * 1.2);
+        
+        const innerX = centerX + Math.cos(angle) * ringRadius;
+        const innerY = centerY + Math.sin(angle) * ringRadius;
+        const outerX = centerX + Math.cos(angle) * (ringRadius + barHeight);
+        const outerY = centerY + Math.sin(angle) * (ringRadius + barHeight);
+        
+        const hue = 180 + (i * 1.8) + avgBass * 60;
+        ctx.strokeStyle = `hsl(${hue}, 100%, ${65 + amp * 35}%)`;
+        ctx.lineWidth = 3 + amp * 10;
+        ctx.shadowBlur = 18 + amp * 35;
+        ctx.shadowColor = `hsl(${hue}, 100%, 80%)`;
+        
+        ctx.beginPath();
+        ctx.moveTo(innerX, innerY);
+        ctx.lineTo(outerX, outerY);
+        ctx.stroke();
     }
     
     ctx.restore();
