@@ -123,7 +123,7 @@ button:disabled, button:disabled:hover {
 #volumeContainer input[type="range"] { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; }
 #infoBox {
     display: flex;
-    gap: 20px; /* Abstand zwischen den Spalten */
+    gap: 20px;
     justify-content: space-between;
     background: rgba(10,10,30,0.9);
     padding: 12px;
@@ -132,37 +132,17 @@ button:disabled, button:disabled:hover {
     max-width: 600px;
     color: #c8c8ff;
     text-align: left;
-    flex-wrap: wrap; /* falls Bildschirm zu klein ist */
-    
-    height: 250px;          /* feste Höhe */
-    overflow-y: auto;       /* scrollen, wenn Inhalt größer wird */
-    scrollbar-width: thin;  /* für Firefox */
-    scrollbar-color: #00ffff rgba(10,10,30,0.7); /* Farbe des Scrollbars */
+    flex-wrap: wrap;
+    height: 250px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #00ffff rgba(10,10,30,0.7);
 }
-
-/* Optional: schöner Scrollbar für Webkit-Browser */
-#infoBox::-webkit-scrollbar {
-    width: 8px;
-}
-#infoBox::-webkit-scrollbar-thumb {
-    background-color: #00ffff;
-    border-radius: 4px;
-}
-#infoBox::-webkit-scrollbar-track {
-    background: rgba(10,10,30,0.7);
-}
-
-
-#infoBox .infoColumn {
-    flex: 1; /* beide Spalten gleich breit */
-    min-width: 200px; /* verhindert zu enge Darstellung auf kleinen Screens */
-}
-
-#infoBox .infoColumn h3 {
-    margin-top: 0;
-    margin-bottom: 8px;
-    color: #00ffff;
-}
+#infoBox::-webkit-scrollbar { width: 8px; }
+#infoBox::-webkit-scrollbar-thumb { background-color: #00ffff; border-radius: 4px; }
+#infoBox::-webkit-scrollbar-track { background: rgba(10,10,30,0.7); }
+#infoBox .infoColumn { flex: 1; min-width: 200px; }
+#infoBox .infoColumn h3 { margin-top: 0; margin-bottom: 8px; color: #00ffff; }
 
 /* Loop-Button Styling */
 .loop-btn {
@@ -180,92 +160,29 @@ button:disabled, button:disabled:hover {
     cursor: pointer;
     transition: all 0.25s;
 }
-.loop-btn:hover:not(:disabled) {
-    background: rgba(20,20,80,0.9);
-    color: #00ffff;
-    border-color: #9146ff;
-}
-.loop-btn.active {
-    color: #ffdd00;
-    background: rgba(80,60,0,0.5);
-    border-color: #ffdd00;
-    box-shadow: 0 0 12px #ffdd00aa;
-}
-#progressContainer {
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: nowrap;
-    max-width: 520px;
-    margin: 20px auto 12px auto;
-}
+.loop-btn:hover:not(:disabled) { background: rgba(20,20,80,0.9); color: #00ffff; border-color: #9146ff; }
+.loop-btn.active { color: #ffdd00; background: rgba(80,60,0,0.5); border-color: #ffdd00; box-shadow: 0 0 12px #ffdd00aa; }
+#progressContainer { gap: 10px; align-items: center; justify-content: center; flex-wrap: nowrap; max-width: 520px; margin: 20px auto 12px auto; }
 
-/* ────────────────────────────────────────────── */
-/*          Light / Dark Mode Ergänzung           */
-/* ────────────────────────────────────────────── */
-[data-theme="light"] #overlay {
-    background: rgba(245,245,255,0.88);
-}
-[data-theme="light"] header {
-    background: rgba(255,255,255,0.75);
-}
-[data-theme="light"] body {
-    color: #1a1a40;
-}
-[data-theme="light"] #infoText {
-    color: #3a3a70;
-}
-[data-theme="light"] h1,
-[data-theme="light"] #currentSong {
-    color: #1a1a40;
-    text-shadow: 0 0 8px rgba(65,105,225,0.5);
-}
-[data-theme="light"] button,
-[data-theme="light"] select,
-[data-theme="light"] #downloadBtn {
-    background: rgba(230,230,255,0.9);
-    border-color: #4169e1;
-    color: #1a1a40;
-}
-[data-theme="light"] button:hover,
-[data-theme="light"] #downloadBtn:hover,
-[data-theme="light"] select:hover {
-    background: rgba(210,210,255,0.95);
-    border-color: #6a0dad;
-    color: #000033;
-}
-[data-theme="light"] .loop-btn {
-    border-color: #4169e1;
-    background: rgba(230,230,255,0.8);
-    color: #1a1a40;
-}
-[data-theme="light"] .loop-btn:hover:not(:disabled) {
-    border-color: #6a0dad;
-    background: rgba(210,210,255,0.9);
-}
-[data-theme="light"] .loop-btn.active {
-    border-color: #cc9900;
-    color: #cc9900;
-}
-
-/* Speziell für die Info-Box im Light-Modus */
-[data-theme="light"] #infoBox {
-    background: rgba(240, 240, 255, 0.92);
-    border: 1px solid #4169e1;
-    color: #1a1a40;
-}
-[data-theme="light"] #infoBox h3,
-[data-theme="light"] #infoBox p {
-    color: #1a1a40;
-}
+/* Light / Dark Mode */
+[data-theme="light"] #overlay { background: rgba(245,245,255,0.88); }
+[data-theme="light"] header { background: rgba(255,255,255,0.75); }
+[data-theme="light"] body { color: #1a1a40; }
+[data-theme="light"] #infoText { color: #3a3a70; }
+[data-theme="light"] h1, [data-theme="light"] #currentSong { color: #1a1a40; text-shadow: 0 0 8px rgba(65,105,225,0.5); }
+[data-theme="light"] button, [data-theme="light"] select, [data-theme="light"] #downloadBtn { background: rgba(230,230,255,0.9); border-color: #4169e1; color: #1a1a40; }
+[data-theme="light"] button:hover, [data-theme="light"] #downloadBtn:hover, [data-theme="light"] select:hover { background: rgba(210,210,255,0.95); border-color: #6a0dad; color: #000033; }
+[data-theme="light"] .loop-btn { border-color: #4169e1; background: rgba(230,230,255,0.8); color: #1a1a40; }
+[data-theme="light"] .loop-btn:hover:not(:disabled) { border-color: #6a0dad; background: rgba(210,210,255,0.9); }
+[data-theme="light"] .loop-btn.active { border-color: #cc9900; color: #cc9900; }
+[data-theme="light"] #infoBox { background: rgba(240, 240, 255, 0.92); border: 1px solid #4169e1; color: #1a1a40; }
+[data-theme="light"] #infoBox h3, [data-theme="light"] #infoBox p { color: #1a1a40; }
 
 /* ==================== VISUALIZER STYLES ==================== */
 #visualizerOverlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(3,3,25,0.97);
     backdrop-filter: blur(14px);
     display: none;
@@ -274,9 +191,7 @@ button:disabled, button:disabled:hover {
     justify-content: center;
     z-index: 2000;
 }
-#visualizerOverlay.active {
-    display: flex;
-}
+#visualizerOverlay.active { display: flex; }
 .viz-header {
     position: absolute;
     top: 25px;
@@ -333,6 +248,48 @@ button:disabled, button:disabled:hover {
     border-color: #ffffff;
     box-shadow: 0 0 30px #00ffff;
 }
+
+/* ==================== VISUALIZER CONTROLS ==================== */
+#vizControls {
+    margin-top: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(0,0,40,0.92);
+    padding: 14px 28px;
+    border-radius: 60px;
+    border: 2px solid #00ffff55;
+    box-shadow: 0 0 40px rgba(0,255,255,0.3);
+    backdrop-filter: blur(8px);
+}
+.viz-btn {
+    width: 62px;
+    height: 62px;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,60,0.8);
+    border: 3px solid #00ffff;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 0 20px #00ffff66;
+}
+.viz-btn:hover { background: #9146ff; transform: scale(1.1); box-shadow: 0 0 35px #00ffff; }
+#vizPlayPauseBtn { font-size: 2.4rem; width: 78px; height: 78px; }
+.viz-select {
+    padding: 14px 22px;
+    font-size: 1.05rem;
+    background: rgba(0,0,60,0.85);
+    border: 2px solid #00ffff;
+    color: #fff;
+    border-radius: 14px;
+    min-width: 320px;
+    cursor: pointer;
+}
+.viz-select:hover { border-color: #9146ff; }
 </style>
 </head>
 <body>
@@ -356,6 +313,7 @@ button:disabled, button:disabled:hover {
 </header>
 
 <div id="overlay">
+    <!-- Dein kompletter Original-Player (unverändert) -->
     <h1>VenomSnake_Twitch´s Musikplayer</h1>
     <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com (https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
@@ -405,66 +363,63 @@ button:disabled, button:disabled:hover {
         <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
     <div id="infoBox">
-    <div class="infoColumn">
-        <h3>Neue Songs Sind Da!</h3>
-        <p>Bleed out My Frend</p>
-        <p>Revange</p>
-        <p>Revange 2</p>
-        <p>Survival Of Death</p>
-        <p>Pile of Total Wreck</p>
+        <div class="infoColumn">
+            <h3>Neue Songs Sind Da!</h3>
+            <p>Bleed out My Frend</p>
+            <p>Revange</p>
+            <p>Revange 2</p>
+            <p>Survival Of Death</p>
+            <p>Pile of Total Wreck</p>
+        </div>
+        <div class="infoColumn">
+            <h3>Bald Erscheinende Songs</h3>
+            <p>Industrial Breakdown</p>
+            <p>Mental Breakdown</p>
+            <p>Operation Stealth Destruction</p>
+            <p>Desert Storm Ahead</p>
+        </div>
     </div>
-    <div class="infoColumn">
-        <h3>Bald Erscheinende Songs</h3>
-        <p>Industrial Breakdown</p>
-        <p>Mental Breakdown</p>
-        <p>Operation Stealth Destruction</p>
-        <p>Desert Storm Ahead</p>
-    </div>
-</div>
 </div>
 
-<!-- ==================== VISUALIZER OVERLAY ==================== -->
+<!-- ==================== VISUALIZER OVERLAY (JETZT MIT STEUERUNG) ==================== -->
 <div id="visualizerOverlay">
     <div class="viz-header">
         <h2>VENOM VISUALIZER</h2>
     </div>
     <button id="closeVisualizer" class="close-viz-btn">✕</button>
+    
     <canvas id="visualizerCanvas" width="900" height="620"></canvas>
+
     <div class="viz-mode-buttons">
         <button class="mode-btn active" data-mode="0">RING</button>
         <button class="mode-btn" data-mode="1">WAVE</button>
         <button class="mode-btn" data-mode="2">BARS</button>
     </div>
+
+    <!-- NEUE STEUERUNG IM VISUALIZER -->
+    <div id="vizControls">
+        <button onclick="prevSong()" class="viz-btn">⏮</button>
+        <button id="vizPlayPauseBtn" onclick="togglePlay()" class="viz-btn">▶</button>
+        <button onclick="nextSong()" class="viz-btn">⏭</button>
+        <select id="vizSongSelect" onchange="selectSongFromViz()" class="viz-select"></select>
+    </div>
 </div>
 
 <script>
-const songs = [
-    "Snake Eater VenomSnake_Twitch Mix.mp3",
-    "Ghost Town by VenomSnake_Twitch.mp3",
-    "Wreckfest.mp3",
-    "In The Air Tonight(VenomSnake_Twitch).mp3",
-    "Paradies City.mp3",
-    "Parasitäres Bewustsein.mp3",
-    "Still Alive (Voiced).mp3",
-    "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
-    "ByeByeBeautiful.mp3",
-    "Kettenreaktion (Cover).mp3",
-    "Strasse der Verdammnis.mp3",
-    "Syphon Filter Synth Mix.mp3",
-    "VenomSnake Mode Intro song.mp3",
-    "Hell March [Retaliation Cover].mp3",
-    "Dance hall Dance(Cover).mp3",
-    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
-    "Bleed out My Frend.mp3",
-    "Revange.mp3",
-    "Revange 2.mp3",
-    "Survival Of Death.mp3",
-    "Pile of Total Wreck.mp3"
-    
+const songs = [ /* unverändert */ 
+    "Snake Eater VenomSnake_Twitch Mix.mp3", "Ghost Town by VenomSnake_Twitch.mp3", "Wreckfest.mp3",
+    "In The Air Tonight(VenomSnake_Twitch).mp3", "Paradies City.mp3", "Parasitäres Bewustsein.mp3",
+    "Still Alive (Voiced).mp3", "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
+    "ByeByeBeautiful.mp3", "Kettenreaktion (Cover).mp3", "Strasse der Verdammnis.mp3",
+    "Syphon Filter Synth Mix.mp3", "VenomSnake Mode Intro song.mp3", "Hell March [Retaliation Cover].mp3",
+    "Dance hall Dance(Cover).mp3", "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
+    "Bleed out My Frend.mp3", "Revange.mp3", "Revange 2.mp3", "Survival Of Death.mp3", "Pile of Total Wreck.mp3"
 ];
+
 let currentIndex = 0;
 let radioMode = false;
 let loopCurrent = false;
+
 const audio = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
@@ -476,7 +431,7 @@ const downloadBtn = document.getElementById("downloadBtn");
 const loopBtn = document.getElementById("loopBtn");
 const radioToggle = document.getElementById("radioToggle");
 
-// ==================== VISUALIZER CODE ====================
+// ==================== VISUALIZER + NEUE CONTROLS ====================
 const visualizerOverlay = document.getElementById('visualizerOverlay');
 const visualizerBtn = document.getElementById('visualizerBtn');
 const closeVisualizer = document.getElementById('closeVisualizer');
@@ -484,9 +439,12 @@ const canvas = document.getElementById('visualizerCanvas');
 const ctx = canvas.getContext('2d');
 const modeBtns = document.querySelectorAll('.mode-btn');
 
+const vizPlayPauseBtn = document.getElementById('vizPlayPauseBtn');
+const vizSongSelect = document.getElementById('vizSongSelect');
+
 let audioContext, analyser, bufferLength, dataArray;
 let animationId = null;
-let vizMode = 0; // 0 = Ring, 1 = Wave, 2 = Bars
+let vizMode = 0;
 
 function initAudioContext() {
     if (audioContext) return;
@@ -495,35 +453,30 @@ function initAudioContext() {
     analyser.fftSize = 512;
     bufferLength = analyser.frequencyBinCount;
     dataArray = new Uint8Array(bufferLength);
-
     const source = audioContext.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioContext.destination);
 }
 
-function drawRing() {
+function drawRing() { /* unverändert */ 
     ctx.save();
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2 - 30;
     const radius = 150;
     analyser.getByteFrequencyData(dataArray);
-
     for (let i = 0; i < bufferLength; i++) {
         const angle = (i / bufferLength) * Math.PI * 2;
         const amp = dataArray[i] / 255;
         const barHeight = amp * 210;
-
         const x1 = centerX + Math.cos(angle) * radius;
         const y1 = centerY + Math.sin(angle) * radius;
         const x2 = centerX + Math.cos(angle) * (radius + barHeight);
         const y2 = centerY + Math.sin(angle) * (radius + barHeight);
-
         const hue = 180 + (i * 1.8);
         ctx.strokeStyle = `hsl(${hue}, 100%, 68%)`;
         ctx.lineWidth = 5 + amp * 8;
         ctx.shadowBlur = 25;
         ctx.shadowColor = `hsl(${hue}, 100%, 80%)`;
-
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -532,22 +485,18 @@ function drawRing() {
     ctx.restore();
 }
 
-function drawWaveform() {
+function drawWaveform() { /* unverändert */ 
     analyser.getByteFrequencyData(dataArray);
     ctx.beginPath();
     ctx.moveTo(0, canvas.height / 2);
-
     const sliceWidth = canvas.width * 1.0 / bufferLength;
     let x = 0;
-
     for (let i = 0; i < bufferLength; i++) {
         const v = dataArray[i] / 128.0;
         const y = (v * canvas.height / 2.8) + canvas.height / 3.5;
-
         ctx.lineTo(x, y);
         x += sliceWidth;
     }
-
     ctx.lineTo(canvas.width, canvas.height / 2);
     ctx.strokeStyle = '#00ffff';
     ctx.lineWidth = 6;
@@ -556,11 +505,10 @@ function drawWaveform() {
     ctx.stroke();
 }
 
-function drawBars() {
+function drawBars() { /* unverändert */ 
     analyser.getByteFrequencyData(dataArray);
     const barWidth = (canvas.width / bufferLength) * 1.6;
     let x = 20;
-
     for (let i = 0; i < bufferLength; i++) {
         const height = (dataArray[i] / 255) * (canvas.height * 0.78);
         ctx.fillStyle = `hsl(${190 + (i * 1.4)}, 100%, 65%)`;
@@ -572,7 +520,6 @@ function drawBars() {
 function drawVisualizer() {
     animationId = requestAnimationFrame(drawVisualizer);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     if (vizMode === 0) drawRing();
     else if (vizMode === 1) drawWaveform();
     else drawBars();
@@ -585,15 +532,164 @@ function startVisualizer() {
 }
 
 function stopVisualizer() {
-    if (animationId) {
-        cancelAnimationFrame(animationId);
-        animationId = null;
+    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+}
+
+// Neue Hilfsfunktionen für die Visualizer-Steuerung
+function populateVizSongSelect() {
+    vizSongSelect.innerHTML = songSelect.innerHTML;   // kopiert alle Optionen 1:1
+    vizSongSelect.value = currentIndex;
+}
+
+function updateVizPlayBtn() {
+    vizPlayPauseBtn.textContent = audio.paused ? '▶' : '⏸';
+}
+
+function selectSongFromViz() {
+    loadSong(parseInt(vizSongSelect.value));
+    audio.play();
+    updateVizPlayBtn();
+}
+
+// ==================== DEIN ORIGINALER CODE (nur minimal erweitert) ====================
+function updateLoopButtonState() {
+    if (radioMode) {
+        loopCurrent = false;
+        loopBtn.classList.remove("active");
+        loopBtn.disabled = true;
+    } else {
+        loopBtn.disabled = false;
     }
 }
 
-// Event Listener
+function loadSong(index) {
+    currentIndex = index;
+    const fileName = songs[index];
+    audio.src = fileName;
+    songSelect.value = index;
+    downloadBtn.href = fileName;
+    downloadBtn.setAttribute("download", fileName);
+    document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
+
+    // SYNC mit Visualizer
+    if (vizSongSelect) vizSongSelect.value = currentIndex;
+    updateVizPlayBtn();
+}
+
+function togglePlay() {
+    if (audio.paused) {
+        audio.play().catch(e => console.error("Play-Fehler:", e));
+        playPauseBtn.textContent = "⏸ Pause";
+    } else {
+        audio.pause();
+        playPauseBtn.textContent = "▶ Play";
+    }
+    updateVizPlayBtn();
+}
+
+function stopSong() {
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = "▶ Play";
+    updateVizPlayBtn();
+}
+
+function nextSong() {
+    if (radioMode) {
+        loadSong(Math.floor(Math.random() * songs.length));
+    } else {
+        loadSong((currentIndex + 1) % songs.length);
+    }
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
+    updateVizPlayBtn();
+}
+
+function prevSong() {
+    if (radioMode) return;
+    loadSong((currentIndex - 1 + songs.length) % songs.length);
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
+    updateVizPlayBtn();
+}
+
+function selectSong() {
+    loadSong(parseInt(songSelect.value));
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
+    updateVizPlayBtn();
+}
+
+function toggleRadioMode() { /* unverändert */ 
+    radioMode = !radioMode;
+    if (radioMode) {
+        alert("Radio-Modus aktiviert!\nSongs werden nun zufällig abgespielt.");
+        loopCurrent = false;
+        updateLoopButtonState();
+        loadSong(Math.floor(Math.random() * songs.length));
+        audio.play();
+        playPauseBtn.textContent = "⏸ Pause";
+        radioToggle.textContent = "🎧 Radio aus";
+    } else {
+        alert("Radio-Modus deaktiviert.\nNormale Playlist-Wiedergabe.");
+        updateLoopButtonState();
+        radioToggle.textContent = "🎧 Radio-Modus";
+    }
+    updateVizPlayBtn();
+}
+
+function toggleFullscreen() { /* unverändert */ 
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+}
+
+loopBtn.addEventListener("click", () => {
+    if (radioMode) return;
+    loopCurrent = !loopCurrent;
+    loopBtn.classList.toggle("active", loopCurrent);
+});
+
+audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    timeLabel.textContent = formatTime(audio.currentTime);
+    durationLabel.textContent = formatTime(audio.duration);
+});
+
+progress.addEventListener("input", () => { audio.currentTime = (progress.value / 100) * audio.duration; });
+volumeSlider.addEventListener("input", () => { audio.volume = volumeSlider.value; });
+
+function formatTime(time) {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+    return minutes + ":" + seconds;
+}
+
+audio.addEventListener("ended", () => {
+    if (loopCurrent && !radioMode) {
+        audio.currentTime = 0;
+        audio.play();
+    } else {
+        nextSong();
+    }
+});
+
+// Theme Toggle
+function toggleTheme() { /* unverändert */ 
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    const btn = document.getElementById('themeBtn');
+    btn.textContent = next === 'light' ? '☀️' : '🌙';
+    localStorage.setItem('playerTheme', next);
+}
+
+// VISUALIZER EVENTS
 visualizerBtn.addEventListener('click', () => {
     visualizerOverlay.classList.add('active');
+    populateVizSongSelect();   // ← Dropdown befüllen
     startVisualizer();
 });
 
@@ -616,145 +712,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ==================== DEIN ORIGINALER CODE (unverändert) ====================
-function updateLoopButtonState() {
-    if (radioMode) {
-        loopCurrent = false;
-        loopBtn.classList.remove("active");
-        loopBtn.disabled = true;
-    } else {
-        loopBtn.disabled = false;
-    }
-}
-
-function loadSong(index) {
-    currentIndex = index;
-    const fileName = songs[index];
-    audio.src = fileName;
-    songSelect.value = index;
-    downloadBtn.href = fileName;
-    downloadBtn.setAttribute("download", fileName);
-    document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
-}
-
-function togglePlay() {
-    if (audio.paused) {
-        audio.play().catch(e => console.error("Play-Fehler:", e));
-        playPauseBtn.textContent = "⏸ Pause";
-    } else {
-        audio.pause();
-        playPauseBtn.textContent = "▶ Play";
-    }
-}
-
-function stopSong() {
-    audio.pause();
-    audio.currentTime = 0;
-    playPauseBtn.textContent = "▶ Play";
-}
-
-function nextSong() {
-    if (radioMode) {
-        loadSong(Math.floor(Math.random() * songs.length));
-    } else {
-        loadSong((currentIndex + 1) % songs.length);
-    }
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function prevSong() {
-    if (radioMode) return;
-    loadSong((currentIndex - 1 + songs.length) % songs.length);
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function selectSong() {
-    loadSong(parseInt(songSelect.value));
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function toggleRadioMode() {
-    radioMode = !radioMode;
-   
-    if (radioMode) {
-        alert("Radio-Modus aktiviert!\nSongs werden nun zufällig abgespielt.");
-        loopCurrent = false;
-        updateLoopButtonState();
-        loadSong(Math.floor(Math.random() * songs.length));
-        audio.play();
-        playPauseBtn.textContent = "⏸ Pause";
-        radioToggle.textContent = "🎧 Radio aus";
-    } else {
-        alert("Radio-Modus deaktiviert.\nNormale Playlist-Wiedergabe.");
-        updateLoopButtonState();
-        radioToggle.textContent = "🎧 Radio-Modus";
-    }
-}
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
-}
-
-// Loop-Button
-loopBtn.addEventListener("click", () => {
-    if (radioMode) return;
-    loopCurrent = !loopCurrent;
-    loopBtn.classList.toggle("active", loopCurrent);
-});
-
-audio.addEventListener("timeupdate", () => {
-    if (!audio.duration) return;
-    progress.value = (audio.currentTime / audio.duration) * 100;
-    timeLabel.textContent = formatTime(audio.currentTime);
-    durationLabel.textContent = formatTime(audio.duration);
-});
-
-progress.addEventListener("input", () => {
-    audio.currentTime = (progress.value / 100) * audio.duration;
-});
-
-volumeSlider.addEventListener("input", () => {
-    audio.volume = volumeSlider.value;
-});
-
-function formatTime(time) {
-    if (isNaN(time)) return "0:00";
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-    return minutes + ":" + seconds;
-}
-
-audio.addEventListener("ended", () => {
-    if (loopCurrent && !radioMode) {
-        audio.currentTime = 0;
-        audio.play();
-    } else {
-        nextSong();
-    }
-});
-
-// Theme Toggle
-function toggleTheme() {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    
-    html.setAttribute('data-theme', next);
-    
-    const btn = document.getElementById('themeBtn');
-    btn.textContent = next === 'light' ? '☀️' : '🌙';
-    
-    localStorage.setItem('playerTheme', next);
-}
-
-// Theme beim Laden wiederherstellen
+// Theme beim Laden + Initialisierung
 window.addEventListener('load', () => {
     const saved = localStorage.getItem('playerTheme');
     if (saved === 'light') {
@@ -763,6 +721,7 @@ window.addEventListener('load', () => {
     }
     loadSong(0);
     updateLoopButtonState();
+    populateVizSongSelect();   // auch beim Start schon bereit
 });
 </script>
 </body>
