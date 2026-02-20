@@ -493,24 +493,36 @@ function drawBars() {
 }
 
 function drawLightning() {
+    // Keine Blitze, wenn keine Musik läuft (Pause, Stop, Ende, kein Song)
+    if (audio.paused || audio.ended || !audio.duration || audio.currentTime === 0) {
+        return;  // ← Canvas bleibt leer – gar kein Schimmer mehr
+    }
+
     analyser.getByteFrequencyData(dataArray);
     const bass = Math.max(...Array.from(dataArray.slice(0,40))) / 255;
-    ctx.fillStyle = `rgba(0,255,255,${bass*0.17})`;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    const numBolts = 3 + Math.floor(bass*17);
+
+    // Sehr sanfter Hintergrund (fast unsichtbar, nur bei starkem Bass etwas sichtbar)
+    ctx.fillStyle = `rgba(0,255,255,${bass * 0.08})`;  // stark reduziert von 0.17
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Weniger Blitze, sanftere Intensität
+    const numBolts = 2 + Math.floor(bass * 8);       // max. \~10 statt \~20
     for (let i = 0; i < numBolts; i++) {
-        let x = 30 + Math.random()*(canvas.width-60);
+        let x = 30 + Math.random() * (canvas.width - 60);
         let y = 0;
-        ctx.strokeStyle = `hsl(195,100%,${65+bass*35}%)`;
-        ctx.lineWidth = 2.5 + bass*11;
-        ctx.shadowBlur = 40 + bass*55;
-        ctx.shadowColor = '#a0ffff';
-        ctx.beginPath(); ctx.moveTo(x,y);
-        const steps = 9 + Math.floor(bass*7);
+        ctx.strokeStyle = `hsl(195, 100%, ${60 + bass * 25}%)`;  // dunklere Blitze (65→60 Basis)
+        ctx.lineWidth = 1.8 + bass * 7;                      // dünnere Blitze
+        ctx.shadowBlur = 30 + bass * 35;                     // weniger Glow
+        ctx.shadowColor = 'rgba(160,255,255,0.6)';           // weicheres Leuchten
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+
+        const steps = 8 + Math.floor(bass * 5);  // weniger Zacken → ruhiger
         for (let s = 1; s < steps; s++) {
-            y += canvas.height / steps * (0.75 + Math.random()*0.45);
-            x += (Math.random()-0.5) * (75 + bass*190) * 0.38;
-            ctx.lineTo(x,y);
+            y += canvas.height / steps * (0.7 + Math.random() * 0.4);
+            x += (Math.random() - 0.5) * (60 + bass * 140);  // weniger starkes Zittern
+            ctx.lineTo(x, y);
         }
         ctx.stroke();
     }
