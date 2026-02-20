@@ -2,243 +2,138 @@
 <html lang="de" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon -->
-   <link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Musikplayer Test – Radiomodus</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
+* { box-sizing: border-box; }
+
 body {
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     font-family: 'Orbitron', sans-serif;
     background: url("musicbackground.png") no-repeat center center fixed;
     background-size: cover;
     color: #f0f0ff;
     text-align: center;
-    overflow-y: auto; /* Ermöglicht Scrollen nach unten */
+    overflow-y: auto;
     overflow-x: hidden;
+    min-height: 100dvh;
+    touch-action: manipulation;
 }
+
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    box-sizing: border-box;
+    position: fixed; inset: 0 0 auto 0;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(8px, 2.5vw, 12px) clamp(10px, 4vw, 24px);
     z-index: 1000;
 }
-header .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-header .logo-container img { height: 45px; object-fit: contain; }
-header .logo-container span {
-    font-size: 24px;
-    font-weight: bold;
-    color: #9146ff;
-    text-shadow: 0px 0px 8px #00ffff;
-}
-header .logo-container span .snake { color: #00ffff; }
-header nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
-}
-header nav ul li a {
-    color: #ffffff;
-    font-weight: bold;
-    text-decoration: none;
-    transition: 0.3s;
-}
-header nav ul li a:hover {
-    color: #88f0ff;
-    text-shadow: 0 0 6px #88f0ff;
-}
+
+.logo-container { display: flex; align-items: center; gap: clamp(6px, 2vw, 10px); }
+.logo-container img { height: clamp(32px, 9vw, 45px); object-fit: contain; }
+.logo-container span { font-size: clamp(18px, 5vw, 24px); font-weight: bold; color: #9146ff; text-shadow: 0 0 8px #00ffff; }
+.logo-container span .snake { color: #00ffff; }
+
+nav ul { list-style: none; display: flex; gap: clamp(10px, 3vw, 20px); margin: 0; padding: 0; flex-wrap: wrap; justify-content: flex-end; }
+nav ul li a { color: #fff; font-weight: bold; text-decoration: none; font-size: clamp(13px, 3.5vw, 16px); transition: 0.3s; }
+nav ul li a:hover { color: #88f0ff; text-shadow: 0 0 6px #88f0ff; }
+
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 100px;
-    box-sizing: border-box;
+    min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    display: flex; flex-direction: column; align-items: center;
+    padding: clamp(70px, 15vh, 100px) clamp(10px, 4vw, 24px) clamp(40px, 8vh, 80px);
+    padding-bottom: env(safe-area-inset-bottom);
 }
-h1 { font-size: 38px; margin: 0; color: #ffffff; text-shadow: 0 0 12px #00ffff, 0 0 24px #000044; }
-#infoText { margin-top: 8px; font-size: 16px; color: #c0c0ff; }
-audio { width: 100%; margin-top: 16px; }
+
+h1 { font-size: clamp(28px, 8vw, 38px); margin: 0; color: #fff; text-shadow: 0 0 12px #00ffff; }
+#infoText { margin-top: 8px; font-size: clamp(14px, 3.5vw, 16px); color: #c0c0ff; max-width: 90vw; line-height: 1.4; }
+
+audio { width: 100%; max-width: 600px; margin-top: 16px; }
+
 button, select, #downloadBtn {
-    margin: 8px;
-    padding: 10px 16px;
-    font-size: 16px;
-    border: 2px solid #00ffff;
-    border-radius: 6px;
-    background: rgba(0,0,50,0.8);
-    color: #fff;
-    cursor: pointer;
+    margin: clamp(4px, 1.5vw, 8px);
+    padding: clamp(8px, 2.5vw, 10px) clamp(12px, 3vw, 16px);
+    font-size: clamp(14px, 3.5vw, 16px);
+    border: 2px solid #00ffff; border-radius: 6px;
+    background: rgba(0,0,50,0.8); color: #fff; cursor: pointer;
     transition: 0.3s;
+    min-width: 44px; min-height: 44px;
 }
-button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; background: rgba(20,20,80,0.9); color: #00ffff; }
-button:disabled, button:disabled:hover {
-    opacity: 0.45;
-    cursor: not-allowed;
-    border-color: #555;
-    color: #888;
-    background: rgba(0,0,30,0.7);
-    box-shadow: none;
+
+#songControls, #controls, #progressContainer {
+    margin-top: 12px;
+    display: flex; gap: clamp(8px, 2vw, 12px); flex-wrap: wrap; justify-content: center;
+    width: 100%; max-width: 90vw;
 }
-#songControls, #controls, #progressContainer { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-#progress {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 300px;
-    height: 10px;
-    border-radius: 5px;
-    background: linear-gradient(90deg, #00ffff, #9146ff);
-    cursor: pointer;
-    outline: none;
-}
-#progress::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #00ffff;
-    cursor: pointer;
-    margin-top: -3px;
-}
-#progress::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #ffffff; border: 2px solid #00ffff; cursor: pointer; }
-#volumeContainer { display: flex; flex-direction: column; align-items: center; }
-#volumeContainer input[type="range"] { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; }
+
+#progressContainer { align-items: center; max-width: 520px; margin: 20px auto 12px; }
+#progress { width: 100%; max-width: 400px; height: 10px; background: linear-gradient(90deg, #00ffff, #9146ff); border-radius: 5px; }
+
 #infoBox {
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-    background: rgba(10,10,30,0.9);
-    padding: 12px;
-    border: 1px solid #00ffff;
-    border-radius: 6px;
-    max-width: 600px;
-    color: #c8c8ff;
-    text-align: left;
-    flex-wrap: wrap;
-    height: 250px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #00ffff rgba(10,10,30,0.7);
+    display: flex; gap: 20px; justify-content: space-between;
+    background: rgba(10,10,30,0.9); padding: 12px; border: 1px solid #00ffff;
+    border-radius: 6px; max-width: 600px; width: 90vw; color: #c8c8ff;
+    text-align: left; flex-wrap: wrap; min-height: 200px; overflow-y: auto;
 }
-#infoBox::-webkit-scrollbar { width: 8px; }
-#infoBox::-webkit-scrollbar-thumb { background-color: #00ffff; border-radius: 4px; }
-#infoBox::-webkit-scrollbar-track { background: rgba(10,10,30,0.7); }
-#infoBox .infoColumn { flex: 1; min-width: 200px; }
-#infoBox .infoColumn h3 { margin-top: 0; margin-bottom: 8px; color: #00ffff; }
 
-/* Loop-Button Styling */
+@media (max-width: 600px) {
+    #infoBox { flex-direction: column; gap: 16px; min-height: auto; max-height: 45vh; }
+    #infoBox .infoColumn { width: 100%; }
+}
+
 .loop-btn {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    font-size: 1.5rem;
-    line-height: 1;
-    padding: 0;
-    margin: 0 8px;
-    border: 2px solid #00ffff;
-    border-radius: 50%;
-    background: rgba(0,0,50,0.7);
-    color: #a0f0ff;
-    cursor: pointer;
-    transition: all 0.25s;
-}
-.loop-btn:hover:not(:disabled) {
-    background: rgba(20,20,80,0.9);
-    color: #00ffff;
-    border-color: #9146ff;
-}
-.loop-btn.active {
-    color: #ffdd00;
-    background: rgba(80,60,0,0.5);
-    border-color: #ffdd00;
-    box-shadow: 0 0 12px #ffdd00aa;
-}
-#progressContainer {
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: nowrap;
-    max-width: 520px;
-    margin: 20px auto 12px auto;
+    width: 38px; height: 38px; font-size: 1.5rem; border: 2px solid #00ffff;
+    border-radius: 50%; background: rgba(0,0,50,0.7); color: #a0f0ff; cursor: pointer;
+    min-width: 44px; min-height: 44px;
 }
 
-/* ────────────────────────────────────────────── */
-/*          Light / Dark Mode Ergänzung           */
-/* ────────────────────────────────────────────── */
-[data-theme="light"] #overlay { background: rgba(245,245,255,0.88); }
-[data-theme="light"] header { background: rgba(255,255,255,0.75); }
-[data-theme="light"] body { color: #1a1a40; }
-[data-theme="light"] #infoText { color: #3a3a70; }
-[data-theme="light"] h1, [data-theme="light"] #currentSong { color: #1a1a40; text-shadow: 0 0 8px rgba(65,105,225,0.5); }
-[data-theme="light"] button, [data-theme="light"] select, [data-theme="light"] #downloadBtn { background: rgba(230,230,255,0.9); border-color: #4169e1; color: #1a1a40; }
-[data-theme="light"] button:hover, [data-theme="light"] #downloadBtn:hover, [data-theme="light"] select:hover { background: rgba(210,210,255,0.95); border-color: #6a0dad; color: #000033; }
-[data-theme="light"] .loop-btn { border-color: #4169e1; background: rgba(230,230,255,0.8); color: #1a1a40; }
-[data-theme="light"] .loop-btn:hover:not(:disabled) { border-color: #6a0dad; background: rgba(210,210,255,0.9); }
-[data-theme="light"] .loop-btn.active { border-color: #cc9900; color: #cc9900; }
-[data-theme="light"] #infoBox { background: rgba(240, 240, 255, 0.92); border: 1px solid #4169e1; color: #1a1a40; }
-[data-theme="light"] #infoBox h3, [data-theme="light"] #infoBox p { color: #1a1a40; }
+.loop-btn.active { color: #ffdd00; background: rgba(80,60,0,0.5); border-color: #ffdd00; box-shadow: 0 0 12px #ffdd00aa; }
 
-/* ==================== VISUALIZER ==================== */
+/* VISUALIZER */
 #visualizerOverlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; inset: 0;
     background: rgba(3,3,25,0.97); backdrop-filter: blur(14px);
     display: none; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 2000;
+    z-index: 2000; padding: clamp(10px, 2vh, 20px);
 }
 #visualizerOverlay.active { display: flex; }
-.viz-header { position: absolute; top: 25px; left: 50%; transform: translateX(-50%); }
-.viz-header h2 { margin: 0; font-size: 2.6rem; text-shadow: 0 0 25px #00ffff; color: #00ffff; letter-spacing: 4px; }
-.close-viz-btn { position: absolute; top: 25px; right: 40px; font-size: 3rem; background: none; border: none; color: #ff3366; cursor: pointer; transition: all 0.3s; }
-.close-viz-btn:hover { transform: rotate(90deg) scale(1.15); }
 
-#visualizerCanvas { 
-    border-radius: 24px; box-shadow: 0 0 60px #00ffff88, 0 0 120px #9146ff55; 
-    background: #00000033; max-width: 96vw; max-height: 72vh; width: auto; height: auto; 
+.viz-header { position: absolute; top: clamp(10px, 3vh, 25px); left: 50%; transform: translateX(-50%); }
+.viz-header h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); text-shadow: 0 0 25px #00ffff; color: #00ffff; }
+
+.close-viz-btn {
+    position: absolute; top: clamp(10px, 3vh, 25px); right: clamp(10px, 3vw, 40px);
+    font-size: clamp(2.2rem, 8vw, 3rem); background: none; border: none; color: #ff3366;
+    cursor: pointer; transition: all 0.3s;
 }
 
-.viz-mode-buttons { margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.mode-btn { padding: 10px 24px; font-size: 1.05rem; background: rgba(0,0,60,0.6); border: 2px solid #00ffff; color: #fff; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
-.mode-btn:hover { background: rgba(145,70,255,0.4); }
-.mode-btn.active { background: linear-gradient(90deg, #9146ff, #00ffff); border-color: #ffffff; box-shadow: 0 0 30px #00ffff; }
+#visualizerCanvas {
+    border-radius: 24px;
+    box-shadow: 0 0 60px #00ffff88, 0 0 120px #9146ff55;
+    background: #00000033;
+    width: min(80vw, 80vh, 900px);
+    height: min(80vw, 80vh, 900px);
+    max-width: 96vw;
+    max-height: 72vh;
+}
 
-#vizControls { 
-    margin-top: 22px; display: flex; align-items: center; gap: 10px; 
-    background: rgba(0,0,40,0.92); padding: 10px 18px; border-radius: 50px; 
-    border: 2px solid #00ffff55; box-shadow: 0 0 40px rgba(0,255,255,0.3); 
-    flex-wrap: wrap; justify-content: center; 
+.viz-mode-buttons, #vizControls {
+    max-width: 92vw;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 12px);
 }
-.viz-btn { width: 48px; height: 48px; font-size: 1.65rem; display: flex; align-items: center; justify-content: center; 
-    background: rgba(0,0,60,0.8); border: 3px solid #00ffff; color: #fff; border-radius: 50%; cursor: pointer; transition: all 0.25s; 
-}
-#vizPlayPauseBtn { width: 62px; height: 62px; font-size: 2.15rem; }
-.viz-select { padding: 11px 18px; font-size: 0.98rem; background: rgba(0,0,60,0.85); border: 2px solid #00ffff; color: #fff; border-radius: 14px; min-width: 220px; }
 
-/* Versionsnummer */
-#vizVersion {
-    position: absolute; bottom: 18px; right: 24px; font-size: 0.95rem;
-    color: #88f0ff; opacity: 0.7; text-shadow: 0 0 8px #00ffff, 0 0 14px #9146ff;
-    pointer-events: none; letter-spacing: 1px; font-weight: bold; z-index: 10;
-}
-[data-theme="light"] #vizVersion { color: #4169e1; text-shadow: 0 0 6px #4169e1; opacity: 0.8; }
+.mode-btn { padding: clamp(8px, 2.5vw, 10px) clamp(16px, 4vw, 24px); font-size: clamp(0.9rem, 3vw, 1.05rem); }
+.viz-btn { width: clamp(40px, 10vw, 48px); height: clamp(40px, 10vw, 48px); font-size: clamp(1.4rem, 4vw, 1.65rem); }
+#vizPlayPauseBtn { width: clamp(52px, 13vw, 62px); height: clamp(52px, 13vw, 62px); font-size: clamp(1.8rem, 5vw, 2.15rem); }
+.viz-select { min-width: 180px; max-width: 90vw; font-size: clamp(0.9rem, 3vw, 0.98rem); }
+
+#vizVersion { position: absolute; bottom: clamp(8px, 2vh, 18px); right: clamp(12px, 3vw, 24px); font-size: clamp(0.8rem, 2.5vw, 0.95rem); color: #88f0ff; opacity: 0.7; text-shadow: 0 0 8px #00ffff; pointer-events: none; z-index: 10; }
 </style>
 </head>
 <body>
@@ -329,7 +224,6 @@ button:disabled, button:disabled:hover {
     </div>
 </div>
 
-<!-- VISUALIZER OVERLAY -->
 <div id="visualizerOverlay">
     <div class="viz-header"><h2>VENOM VISUALIZER</h2></div>
     <button id="closeVisualizer" class="close-viz-btn">✕</button>
@@ -354,7 +248,6 @@ button:disabled, button:disabled:hover {
 </div>
 
 <script>
-// Dein kompletter JavaScript-Code (mit Blitz-Fix, Logo usw.)
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3",
     "Ghost Town by VenomSnake_Twitch.mp3",
@@ -382,6 +275,7 @@ const songs = [
 let currentIndex = 0;
 let radioMode = false;
 let loopCurrent = false;
+
 const audio = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const songSelect = document.getElementById("songSelect");
@@ -393,20 +287,19 @@ const downloadBtn = document.getElementById("downloadBtn");
 const loopBtn = document.getElementById("loopBtn");
 const radioToggle = document.getElementById("radioToggle");
 
-// ==================== VISUALIZER ====================
+// Visualizer Vars
 const visualizerOverlay = document.getElementById('visualizerOverlay');
 const visualizerBtn = document.getElementById('visualizerBtn');
 const closeVisualizer = document.getElementById('closeVisualizer');
 const canvas = document.getElementById('visualizerCanvas');
 const ctx = canvas.getContext('2d');
 const modeBtns = document.querySelectorAll('.mode-btn');
-
 const vizPlayPauseBtn = document.getElementById('vizPlayPauseBtn');
 const vizSongSelect = document.getElementById('vizSongSelect');
 
 let audioContext, analyser, bufferLength, dataArray;
 let animationId = null;
-let vizMode = 2; // BARS als Standard
+let vizMode = 2;
 
 const logoImg = new Image();
 logoImg.src = "DogVenomsnakeLogo.png";
@@ -423,17 +316,26 @@ function initAudioContext() {
     analyser.connect(audioContext.destination);
 }
 
-function resizeCanvas() {
-    const maxW = Math.min(window.innerWidth * 0.94, 1100);
-    const maxH = window.innerHeight * 0.72;
-    const ratio = 900 / 620;
-
-    let w = maxW;
-    let h = w / ratio;
-    if (h > maxH) { h = maxH; w = h * ratio; }
-    canvas.width = Math.floor(w);
-    canvas.height = Math.floor(h);
+function resumeAudioContext() {
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().catch(e => console.error("Resume failed:", e));
+    }
 }
+
+audio.addEventListener('play', resumeAudioContext);
+document.addEventListener('touchstart', resumeAudioContext, { once: true });
+visualizerBtn.addEventListener('click', resumeAudioContext);
+visualizerOverlay.addEventListener('click', resumeAudioContext);
+visualizerOverlay.addEventListener('touchstart', resumeAudioContext, { once: true });
+
+function resizeCanvas() {
+    const size = Math.min(window.innerWidth * 0.92, window.innerHeight * 0.72, 900);
+    canvas.width = Math.floor(size);
+    canvas.height = Math.floor(size);
+}
+
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 100));
 
 function drawRing() {
     ctx.save();
@@ -442,60 +344,55 @@ function drawRing() {
     
     analyser.getByteFrequencyData(dataArray);
     
-    // Durchschnittlicher Bass für Puls und Intensität
     let totalBass = 0;
     for (let i = 0; i < 60; i++) {
         totalBass += dataArray[i];
     }
-    const avgBass = totalBass / 60 / 255; // 0 bis 1
+    const globalBass = totalBass / 60 / 255;
     
-    // Logo pulsiert leicht
     const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    const logoSize = logoBase * (1 + avgBass * 0.3);
+    const logoSize = logoBase * (1 + globalBass * 0.35);
     
     if (logoImg.complete) {
-        ctx.shadowBlur = 30 + avgBass * 60;
-        ctx.shadowColor = `rgba(0,255,255,${0.5 + avgBass * 0.5})`;
+        ctx.shadowBlur = 30 + globalBass * 70;
+        ctx.shadowColor = `rgba(0,255,255,${0.5 + globalBass * 0.5})`;
         ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
     }
     
-    // Basis-Radius des Rings (um das Logo)
-    const ringRadius = logoSize * 0.6;
-    
-    // Geschlossener pulsierender Ring (komplett 360°)
-    const ringThickness = 6 + avgBass * 16;
-    const ringOpacity = 0.4 + avgBass * 0.6;
+    const ringRadius = logoSize * 0.58;
+    const ringThickness = 6 + globalBass * 18;
     
     ctx.beginPath();
     ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
     ctx.lineWidth = ringThickness;
-    ctx.strokeStyle = `hsla(200, 100%, 70%, ${ringOpacity})`;
-    ctx.shadowBlur = 25 + avgBass * 50;
-    ctx.shadowColor = `rgba(0, 255, 255, ${0.6 + avgBass * 0.4})`;
+    ctx.strokeStyle = `hsla(195, 100%, ${65 + globalBass * 25}%, ${0.5 + globalBass * 0.5})`;
+    ctx.shadowBlur = 25 + globalBass * 55;
+    ctx.shadowColor = `rgba(0, 255, 255, ${0.6 + globalBass * 0.4})`;
     ctx.stroke();
     
-    // Strahlen in allen Richtungen – gleichmäßig verteilt, starten am Ring
-    const rayCount = 64; // Anzahl Strahlen – gleichmäßig über 360°
+    const rayCount = 72;
+    const baseRayLength = ringRadius * 0.8 + globalBass * ringRadius * 1.6;
+    
     for (let i = 0; i < rayCount; i++) {
         const angle = (i / rayCount) * Math.PI * 2;
         
-        // Bass-Wert für diesen Winkel (aus Frequenzdaten ableiten)
         const freqIndex = Math.floor(i / rayCount * bufferLength);
-        const amp = dataArray[freqIndex] / 255;
+        const localAmp = dataArray[freqIndex] / 255;
         
-        const rayLength = amp * (ringRadius * 0.5 + avgBass * ringRadius * 1.5);
+        const rayAmp = globalBass * 0.7 + localAmp * 0.3;
+        
+        const rayLength = rayAmp * baseRayLength;
         
         const innerX = centerX + Math.cos(angle) * ringRadius;
         const innerY = centerY + Math.sin(angle) * ringRadius;
         const outerX = centerX + Math.cos(angle) * (ringRadius + rayLength);
         const outerY = centerY + Math.sin(angle) * (ringRadius + rayLength);
         
-        // Farbe und Dicke pro Strahl
-        const hue = 180 + (i * 3) + avgBass * 90;
-        ctx.strokeStyle = `hsla(${hue}, 100%, ${60 + amp * 40}%, ${0.6 + amp * 0.4})`;
-        ctx.lineWidth = 2 + amp * 8;
-        ctx.shadowBlur = 15 + amp * 30;
-        ctx.shadowColor = `hsla(${hue}, 100%, 80%, 0.7)`;
+        const hue = 180 + (i * 5) % 180;
+        ctx.strokeStyle = `hsla(${hue}, 100%, ${60 + rayAmp * 40}%, ${0.7 + rayAmp * 0.3})`;
+        ctx.lineWidth = 2.5 + rayAmp * 9;
+        ctx.shadowBlur = 18 + rayAmp * 35;
+        ctx.shadowColor = `hsla(${hue}, 100%, 80%, 0.8)`;
         
         ctx.beginPath();
         ctx.moveTo(innerX, innerY);
@@ -506,36 +403,89 @@ function drawRing() {
     ctx.restore();
 }
 
+function drawWaveform() {
+    analyser.getByteFrequencyData(dataArray);
+    
+    const baseY = canvas.height - 40;
+    ctx.beginPath();
+    ctx.moveTo(0, baseY);
+    
+    const sliceWidth = canvas.width * 1.0 / bufferLength;
+    let x = 0;
+    
+    for (let i = 0; i < bufferLength; i++) {
+        const mirroredIndex = Math.min(i, bufferLength - 1 - i);
+        let v = dataArray[mirroredIndex] / 128.0;
+        
+        if (mirroredIndex > bufferLength * 0.6) {
+            v *= 1.35 + Math.random() * 0.15;
+            v = Math.min(v, 2.0);
+        }
+        
+        const y = baseY - (v * canvas.height * 0.45);
+        
+        ctx.lineTo(x, y);
+        x += sliceWidth;
+    }
+    
+    ctx.lineTo(canvas.width, baseY);
+    ctx.lineTo(0, baseY);
+    ctx.closePath();
+    
+    const gradient = ctx.createLinearGradient(0, baseY, 0, baseY - canvas.height * 0.45);
+    gradient.addColorStop(0, 'rgba(0, 255, 255, 0.7)');
+    gradient.addColorStop(0.5, 'rgba(145, 70, 255, 0.5)');
+    gradient.addColorStop(1, 'rgba(0, 255, 255, 0.2)');
+    
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 4 + Math.max(...dataArray) / 255 * 6;
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = '#00ffff';
+    ctx.stroke();
+}
+
+function drawBars() {
+    analyser.getByteFrequencyData(dataArray);
+    const barWidth = (canvas.width / bufferLength) * 1.65;
+    let x = 15;
+    for (let i = 0; i < bufferLength; i++) {
+        const height = (dataArray[i] / 255) * (canvas.height * 0.82);
+        ctx.fillStyle = `hsl(${190 + (i * 1.4)}, 100%, 65%)`;
+        ctx.fillRect(x, canvas.height - height - 55, barWidth, height);
+        x += barWidth + 4;
+    }
+}
+
 function drawLightning() {
-    // Keine Blitze, wenn keine Musik läuft (Pause, Stop, Ende, kein Song)
     if (audio.paused || audio.ended || !audio.duration || audio.currentTime === 0) {
-        return;  // ← Canvas bleibt leer – gar kein Schimmer mehr
+        return;
     }
 
     analyser.getByteFrequencyData(dataArray);
     const bass = Math.max(...Array.from(dataArray.slice(0,40))) / 255;
 
-    // Sehr sanfter Hintergrund (fast unsichtbar, nur bei starkem Bass etwas sichtbar)
-    ctx.fillStyle = `rgba(0,255,255,${bass * 0.08})`;  // stark reduziert von 0.17
+    ctx.fillStyle = `rgba(0,255,255,${bass * 0.08})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Weniger Blitze, sanftere Intensität
-    const numBolts = 2 + Math.floor(bass * 8);       // max. \~10 statt \~20
+    const numBolts = 2 + Math.floor(bass * 8);
     for (let i = 0; i < numBolts; i++) {
         let x = 30 + Math.random() * (canvas.width - 60);
         let y = 0;
-        ctx.strokeStyle = `hsl(195, 100%, ${60 + bass * 25}%)`;  // dunklere Blitze (65→60 Basis)
-        ctx.lineWidth = 1.8 + bass * 7;                      // dünnere Blitze
-        ctx.shadowBlur = 30 + bass * 35;                     // weniger Glow
-        ctx.shadowColor = 'rgba(160,255,255,0.6)';           // weicheres Leuchten
+        ctx.strokeStyle = `hsl(195, 100%, ${60 + bass * 25}%)`;
+        ctx.lineWidth = 1.8 + bass * 7;
+        ctx.shadowBlur = 30 + bass * 35;
+        ctx.shadowColor = 'rgba(160,255,255,0.6)';
 
         ctx.beginPath();
         ctx.moveTo(x, y);
 
-        const steps = 8 + Math.floor(bass * 5);  // weniger Zacken → ruhiger
+        const steps = 8 + Math.floor(bass * 5);
         for (let s = 1; s < steps; s++) {
             y += canvas.height / steps * (0.7 + Math.random() * 0.4);
-            x += (Math.random() - 0.5) * (60 + bass * 140);  // weniger starkes Zittern
+            x += (Math.random() - 0.5) * (60 + bass * 140);
             ctx.lineTo(x, y);
         }
         ctx.stroke();
@@ -553,11 +503,17 @@ function drawVisualizer() {
 
 function startVisualizer() { 
     initAudioContext(); 
-    if (audioContext.state === 'suspended') audioContext.resume(); 
+    resumeAudioContext();
     resizeCanvas(); 
     if (!animationId) drawVisualizer(); 
 }
-function stopVisualizer() { if (animationId) { cancelAnimationFrame(animationId); animationId = null; } }
+
+function stopVisualizer() { 
+    if (animationId) { 
+        cancelAnimationFrame(animationId); 
+        animationId = null; 
+    } 
+}
 
 function populateVizSongSelect() {
     vizSongSelect.innerHTML = songSelect.innerHTML;
@@ -574,7 +530,6 @@ function selectSongFromViz() {
     updateVizPlayBtn();
 }
 
-// ==================== ORIGINALER CODE (unverändert) ====================
 function updateLoopButtonState() {
     if (radioMode) {
         loopCurrent = false;
@@ -661,7 +616,7 @@ function toggleRadioMode() {
 
 function toggleFullscreen() {
     if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen().catch(e => console.error("Fullscreen failed:", e));
     } else {
         document.exitFullscreen();
     }
@@ -704,7 +659,6 @@ audio.addEventListener("ended", () => {
     }
 });
 
-// Theme Toggle
 function toggleTheme() {
     const html = document.documentElement;
     const current = html.getAttribute('data-theme');
@@ -718,12 +672,15 @@ function toggleTheme() {
     localStorage.setItem('playerTheme', next);
 }
 
-// VISUALIZER EVENTS
 visualizerBtn.addEventListener('click', () => {
     visualizerOverlay.classList.add('active');
     populateVizSongSelect();
     startVisualizer();
+    
+    // Extra Resume für Mobile
+    resumeAudioContext();
 });
+
 closeVisualizer.addEventListener('click', () => {
     visualizerOverlay.classList.remove('active');
     stopVisualizer();
@@ -741,11 +698,6 @@ document.addEventListener('keydown', e => {
     if (e.key === "Escape" && visualizerOverlay.classList.contains('active')) closeVisualizer.click();
 });
 
-window.addEventListener('resize', () => {
-    if (visualizerOverlay.classList.contains('active')) resizeCanvas();
-});
-
-// Start
 window.addEventListener('load', () => {
     const saved = localStorage.getItem('playerTheme');
     if (saved === 'light') {
