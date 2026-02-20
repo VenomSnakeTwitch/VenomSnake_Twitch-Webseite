@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Favicon -->
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
 <title>Musikplayer Test – Radiomodus</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
@@ -16,7 +17,7 @@ body {
     background-size: cover;
     color: #f0f0ff;
     text-align: center;
-    overflow-y: auto;
+    overflow-y: auto; /* Ermöglicht Scrollen nach unten */
     overflow-x: hidden;
 }
 header {
@@ -211,10 +212,7 @@ button:disabled, button:disabled:hover {
 
 #visualizerCanvas { 
     border-radius: 24px; box-shadow: 0 0 60px #00ffff88, 0 0 120px #9146ff55; 
-    background: #00000033; 
-    width: min(96vw, calc(96vh * 16 / 9));   /* 16:9 */
-    height: min(calc(96vw * 9 / 16), 72vh); 
-    max-width: 96vw; max-height: 72vh; 
+    background: #00000033; max-width: 96vw; max-height: 72vh; width: auto; height: auto; 
 }
 
 .viz-mode-buttons { margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
@@ -425,16 +423,31 @@ function initAudioContext() {
     analyser.connect(audioContext.destination);
 }
 
-function resizeCanvas() {
-    const aspect = 16 / 9;
-    let w = Math.min(window.innerWidth * 0.94, 1100);
-    let h = w / aspect;
-
-    if (h > window.innerHeight * 0.72) {
-        h = window.innerHeight * 0.72;
-        w = h * aspect;
+function resumeAudioContext() {
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+            console.log("AudioContext resumed");
+        }).catch(e => {
+            console.error("Resume failed:", e);
+            // Nochmal versuchen nach kurzer Zeit
+            setTimeout(resumeAudioContext, 300);
+        });
     }
+}
 
+audio.addEventListener('play', resumeAudioContext);
+visualizerBtn.addEventListener('click', resumeAudioContext);
+visualizerOverlay.addEventListener('click', resumeAudioContext);
+visualizerOverlay.addEventListener('touchstart', resumeAudioContext);
+
+function resizeCanvas() {
+    const maxW = Math.min(window.innerWidth * 0.94, 1100);
+    const maxH = window.innerHeight * 0.72;
+    const ratio = 900 / 620;
+
+    let w = maxW;
+    let h = w / ratio;
+    if (h > maxH) { h = maxH; w = h * ratio; }
     canvas.width = Math.floor(w);
     canvas.height = Math.floor(h);
 }
@@ -474,12 +487,11 @@ function drawRing() {
     ctx.shadowColor = `rgba(0, 255, 255, ${0.6 + avgBass * 0.4})`;
     ctx.stroke();
     
-    // Gespiegelte Strahlen (symmetrisch wie WAVE)
+    // Gespiegelte Strahlen
     const rayCount = 72;
     for (let i = 0; i < rayCount; i++) {
         const angle = (i / rayCount) * Math.PI * 2;
         
-        // Spiegelung der Frequenzdaten
         const mirroredIndex = Math.min(i, rayCount - 1 - i);
         const freqIndex = Math.floor((mirroredIndex / rayCount) * bufferLength);
         const amp = dataArray[freqIndex] / 255;
@@ -504,6 +516,42 @@ function drawRing() {
     }
     
     ctx.restore();
+}
+
+function drawWaveform() {
+    analyser.getByteFrequencyData(dataArray);
+    
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height / 2);
+    
+    const sliceWidth = canvas.width / bufferLength;
+    let x = 0;
+    
+    for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = canvas.height / 2 + (v - 1) * canvas.height * 0.4;
+        ctx.lineTo(x, y);
+        x += sliceWidth;
+    }
+    
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+}
+
+function drawBars() {
+    analyser.getByteFrequencyData(dataArray);
+    
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
+    
+    for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+        ctx.fillStyle = `hsl(${i * 2}, 100%, 60%)`;
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+    }
 }
 
 function drawLightning() {
@@ -542,6 +590,14 @@ function drawLightning() {
 function drawVisualizer() {
     animationId = requestAnimationFrame(drawVisualizer);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Sicherstellen, dass wir Daten haben
+    analyser.getByteFrequencyData(dataArray);
+    
+    if (audio.paused || audio.ended || audio.currentTime === 0) {
+        return;
+    }
+    
     if (vizMode === 0) drawRing();
     else if (vizMode === 1) drawWaveform();
     else if (vizMode === 2) drawBars();
@@ -550,11 +606,16 @@ function drawVisualizer() {
 
 function startVisualizer() { 
     initAudioContext(); 
-    if (audioContext.state === 'suspended') audioContext.resume(); 
+    resumeAudioContext();
     resizeCanvas(); 
     if (!animationId) drawVisualizer(); 
 }
-function stopVisualizer() { if (animationId) { cancelAnimationFrame(animationId); animationId = null; } }
+function stopVisualizer() { 
+    if (animationId) { 
+        cancelAnimationFrame(animationId); 
+        animationId = null; 
+    } 
+}
 
 function populateVizSongSelect() {
     vizSongSelect.innerHTML = songSelect.innerHTML;
