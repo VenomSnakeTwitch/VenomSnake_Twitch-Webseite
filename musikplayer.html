@@ -258,6 +258,15 @@ button:disabled, button:disabled:hover {
 [data-theme="light"] #infoBox p {
     color: #1a1a40;
 }
+
+/* ───────────── Audio Visualizer ───────────── */
+#visualizer {
+    width: 100%;
+    height: 100px;
+    margin-top: 16px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 6px;
+}
 </style>
 </head>
 <body>
@@ -284,6 +293,10 @@ button:disabled, button:disabled:hover {
     <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com (https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
     <audio id="audioPlayer"></audio>
+
+    <!-- Visualizer Canvas -->
+    <canvas id="visualizer"></canvas>
+
     <div id="songControls">
         <select id="songSelect" onchange="selectSong()">
             <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
@@ -329,25 +342,26 @@ button:disabled, button:disabled:hover {
         <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
     <div id="infoBox">
-    <div class="infoColumn">
-        <h3>Neue Songs Sind Da!</h3>
-        <p>Bleed out My Frend</p>
-        <p>Revange</p>
-        <p>Revange 2</p>
-        <p>Survival Of Death</p>
-        <p>Pile of Total Wreck</p>
-    </div>
-    <div class="infoColumn">
-        <h3>Bald Erscheinende Songs</h3>
-        <p>Industrial Breakdown</p>
-        <p>Mental Breakdown</p>
-        <p>Operation Stealth Destruction</p>
-        <p>Desert Storm Ahead</p>
+        <div class="infoColumn">
+            <h3>Neue Songs Sind Da!</h3>
+            <p>Bleed out My Frend</p>
+            <p>Revange</p>
+            <p>Revange 2</p>
+            <p>Survival Of Death</p>
+            <p>Pile of Total Wreck</p>
+        </div>
+        <div class="infoColumn">
+            <h3>Bald Erscheinende Songs</h3>
+            <p>Industrial Breakdown</p>
+            <p>Mental Breakdown</p>
+            <p>Operation Stealth Destruction</p>
+            <p>Desert Storm Ahead</p>
+        </div>
     </div>
 </div>
 
-
 <script>
+// ────────────────────────────── Grundfunktionen ──────────────────────────────
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3",
     "Ghost Town by VenomSnake_Twitch.mp3",
@@ -370,8 +384,8 @@ const songs = [
     "Revange 2.mp3",
     "Survival Of Death.mp3",
     "Pile of Total Wreck.mp3"
-    
 ];
+
 let currentIndex = 0;
 let radioMode = false;
 let loopCurrent = false;
@@ -386,6 +400,7 @@ const downloadBtn = document.getElementById("downloadBtn");
 const loopBtn = document.getElementById("loopBtn");
 const radioToggle = document.getElementById("radioToggle");
 
+// ────────────────────────────── Funktionen ──────────────────────────────
 function updateLoopButtonState() {
     if (radioMode) {
         loopCurrent = false;
@@ -424,115 +439,3 @@ function stopSong() {
 
 function nextSong() {
     if (radioMode) {
-        loadSong(Math.floor(Math.random() * songs.length));
-    } else {
-        loadSong((currentIndex + 1) % songs.length);
-    }
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function prevSong() {
-    if (radioMode) return;
-    loadSong((currentIndex - 1 + songs.length) % songs.length);
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function selectSong() {
-    loadSong(parseInt(songSelect.value));
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-}
-
-function toggleRadioMode() {
-    radioMode = !radioMode;
-   
-    if (radioMode) {
-        alert("Radio-Modus aktiviert!\nSongs werden nun zufällig abgespielt.");
-        loopCurrent = false;
-        updateLoopButtonState();
-        loadSong(Math.floor(Math.random() * songs.length));
-        audio.play();
-        playPauseBtn.textContent = "⏸ Pause";
-        radioToggle.textContent = "🎧 Radio aus";
-    } else {
-        alert("Radio-Modus deaktiviert.\nNormale Playlist-Wiedergabe.");
-        updateLoopButtonState();
-        radioToggle.textContent = "🎧 Radio-Modus";
-    }
-}
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
-}
-
-// Loop-Button
-loopBtn.addEventListener("click", () => {
-    if (radioMode) return;
-    loopCurrent = !loopCurrent;
-    loopBtn.classList.toggle("active", loopCurrent);
-});
-
-audio.addEventListener("timeupdate", () => {
-    if (!audio.duration) return;
-    progress.value = (audio.currentTime / audio.duration) * 100;
-    timeLabel.textContent = formatTime(audio.currentTime);
-    durationLabel.textContent = formatTime(audio.duration);
-});
-
-progress.addEventListener("input", () => {
-    audio.currentTime = (progress.value / 100) * audio.duration;
-});
-
-volumeSlider.addEventListener("input", () => {
-    audio.volume = volumeSlider.value;
-});
-
-function formatTime(time) {
-    if (isNaN(time)) return "0:00";
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-    return minutes + ":" + seconds;
-}
-
-audio.addEventListener("ended", () => {
-    if (loopCurrent && !radioMode) {
-        audio.currentTime = 0;
-        audio.play();
-    } else {
-        nextSong();
-    }
-});
-
-// Theme Toggle
-function toggleTheme() {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    
-    html.setAttribute('data-theme', next);
-    
-    const btn = document.getElementById('themeBtn');
-    btn.textContent = next === 'light' ? '☀️' : '🌙';
-    
-    localStorage.setItem('playerTheme', next);
-}
-
-// Theme beim Laden wiederherstellen
-window.addEventListener('load', () => {
-    const saved = localStorage.getItem('playerTheme');
-    if (saved === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        document.getElementById('themeBtn').textContent = '☀️';
-    }
-    loadSong(0);
-    updateLoopButtonState();
-});
-</script>
-</body>
-</html>
