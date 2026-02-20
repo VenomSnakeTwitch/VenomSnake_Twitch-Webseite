@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Favicon -->
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Favicon -->
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
 <title>Musikplayer Test – Radiomodus</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
@@ -19,7 +19,6 @@ body {
     text-align: center;
     overflow: hidden;
 }
-
 header {
     position: fixed;
     top: 0;
@@ -34,13 +33,11 @@ header {
     box-sizing: border-box;
     z-index: 1000;
 }
-
 header .logo-container {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 header .logo-container img { height: 45px; object-fit: contain; }
 header .logo-container span {
     font-size: 24px;
@@ -49,7 +46,6 @@ header .logo-container span {
     text-shadow: 0px 0px 8px #00ffff;
 }
 header .logo-container span .snake { color: #00ffff; }
-
 header nav ul {
     list-style: none;
     display: flex;
@@ -57,19 +53,16 @@ header nav ul {
     margin: 0;
     padding: 0;
 }
-
 header nav ul li a {
     color: #ffffff;
     font-weight: bold;
     text-decoration: none;
     transition: 0.3s;
 }
-
 header nav ul li a:hover {
     color: #88f0ff;
     text-shadow: 0 0 6px #88f0ff;
 }
-
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
@@ -80,12 +73,9 @@ header nav ul li a:hover {
     padding-top: 100px;
     box-sizing: border-box;
 }
-
 h1 { font-size: 38px; margin: 0; color: #ffffff; text-shadow: 0 0 12px #00ffff, 0 0 24px #000044; }
 #infoText { margin-top: 8px; font-size: 16px; color: #c0c0ff; }
-
 audio { width: 100%; margin-top: 16px; }
-
 button, select, #downloadBtn {
     margin: 8px;
     padding: 10px 16px;
@@ -97,7 +87,6 @@ button, select, #downloadBtn {
     cursor: pointer;
     transition: 0.3s;
 }
-
 button:hover, #downloadBtn:hover, select:hover { border-color: #9146ff; background: rgba(20,20,80,0.9); color: #00ffff; }
 button:disabled, button:disabled:hover {
     opacity: 0.45;
@@ -107,9 +96,7 @@ button:disabled, button:disabled:hover {
     background: rgba(0,0,30,0.7);
     box-shadow: none;
 }
-
 #songControls, #controls, #progressContainer { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-
 #progress {
     -webkit-appearance: none;
     appearance: none;
@@ -120,7 +107,6 @@ button:disabled, button:disabled:hover {
     cursor: pointer;
     outline: none;
 }
-
 #progress::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -133,13 +119,11 @@ button:disabled, button:disabled:hover {
     margin-top: -3px;
 }
 #progress::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #ffffff; border: 2px solid #00ffff; cursor: pointer; }
-
 #volumeContainer { display: flex; flex-direction: column; align-items: center; }
 #volumeContainer input[type="range"] { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; }
-
 #infoBox {
     display: flex;
-    gap: 20px;
+    gap: 20px; /* Abstand zwischen den Spalten */
     justify-content: space-between;
     background: rgba(10,10,30,0.9);
     padding: 12px;
@@ -148,19 +132,37 @@ button:disabled, button:disabled:hover {
     max-width: 600px;
     color: #c8c8ff;
     text-align: left;
-    flex-wrap: wrap;
-    height: 250px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #00ffff rgba(10,10,30,0.7);
+    flex-wrap: wrap; /* falls Bildschirm zu klein ist */
+    
+    height: 250px;          /* feste Höhe */
+    overflow-y: auto;       /* scrollen, wenn Inhalt größer wird */
+    scrollbar-width: thin;  /* für Firefox */
+    scrollbar-color: #00ffff rgba(10,10,30,0.7); /* Farbe des Scrollbars */
 }
 
-#infoBox::-webkit-scrollbar { width: 8px; }
-#infoBox::-webkit-scrollbar-thumb { background-color: #00ffff; border-radius: 4px; }
-#infoBox::-webkit-scrollbar-track { background: rgba(10,10,30,0.7); }
+/* Optional: schöner Scrollbar für Webkit-Browser */
+#infoBox::-webkit-scrollbar {
+    width: 8px;
+}
+#infoBox::-webkit-scrollbar-thumb {
+    background-color: #00ffff;
+    border-radius: 4px;
+}
+#infoBox::-webkit-scrollbar-track {
+    background: rgba(10,10,30,0.7);
+}
 
-#infoBox .infoColumn { flex: 1; min-width: 200px; }
-#infoBox .infoColumn h3 { margin-top: 0; margin-bottom: 8px; color: #00ffff; }
+
+#infoBox .infoColumn {
+    flex: 1; /* beide Spalten gleich breit */
+    min-width: 200px; /* verhindert zu enge Darstellung auf kleinen Screens */
+}
+
+#infoBox .infoColumn h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #00ffff;
+}
 
 /* Loop-Button Styling */
 .loop-btn {
@@ -189,44 +191,92 @@ button:disabled, button:disabled:hover {
     border-color: #ffdd00;
     box-shadow: 0 0 12px #ffdd00aa;
 }
-
-#progressContainer { gap: 10px; align-items: center; justify-content: center; flex-wrap: nowrap; max-width: 520px; margin: 20px auto 12px auto; }
-
-/* Light/Dark Mode Styles omitted for brevity (identical to original) */
-
-canvas#audioVisualizer {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 200px;
-    z-index: 900;
-    pointer-events: none;
+#progressContainer {
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    max-width: 520px;
+    margin: 20px auto 12px auto;
 }
 
-/* optional styling for active visualizer button */
-#visualizerBtn.active { background: rgba(20,20,80,0.9); color: #00ffff; border-color: #9146ff; }
+/* ────────────────────────────────────────────── */
+/*          Light / Dark Mode Ergänzung           */
+/* ────────────────────────────────────────────── */
+[data-theme="light"] #overlay {
+    background: rgba(245,245,255,0.88);
+}
+[data-theme="light"] header {
+    background: rgba(255,255,255,0.75);
+}
+[data-theme="light"] body {
+    color: #1a1a40;
+}
+[data-theme="light"] #infoText {
+    color: #3a3a70;
+}
+[data-theme="light"] h1,
+[data-theme="light"] #currentSong {
+    color: #1a1a40;
+    text-shadow: 0 0 8px rgba(65,105,225,0.5);
+}
+[data-theme="light"] button,
+[data-theme="light"] select,
+[data-theme="light"] #downloadBtn {
+    background: rgba(230,230,255,0.9);
+    border-color: #4169e1;
+    color: #1a1a40;
+}
+[data-theme="light"] button:hover,
+[data-theme="light"] #downloadBtn:hover,
+[data-theme="light"] select:hover {
+    background: rgba(210,210,255,0.95);
+    border-color: #6a0dad;
+    color: #000033;
+}
+[data-theme="light"] .loop-btn {
+    border-color: #4169e1;
+    background: rgba(230,230,255,0.8);
+    color: #1a1a40;
+}
+[data-theme="light"] .loop-btn:hover:not(:disabled) {
+    border-color: #6a0dad;
+    background: rgba(210,210,255,0.9);
+}
+[data-theme="light"] .loop-btn.active {
+    border-color: #cc9900;
+    color: #cc9900;
+}
+
+/* Speziell für die Info-Box im Light-Modus */
+[data-theme="light"] #infoBox {
+    background: rgba(240, 240, 255, 0.92);
+    border: 1px solid #4169e1;
+    color: #1a1a40;
+}
+[data-theme="light"] #infoBox h3,
+[data-theme="light"] #infoBox p {
+    color: #1a1a40;
+}
 </style>
 </head>
 <body>
 
 <header>
-<div class="logo-container">
-    <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
-    <span>VENOM<span class="snake">SNΛKE</span></span>
-</div>
-<nav>
-    <ul>
-        <li><a href="index.html">Startseite</a></li>
-        <li><a href="donation.html">Spenden</a></li>
-        <li><a href="kontakt.html">Kontakt</a></li>
-        <li><button id="visualizerBtn" onclick="toggleVisualizer()">Visualizer</button></li>
-    </ul>
-</nav>
-<button id="themeBtn" onclick="toggleTheme()" style="padding: 6px 12px; font-size: 1.2rem; background: rgba(145,70,255,0.3); border: 1px solid #9146ff; border-radius: 6px; color: white; cursor: pointer;">
-    🌙
-</button>
+    <div class="logo-container">
+        <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
+        <span>VENOM<span class="snake">SNΛKE</span></span>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="donation.html">Spenden</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+    </nav>
+    <button id="themeBtn" onclick="toggleTheme()" style="padding: 6px 12px; font-size: 1.2rem; background: rgba(145,70,255,0.3); border: 1px solid #9146ff; border-radius: 6px; color: white; cursor: pointer;">
+        🌙
+    </button>
 </header>
 
 <div id="overlay">
@@ -234,85 +284,254 @@ canvas#audioVisualizer {
     <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com (https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
     <audio id="audioPlayer"></audio>
-
-    <!-- Song Controls omitted for brevity -->
-
+    <div id="songControls">
+        <select id="songSelect" onchange="selectSong()">
+            <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
+            <option value="1">Ghost Town by VenomSnake_Twitch</option>
+            <option value="2">Wreckfest</option>
+            <option value="3">In The Air Tonight(VenomSnake_Twitch)</option>
+            <option value="4">Paradies City</option>
+            <option value="5">Parasitäres Bewustsein</option>
+            <option value="6">Still Alive (Voiced)</option>
+            <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
+            <option value="8">Bye Bye Beautiful</option>
+            <option value="9">Kettenreaktion (Cover)</option>
+            <option value="10">Straße der Verdammnis</option>
+            <option value="11">Syphon Filter Synth Mix</option>
+            <option value="12">VenomSnake Mode Intro song</option>
+            <option value="13">Hell March [Retaliation Cover]</option>
+            <option value="14">Dance hall Dance(Cover)</option>
+            <option value="15">Resident Evil 5 Desperate Escape Main Theme Music(Remix)</option>
+            <option value="16">Bleed out My Frend</option>
+            <option value="17">Revange</option>
+            <option value="18">Revange 2</option>
+            <option value="19">Survival Of Death</option>
+            <option value="20">Pile of Total Wreck</option>
+        </select>
+        <a id="downloadBtn" href="" download>Download</a>
+        <div id="volumeContainer">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <span>Lautstärke</span>
+        </div>
+    </div>
+    <div id="progressContainer">
+        <span id="timeLabel">0:00</span>
+        <input type="range" id="progress" min="0" max="100" value="0">
+        <button id="loopBtn" type="button" title="Aktuellen Song wiederholen (nicht im Radio-Modus möglich)" class="loop-btn">🔁</button>
+        <span id="durationLabel">0:00</span>
+    </div>
+    <div id="controls">
+        <button onclick="prevSong()">⏮ Vorheriger</button>
+        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
+        <button onclick="stopSong()">⏹ Stop</button>
+        <button onclick="nextSong()">⏭ Nächster</button>
+        <button onclick="toggleFullscreen()">Vollbild</button>
+        <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
+    </div>
     <div id="infoBox">
-        <div class="infoColumn">
-            <h3>Neue Songs Sind Da!</h3>
-            <p>Bleed out My Frend</p>
-            <p>Revange</p>
-            <p>Revange 2</p>
-            <p>Survival Of Death</p>
-            <p>Pile of Total Wreck</p>
-        </div>
-        <div class="infoColumn">
-            <h3>Bald Erscheinende Songs</h3>
-            <p>Industrial Breakdown</p>
-            <p>Mental Breakdown</p>
-            <p>Operation Stealth Destruction</p>
-            <p>Desert Storm Ahead</p>
-        </div>
+    <div class="infoColumn">
+        <h3>Neue Songs Sind Da!</h3>
+        <p>Bleed out My Frend</p>
+        <p>Revange</p>
+        <p>Revange 2</p>
+        <p>Survival Of Death</p>
+        <p>Pile of Total Wreck</p>
+    </div>
+    <div class="infoColumn">
+        <h3>Bald Erscheinende Songs</h3>
+        <p>Industrial Breakdown</p>
+        <p>Mental Breakdown</p>
+        <p>Operation Stealth Destruction</p>
+        <p>Desert Storm Ahead</p>
     </div>
 </div>
 
-<canvas id="audioVisualizer"></canvas>
 
 <script>
-// Dein kompletter ursprünglicher JS-Code bleibt hier unverändert
+const songs = [
+    "Snake Eater VenomSnake_Twitch Mix.mp3",
+    "Ghost Town by VenomSnake_Twitch.mp3",
+    "Wreckfest.mp3",
+    "In The Air Tonight(VenomSnake_Twitch).mp3",
+    "Paradies City.mp3",
+    "Parasitäres Bewustsein.mp3",
+    "Still Alive (Voiced).mp3",
+    "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
+    "ByeByeBeautiful.mp3",
+    "Kettenreaktion (Cover).mp3",
+    "Strasse der Verdammnis.mp3",
+    "Syphon Filter Synth Mix.mp3",
+    "VenomSnake Mode Intro song.mp3",
+    "Hell March [Retaliation Cover].mp3",
+    "Dance hall Dance(Cover).mp3",
+    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
+    "Bleed out My Frend.mp3",
+    "Revange.mp3",
+    "Revange 2.mp3",
+    "Survival Of Death.mp3",
+    "Pile of Total Wreck.mp3"
+    
+];
+let currentIndex = 0;
+let radioMode = false;
+let loopCurrent = false;
+const audio = document.getElementById("audioPlayer");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const songSelect = document.getElementById("songSelect");
+const progress = document.getElementById("progress");
+const timeLabel = document.getElementById("timeLabel");
+const durationLabel = document.getElementById("durationLabel");
+const volumeSlider = document.getElementById("volumeSlider");
+const downloadBtn = document.getElementById("downloadBtn");
+const loopBtn = document.getElementById("loopBtn");
+const radioToggle = document.getElementById("radioToggle");
 
-// Visualizer Funktion
-const visualizerBtn = document.getElementById('visualizerBtn');
-const canvas = document.getElementById('audioVisualizer');
-const ctx = canvas.getContext('2d');
-const audio = document.getElementById('audioPlayer');
-let audioCtx, analyser, source, dataArray, bufferLength, animationId;
-
-function toggleVisualizer() {
-    if (canvas.style.display === 'none') {
-        canvas.style.display = 'block';
-        visualizerBtn.classList.add('active');
-        startVisualizer();
+function updateLoopButtonState() {
+    if (radioMode) {
+        loopCurrent = false;
+        loopBtn.classList.remove("active");
+        loopBtn.disabled = true;
     } else {
-        canvas.style.display = 'none';
-        visualizerBtn.classList.remove('active');
-        cancelAnimationFrame(animationId);
-        if (audioCtx) audioCtx.close();
+        loopBtn.disabled = false;
     }
 }
 
-function startVisualizer() {
-    canvas.width = window.innerWidth;
-    canvas.height = 200;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    source = audioCtx.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 256;
-    bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
-
-    function draw() {
-        animationId = requestAnimationFrame(draw);
-        analyser.getByteFrequencyData(dataArray);
-        ctx.fillStyle = 'rgba(0,0,50,0.3)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        const barWidth = (canvas.width / bufferLength) * 2.5;
-        let x = 0;
-        for (let i = 0; i < bufferLength; i++) {
-            const barHeight = dataArray[i];
-            ctx.fillStyle = `rgb(${barHeight+100},50,${255-barHeight})`;
-            ctx.fillRect(x, canvas.height-barHeight/2, barWidth, barHeight/2);
-            x += barWidth + 1;
-        }
-    }
-    draw();
+function loadSong(index) {
+    currentIndex = index;
+    const fileName = songs[index];
+    audio.src = fileName;
+    songSelect.value = index;
+    downloadBtn.href = fileName;
+    downloadBtn.setAttribute("download", fileName);
+    document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
 }
 
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
+function togglePlay() {
+    if (audio.paused) {
+        audio.play().catch(e => console.error("Play-Fehler:", e));
+        playPauseBtn.textContent = "⏸ Pause";
+    } else {
+        audio.pause();
+        playPauseBtn.textContent = "▶ Play";
+    }
+}
+
+function stopSong() {
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = "▶ Play";
+}
+
+function nextSong() {
+    if (radioMode) {
+        loadSong(Math.floor(Math.random() * songs.length));
+    } else {
+        loadSong((currentIndex + 1) % songs.length);
+    }
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
+}
+
+function prevSong() {
+    if (radioMode) return;
+    loadSong((currentIndex - 1 + songs.length) % songs.length);
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
+}
+
+function selectSong() {
+    loadSong(parseInt(songSelect.value));
+    audio.play();
+    playPauseBtn.textContent = "⏸ Pause";
+}
+
+function toggleRadioMode() {
+    radioMode = !radioMode;
+   
+    if (radioMode) {
+        alert("Radio-Modus aktiviert!\nSongs werden nun zufällig abgespielt.");
+        loopCurrent = false;
+        updateLoopButtonState();
+        loadSong(Math.floor(Math.random() * songs.length));
+        audio.play();
+        playPauseBtn.textContent = "⏸ Pause";
+        radioToggle.textContent = "🎧 Radio aus";
+    } else {
+        alert("Radio-Modus deaktiviert.\nNormale Playlist-Wiedergabe.");
+        updateLoopButtonState();
+        radioToggle.textContent = "🎧 Radio-Modus";
+    }
+}
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+// Loop-Button
+loopBtn.addEventListener("click", () => {
+    if (radioMode) return;
+    loopCurrent = !loopCurrent;
+    loopBtn.classList.toggle("active", loopCurrent);
+});
+
+audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    timeLabel.textContent = formatTime(audio.currentTime);
+    durationLabel.textContent = formatTime(audio.duration);
+});
+
+progress.addEventListener("input", () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+});
+
+volumeSlider.addEventListener("input", () => {
+    audio.volume = volumeSlider.value;
+});
+
+function formatTime(time) {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+    return minutes + ":" + seconds;
+}
+
+audio.addEventListener("ended", () => {
+    if (loopCurrent && !radioMode) {
+        audio.currentTime = 0;
+        audio.play();
+    } else {
+        nextSong();
+    }
+});
+
+// Theme Toggle
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', next);
+    
+    const btn = document.getElementById('themeBtn');
+    btn.textContent = next === 'light' ? '☀️' : '🌙';
+    
+    localStorage.setItem('playerTheme', next);
+}
+
+// Theme beim Laden wiederherstellen
+window.addEventListener('load', () => {
+    const saved = localStorage.getItem('playerTheme');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+    loadSong(0);
+    updateLoopButtonState();
 });
 </script>
 </body>
