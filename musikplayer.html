@@ -2,113 +2,277 @@
 <html lang="de" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Musikplayer Test – Radiomodus</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     font-family: 'Orbitron', sans-serif;
     background: url("musicbackground.png") no-repeat center center fixed;
     background-size: cover;
     color: #f0f0ff;
     text-align: center;
+    overflow-y: auto;
     overflow-x: hidden;
-    min-height: 100vh;
+    min-height: 100dvh;
     touch-action: manipulation;
 }
 
 header {
-    position: fixed; inset: 0 0 auto 0;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-    display: flex; justify-content: space-between; align-items: center;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: clamp(8px, 2.5vw, 12px) clamp(10px, 4vw, 24px);
     z-index: 1000;
 }
 
-.logo-container { display: flex; align-items: center; gap: clamp(6px, 2vw, 10px); }
-.logo-container img { height: clamp(32px, 9vw, 45px); object-fit: contain; }
-.logo-container span { font-size: clamp(18px, 5vw, 24px); font-weight: bold; color: #9146ff; text-shadow: 0 0 8px #00ffff; }
-.logo-container span .snake { color: #00ffff; }
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 2vw, 10px);
+}
 
-nav ul { list-style: none; display: flex; gap: clamp(10px, 3vw, 20px); margin: 0; padding: 0; flex-wrap: wrap; justify-content: flex-end; }
-nav ul li a { color: #fff; font-weight: bold; text-decoration: none; font-size: clamp(13px, 3.5vw, 16px); transition: 0.3s; }
-nav ul li a:hover { color: #88f0ff; text-shadow: 0 0 6px #88f0ff; }
+.logo-container img {
+    height: clamp(32px, 9vw, 45px);
+    object-fit: contain;
+}
+
+.logo-container span {
+    font-size: clamp(18px, 5vw, 24px);
+    font-weight: bold;
+    color: #9146ff;
+    text-shadow: 0 0 8px #00ffff;
+}
+
+.logo-container span .snake {
+    color: #00ffff;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: clamp(10px, 3vw, 20px);
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+nav ul li a {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: clamp(13px, 3.5vw, 16px);
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: #88f0ff;
+    text-shadow: 0 0 6px #88f0ff;
+}
 
 #overlay {
     background: rgba(0,0,50,0.85);
-    width: 100%; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-    padding: clamp(70px, 15vh, 100px) clamp(10px, 4vw, 24px) 40px;
+    width: 100%;
+    min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(70px, 15vh, 100px) clamp(10px, 4vw, 24px) clamp(40px, 8vh, 80px);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
-h1 { font-size: clamp(28px, 8vw, 38px); margin: 0; color: #fff; text-shadow: 0 0 12px #00ffff; }
-#infoText { margin-top: 8px; font-size: clamp(14px, 3.5vw, 16px); color: #c0c0ff; max-width: 90vw; line-height: 1.4; }
+h1 {
+    font-size: clamp(28px, 8vw, 38px);
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 0 12px #00ffff, 0 0 24px #000044;
+}
 
-audio { width: 100%; max-width: 600px; margin-top: 16px; }
+#infoText {
+    margin-top: 8px;
+    font-size: clamp(14px, 3.5vw, 16px);
+    color: #c0c0ff;
+    max-width: 90vw;
+    line-height: 1.4;
+}
+
+audio {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 16px;
+}
 
 button, select, #downloadBtn {
     margin: clamp(4px, 1.5vw, 8px);
     padding: clamp(8px, 2.5vw, 10px) clamp(12px, 3vw, 16px);
     font-size: clamp(14px, 3.5vw, 16px);
-    border: 2px solid #00ffff; border-radius: 6px;
-    background: rgba(0,0,50,0.8); color: #fff; cursor: pointer;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    background: rgba(0,0,50,0.8);
+    color: #fff;
+    cursor: pointer;
     transition: 0.3s;
-    min-width: 44px; min-height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+button:hover, #downloadBtn:hover, select:hover {
+    border-color: #9146ff;
+    background: rgba(20,20,80,0.9);
+    color: #00ffff;
 }
 
 #songControls, #controls, #progressContainer {
     margin-top: 12px;
-    display: flex; gap: clamp(8px, 2vw, 12px); flex-wrap: wrap; justify-content: center;
-    width: 100%; max-width: 90vw;
+    display: flex;
+    gap: clamp(8px, 2vw, 12px);
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 90vw;
 }
 
-#progressContainer { align-items: center; max-width: 520px; margin: 20px auto 12px; }
-#progress { width: 100%; max-width: 400px; height: 10px; background: linear-gradient(90deg, #00ffff, #9146ff); border-radius: 5px; }
+#progressContainer {
+    align-items: center;
+    max-width: 520px;
+    margin: 20px auto 12px auto;
+}
+
+#progress {
+    width: 100%;
+    max-width: 400px;
+    height: 10px;
+    background: linear-gradient(90deg, #00ffff, #9146ff);
+    border-radius: 5px;
+}
+
+#progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #00ffff;
+    cursor: pointer;
+}
+
+#volumeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 #infoBox {
-    display: flex; gap: 20px; justify-content: space-between;
-    background: rgba(10,10,30,0.9); padding: 12px; border: 1px solid #00ffff;
-    border-radius: 6px; max-width: 600px; width: 90vw; color: #c8c8ff;
-    text-align: left; flex-wrap: wrap; min-height: 200px; overflow-y: auto;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    background: rgba(10,10,30,0.9);
+    padding: 12px;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    max-width: 600px;
+    width: 90vw;
+    color: #c8c8ff;
+    text-align: left;
+    flex-wrap: wrap;
+    min-height: 200px;
+    overflow-y: auto;
 }
 
 @media (max-width: 600px) {
-    #infoBox { flex-direction: column; gap: 16px; min-height: auto; max-height: 45vh; }
-    #infoBox .infoColumn { width: 100%; }
+    #infoBox {
+        flex-direction: column;
+        gap: 16px;
+        min-height: auto;
+        max-height: 45vh;
+    }
+    #infoBox .infoColumn {
+        width: 100%;
+    }
 }
 
 /* Loop-Button */
 .loop-btn {
-    width: 38px; height: 38px; font-size: 1.5rem; border: 2px solid #00ffff;
-    border-radius: 50%; background: rgba(0,0,50,0.7); color: #a0f0ff; cursor: pointer;
-    min-width: 44px; min-height: 44px;
+    width: 38px;
+    height: 38px;
+    font-size: 1.5rem;
+    border: 2px solid #00ffff;
+    border-radius: 50%;
+    background: rgba(0,0,50,0.7);
+    color: #a0f0ff;
+    cursor: pointer;
+    transition: all 0.25s;
+    min-width: 44px;
+    min-height: 44px;
 }
 
-/* Light / Dark (wie bei dir) */
+.loop-btn.active {
+    color: #ffdd00;
+    background: rgba(80,60,0,0.5);
+    border-color: #ffdd00;
+    box-shadow: 0 0 12px #ffdd00aa;
+}
+
+/* Light / Dark Mode */
 [data-theme="light"] #overlay { background: rgba(245,245,255,0.88); }
-/* ... restliche Light-Mode-Styles wie in deinem Code ... */
+/* ... deine weiteren Light-Mode-Styles ... */
 
-/* ==================== VISUALIZER – mobil-optimiert ==================== */
+/* ==================== VISUALIZER ==================== */
 #visualizerOverlay {
-    position: fixed; inset: 0;
-    background: rgba(3,3,25,0.97); backdrop-filter: blur(14px);
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 2000; padding: clamp(10px, 2vh, 20px);
+    position: fixed;
+    inset: 0;
+    background: rgba(3,3,25,0.97);
+    backdrop-filter: blur(14px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: clamp(10px, 2vh, 20px);
 }
-#visualizerOverlay.active { display: flex; }
 
-.viz-header { position: absolute; top: clamp(10px, 3vh, 25px); left: 50%; transform: translateX(-50%); }
-.viz-header h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); text-shadow: 0 0 25px #00ffff; color: #00ffff; }
+#visualizerOverlay.active {
+    display: flex;
+}
+
+.viz-header {
+    position: absolute;
+    top: clamp(10px, 3vh, 25px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.viz-header h2 {
+    margin: 0;
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    text-shadow: 0 0 25px #00ffff;
+    color: #00ffff;
+    letter-spacing: 4px;
+}
 
 .close-viz-btn {
-    position: absolute; top: clamp(10px, 3vh, 25px); right: clamp(10px, 3vw, 40px);
-    font-size: clamp(2.2rem, 8vw, 3rem); background: none; border: none; color: #ff3366;
-    cursor: pointer; transition: all 0.3s;
+    position: absolute;
+    top: clamp(10px, 3vh, 25px);
+    right: clamp(10px, 3vw, 40px);
+    font-size: clamp(2.2rem, 8vw, 3rem);
+    background: none;
+    border: none;
+    color: #ff3366;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 #visualizerCanvas {
@@ -120,68 +284,260 @@ button, select, #downloadBtn {
     max-height: 75vh;
 }
 
-.viz-mode-buttons, #vizControls {
-    max-width: 92vw;
+.viz-mode-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: clamp(8px, 2vw, 12px);
     flex-wrap: wrap;
     justify-content: center;
-    gap: clamp(8px, 2vw, 12px);
+    max-width: 92vw;
 }
 
-.mode-btn { padding: clamp(8px, 2.5vw, 10px) clamp(16px, 4vw, 24px); font-size: clamp(0.9rem, 3vw, 1.05rem); }
-.viz-btn { width: clamp(40px, 10vw, 48px); height: clamp(40px, 10vw, 48px); font-size: clamp(1.4rem, 4vw, 1.65rem); }
-#vizPlayPauseBtn { width: clamp(52px, 13vw, 62px); height: clamp(52px, 13vw, 62px); font-size: clamp(1.8rem, 5vw, 2.15rem); }
-.viz-select { min-width: 180px; max-width: 90vw; font-size: clamp(0.9rem, 3vw, 0.98rem); }
+.mode-btn {
+    padding: clamp(8px, 2.5vw, 10px) clamp(16px, 4vw, 24px);
+    font-size: clamp(0.9rem, 3vw, 1.05rem);
+    background: rgba(0,0,60,0.6);
+    border: 2px solid #00ffff;
+    color: #fff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
 
-#vizVersion { position: absolute; bottom: 12px; right: 16px; font-size: clamp(0.8rem, 2.5vw, 0.95rem); color: #88f0ff; opacity: 0.7; text-shadow: 0 0 8px #00ffff; pointer-events: none; z-index: 10; }
+.mode-btn.active {
+    background: linear-gradient(90deg, #9146ff, #00ffff);
+    border-color: #ffffff;
+    box-shadow: 0 0 30px #00ffff;
+}
+
+#vizControls {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 10px);
+    background: rgba(0,0,40,0.92);
+    padding: clamp(8px, 2vh, 14px) clamp(12px, 3vw, 18px);
+    border-radius: 50px;
+    border: 2px solid #00ffff55;
+    max-width: 92vw;
+}
+
+.viz-btn {
+    width: clamp(40px, 10vw, 48px);
+    height: clamp(40px, 10vw, 48px);
+    font-size: clamp(1.4rem, 4vw, 1.65rem);
+    background: rgba(0,0,60,0.8);
+    border: 3px solid #00ffff;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#vizPlayPauseBtn {
+    width: clamp(52px, 13vw, 62px);
+    height: clamp(52px, 13vw, 62px);
+    font-size: clamp(1.8rem, 5vw, 2.15rem);
+}
+
+.viz-select {
+    padding: clamp(8px, 2.5vw, 11px) clamp(12px, 3vw, 18px);
+    font-size: clamp(0.9rem, 3vw, 0.98rem);
+    background: rgba(0,0,60,0.85);
+    border: 2px solid #00ffff;
+    color: #fff;
+    border-radius: 14px;
+    min-width: 180px;
+    max-width: 90vw;
+}
+
+#vizVersion {
+    position: absolute;
+    bottom: clamp(8px, 2vh, 18px);
+    right: clamp(12px, 3vw, 24px);
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    color: #88f0ff;
+    opacity: 0.7;
+    text-shadow: 0 0 8px #00ffff;
+    pointer-events: none;
+    z-index: 10;
+}
 </style>
 </head>
 <body>
 
-<!-- Dein gesamtes HTML bleibt identisch mit deiner letzten funktionierenden Version -->
-
 <header>
-    <!-- ... -->
+    <div class="logo-container">
+        <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
+        <span>VENOM<span class="snake">SNΛKE</span></span>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="donation.html">Spenden</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+            <li><button id="visualizerBtn">🎵 Visualizer</button></li>
+        </ul>
+    </nav>
+    <button id="themeBtn" onclick="toggleTheme()" style="padding: 6px 12px; font-size: 1.2rem; background: rgba(145,70,255,0.3); border: 1px solid #9146ff; border-radius: 6px; color: white; cursor: pointer;">
+        🌙
+    </button>
 </header>
 
 <div id="overlay">
-    <!-- ... h1, infoText, audio, songControls, progressContainer, controls, infoBox ... -->
+    <h1>VenomSnake_Twitch´s Musikplayer</h1>
+    <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com (https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
+    <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
+    <audio id="audioPlayer"></audio>
+    <div id="songControls">
+        <select id="songSelect" onchange="selectSong()">
+            <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
+            <option value="1">Ghost Town by VenomSnake_Twitch</option>
+            <option value="2">Wreckfest</option>
+            <option value="3">In The Air Tonight(VenomSnake_Twitch)</option>
+            <option value="4">Paradies City</option>
+            <option value="5">Parasitäres Bewustsein</option>
+            <option value="6">Still Alive (Voiced)</option>
+            <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
+            <option value="8">Bye Bye Beautiful</option>
+            <option value="9">Kettenreaktion (Cover)</option>
+            <option value="10">Straße der Verdammnis</option>
+            <option value="11">Syphon Filter Synth Mix</option>
+            <option value="12">VenomSnake Mode Intro song</option>
+            <option value="13">Hell March [Retaliation Cover]</option>
+            <option value="14">Dance hall Dance(Cover)</option>
+            <option value="15">Resident Evil 5 Desperate Escape Main Theme Music(Remix)</option>
+            <option value="16">Bleed out My Frend</option>
+            <option value="17">Revange</option>
+            <option value="18">Revange 2</option>
+            <option value="19">Survival Of Death</option>
+            <option value="20">Pile of Total Wreck</option>
+        </select>
+        <a id="downloadBtn" href="" download>Download</a>
+        <div id="volumeContainer">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <span>Lautstärke</span>
+        </div>
+    </div>
+    <div id="progressContainer">
+        <span id="timeLabel">0:00</span>
+        <input type="range" id="progress" min="0" max="100" value="0">
+        <button id="loopBtn" type="button" title="Aktuellen Song wiederholen (nicht im Radio-Modus möglich)" class="loop-btn">🔁</button>
+        <span id="durationLabel">0:00</span>
+    </div>
+    <div id="controls">
+        <button onclick="prevSong()">⏮ Vorheriger</button>
+        <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
+        <button onclick="stopSong()">⏹ Stop</button>
+        <button onclick="nextSong()">⏭ Nächster</button>
+        <button onclick="toggleFullscreen()">Vollbild</button>
+        <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
+    </div>
+    <div id="infoBox">
+        <div class="infoColumn">
+            <h3>Neue Songs Sind Da!</h3>
+            <p>Bleed out My Frend</p>
+            <p>Revange</p>
+            <p>Revange 2</p>
+            <p>Survival Of Death</p>
+            <p>Pile of Total Wreck</p>
+        </div>
+        <div class="infoColumn">
+            <h3>Bald Erscheinende Songs</h3>
+            <p>Industrial Breakdown</p>
+            <p>Mental Breakdown</p>
+            <p>Operation Stealth Destruction</p>
+            <p>Desert Storm Ahead</p>
+        </div>
+    </div>
 </div>
 
+<!-- VISUALIZER OVERLAY -->
 <div id="visualizerOverlay">
-    <!-- ... viz-header, close-btn, canvas, mode-buttons, vizControls, vizVersion ... -->
+    <div class="viz-header"><h2>VENOM VISUALIZER</h2></div>
+    <button id="closeVisualizer" class="close-viz-btn">✕</button>
+    
+    <canvas id="visualizerCanvas"></canvas>
+
+    <div class="viz-mode-buttons">
+        <button class="mode-btn" data-mode="0">RING</button>
+        <button class="mode-btn" data-mode="1">WAVE</button>
+        <button class="mode-btn active" data-mode="2">BARS</button>
+        <button class="mode-btn" data-mode="3">⚡ BLITZ</button>
+    </div>
+
+    <div id="vizControls">
+        <button onclick="prevSong()" class="viz-btn">⏮</button>
+        <button id="vizPlayPauseBtn" onclick="togglePlay()" class="viz-btn">▶</button>
+        <button onclick="nextSong()" class="viz-btn">⏭</button>
+        <select id="vizSongSelect" onchange="selectSongFromViz()" class="viz-select"></select>
+    </div>
+
+    <div id="vizVersion">Visualizer v4.5</div>
 </div>
 
 <script>
 // ──────────────────────────────────────────────
-// Dein JavaScript – mit den entscheidenden Fixes
+// Dein JavaScript – mit kleinen Ergänzungen für besseres Mobile-Verhalten
 // ──────────────────────────────────────────────
 
-const songs = [ /* deine Liste – unverändert */ ];
+const songs = [
+    "Snake Eater VenomSnake_Twitch Mix.mp3",
+    "Ghost Town by VenomSnake_Twitch.mp3",
+    "Wreckfest.mp3",
+    "In The Air Tonight(VenomSnake_Twitch).mp3",
+    "Paradies City.mp3",
+    "Parasitäres Bewustsein.mp3",
+    "Still Alive (Voiced).mp3",
+    "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
+    "ByeByeBeautiful.mp3",
+    "Kettenreaktion (Cover).mp3",
+    "Strasse der Verdammnis.mp3",
+    "Syphon Filter Synth Mix.mp3",
+    "VenomSnake Mode Intro song.mp3",
+    "Hell March [Retaliation Cover].mp3",
+    "Dance hall Dance(Cover).mp3",
+    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
+    "Bleed out My Frend.mp3",
+    "Revange.mp3",
+    "Revange 2.mp3",
+    "Survival Of Death.mp3",
+    "Pile of Total Wreck.mp3"
+];
 
 let currentIndex = 0;
 let radioMode = false;
 let loopCurrent = false;
 
 const audio = document.getElementById("audioPlayer");
-// ... alle anderen const (playPauseBtn, songSelect usw.) ...
+const playPauseBtn = document.getElementById("playPauseBtn");
+const songSelect = document.getElementById("songSelect");
+const progress = document.getElementById("progress");
+const timeLabel = document.getElementById("timeLabel");
+const durationLabel = document.getElementById("durationLabel");
+const volumeSlider = document.getElementById("volumeSlider");
+const downloadBtn = document.getElementById("downloadBtn");
+const loopBtn = document.getElementById("loopBtn");
+const radioToggle = document.getElementById("radioToggle");
 
-// Visualizer-Variablen
+// Visualizer
 const visualizerOverlay = document.getElementById('visualizerOverlay');
 const visualizerBtn = document.getElementById('visualizerBtn');
 const closeVisualizer = document.getElementById('closeVisualizer');
 const canvas = document.getElementById('visualizerCanvas');
 const ctx = canvas.getContext('2d');
-// ... modeBtns, vizPlayPauseBtn, vizSongSelect ...
+const modeBtns = document.querySelectorAll('.mode-btn');
+const vizPlayPauseBtn = document.getElementById('vizPlayPauseBtn');
+const vizSongSelect = document.getElementById('vizSongSelect');
 
-let audioContext = null;
-let analyser, bufferLength, dataArray;
+let audioContext, analyser, bufferLength, dataArray;
 let animationId = null;
 let vizMode = 2;
 
 const logoImg = new Image();
 logoImg.src = "DogVenomsnakeLogo.png";
 
-// ─── AudioContext + Mobile-Fix ───
 function initAudioContext() {
     if (audioContext) return;
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -194,18 +550,17 @@ function initAudioContext() {
     analyser.connect(audioContext.destination);
 }
 
-// Resume bei jeder Interaktion (wichtig für iOS/Android)
-function resumeAudio() {
+function resumeAudioContext() {
     if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume();
     }
 }
 
-audio.addEventListener('play', resumeAudio);
-document.addEventListener('touchstart', resumeAudio, { once: true });
-visualizerBtn.addEventListener('click', resumeAudio);
+// AudioContext bei Interaktion starten (wichtig für Mobile)
+audio.addEventListener('play', resumeAudioContext);
+document.addEventListener('touchstart', resumeAudioContext, { once: true });
+visualizerBtn.addEventListener('click', resumeAudioContext);
 
-// ─── Verbesserte resizeCanvas ───
 function resizeCanvas() {
     const isPortrait = window.innerHeight > window.innerWidth;
     const padding = isPortrait ? 0.92 : 0.96;
@@ -222,53 +577,37 @@ function resizeCanvas() {
 
     canvas.width = Math.floor(w);
     canvas.height = Math.floor(h);
-
-    // Sofortiges Neuzeichnen erzwingen
-    if (animationId) {
-        cancelAnimationFrame(animationId);
-        animationId = null;
-        drawVisualizer();
-    }
 }
 
-// ─── Resize + Drehung ───
+// Resize bei jeder Änderung
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 100));
 
-// ─── Deine draw-Funktionen (unverändert) ───
-// drawRing, drawWaveform, drawBars, drawLightning ...
-
-// ─── Blitz nur bei laufender Musik ───
+// Deine draw-Funktionen (Ring, Waveform, Bars, Lightning) – Blitz nur bei Play
 function drawLightning() {
     if (audio.paused || audio.ended || !audio.duration || audio.currentTime === 0) {
         ctx.fillStyle = 'rgba(0, 255, 255, 0.04)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         return;
     }
-    // ... deine Blitz-Logik ...
+    // ... deine ursprüngliche Blitz-Logik ...
 }
 
-// ... drawVisualizer, startVisualizer, stopVisualizer, populateVizSongSelect usw. wie bei dir ...
+// drawVisualizer, startVisualizer, stopVisualizer, populateVizSongSelect usw. wie bei dir
 
-// ─── Dein restlicher Code (loadSong, togglePlay, toggleRadioMode usw.) ───
-// ... bleibt exakt gleich ...
+// Dein restlicher Code (loadSong, togglePlay, nextSong, toggleRadioMode, toggleTheme usw.)
+// ... kopiere ihn einfach hier rein ...
 
-visualizerBtn.addEventListener('click', () => {
-    visualizerOverlay.classList.add('active');
-    populateVizSongSelect();
-    resumeAudio();
-    startVisualizer();
-});
-
-closeVisualizer.addEventListener('click', () => {
-    visualizerOverlay.classList.remove('active');
-    stopVisualizer();
-});
-
-// ... restliche Event-Listener ...
-
+// Start
 window.addEventListener('load', () => {
-    // ... dein Load-Handler ...
+    const saved = localStorage.getItem('playerTheme');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+    loadSong(0);
+    updateLoopButtonState();
+    populateVizSongSelect();
     resizeCanvas();
 });
 </script>
