@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon -->
-   <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <title>Musikplayer Test – Radiomodus</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
@@ -17,7 +16,7 @@ body {
     background-size: cover;
     color: #f0f0ff;
     text-align: center;
-    overflow-y: auto; /* Ermöglicht Scrollen nach unten */
+    overflow-y: auto;
     overflow-x: hidden;
 }
 header {
@@ -411,6 +410,8 @@ let vizMode = 2; // BARS als Standard
 const logoImg = new Image();
 logoImg.src = "DogVenomsnakeLogo.png";
 
+let fadeDataArray = new Uint8Array(bufferLength); // Für Fade-Out
+
 function initAudioContext() {
     if (audioContext) return;
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -418,6 +419,7 @@ function initAudioContext() {
     analyser.fftSize = 512;
     bufferLength = analyser.frequencyBinCount;
     dataArray = new Uint8Array(bufferLength);
+    fadeDataArray = new Uint8Array(bufferLength);
     const source = audioContext.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioContext.destination);
@@ -429,16 +431,16 @@ function resumeAudioContext() {
             console.log("AudioContext resumed");
         }).catch(e => {
             console.error("Resume failed:", e);
-            // Nochmal versuchen nach kurzer Zeit
-            setTimeout(resumeAudioContext, 300);
+            setTimeout(resumeAudioContext, 300); // Nochmal versuchen
         });
     }
 }
 
 audio.addEventListener('play', resumeAudioContext);
+document.addEventListener('touchstart', resumeAudioContext, { once: true });
 visualizerBtn.addEventListener('click', resumeAudioContext);
 visualizerOverlay.addEventListener('click', resumeAudioContext);
-visualizerOverlay.addEventListener('touchstart', resumeAudioContext);
+visualizerOverlay.addEventListener('touchstart', resumeAudioContext, { once: true });
 
 function resizeCanvas() {
     const maxW = Math.min(window.innerWidth * 0.94, 1100);
@@ -457,46 +459,39 @@ function drawRing() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     
-    analyser.getByteFrequencyData(dataArray);
-    
-    let totalBass = 0;
-    for (let i = 0; i < 60; i++) {
-        totalBass += dataArray[i];
-    }
-    const avgBass = totalBass / 60 / 255;
-    
+    // Logo immer zeichnen, auch bei Pause
     const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    const logoSize = logoBase * (1 + avgBass * 0.3);
+    const logoSize = logoBase;
     
     if (logoImg.complete) {
-        ctx.shadowBlur = 30 + avgBass * 60;
-        ctx.shadowColor = `rgba(0,255,255,${0.5 + avgBass * 0.5})`;
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'rgba(0,255,255,0.5)';
         ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
     }
     
     const ringRadius = logoSize * 0.6;
     
-    const ringThickness = 6 + avgBass * 16;
-    const ringOpacity = 0.4 + avgBass * 0.6;
+    const ringThickness = 6;
+    const ringOpacity = 0.4;
     
     ctx.beginPath();
     ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
     ctx.lineWidth = ringThickness;
     ctx.strokeStyle = `hsla(200, 100%, 70%, ${ringOpacity})`;
-    ctx.shadowBlur = 25 + avgBass * 50;
-    ctx.shadowColor = `rgba(0, 255, 255, ${0.6 + avgBass * 0.4})`;
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = `rgba(0, 255, 255, 0.6)`;
     ctx.stroke();
     
-    // Gespiegelte Strahlen
+    // Strahlen – mit Fade-Data
     const rayCount = 72;
     for (let i = 0; i < rayCount; i++) {
         const angle = (i / rayCount) * Math.PI * 2;
         
         const mirroredIndex = Math.min(i, rayCount - 1 - i);
         const freqIndex = Math.floor((mirroredIndex / rayCount) * bufferLength);
-        const amp = dataArray[freqIndex] / 255;
+        const amp = fadeDataArray[freqIndex] / 255;
         
-        const rayLength = amp * (ringRadius * 0.5 + avgBass * ringRadius * 1.5);
+        const rayLength = amp * (ringRadius * 0.5);
         
         const innerX = centerX + Math.cos(angle) * ringRadius;
         const innerY = centerY + Math.sin(angle) * ringRadius;
@@ -519,42 +514,32 @@ function drawRing() {
 }
 
 function drawWaveform() {
-    analyser.getByteFrequencyData(dataArray);
-    
-    // Basislinie ganz unten
-    const baseY = canvas.height - 40; // 40px Abstand vom unteren Rand
-    
+    const baseY = canvas.height - 40;
     ctx.beginPath();
     ctx.moveTo(0, baseY);
     
     const sliceWidth = canvas.width * 1.0 / bufferLength;
     let x = 0;
     
-    // Gespiegelte Daten – wie beim Ring
     for (let i = 0; i < bufferLength; i++) {
-        // Spiegelung: Mitte = Bass, außen = Höhen
         const mirroredIndex = Math.min(i, bufferLength - 1 - i);
-        let v = dataArray[mirroredIndex] / 128.0;
+        let v = fadeDataArray[mirroredIndex] / 128.0;
         
-        // Leichter Boost für Höhen, damit rechte Seite auch sichtbar ist
         if (mirroredIndex > bufferLength * 0.6) {
-            v *= 1.3 + Math.random() * 0.2; // +30–50 % für Höhen
+            v *= 1.35 + Math.random() * 0.15;
             v = Math.min(v, 2.0);
         }
         
-        // Ausschlag nach oben (negativ = höher)
         const y = baseY - (v * canvas.height * 0.45);
         
         ctx.lineTo(x, y);
         x += sliceWidth;
     }
     
-    // Schließen und füllen
     ctx.lineTo(canvas.width, baseY);
     ctx.lineTo(0, baseY);
     ctx.closePath();
     
-    // Gefüllter Verlauf von unten nach oben
     const gradient = ctx.createLinearGradient(0, baseY, 0, baseY - canvas.height * 0.45);
     gradient.addColorStop(0, 'rgba(0, 255, 255, 0.7)');
     gradient.addColorStop(0.5, 'rgba(145, 70, 255, 0.5)');
@@ -563,25 +548,21 @@ function drawWaveform() {
     ctx.fillStyle = gradient;
     ctx.fill();
     
-    // Kontur-Linie
     ctx.strokeStyle = '#00ffff';
-    ctx.lineWidth = 4 + Math.max(...dataArray) / 255 * 6;
+    ctx.lineWidth = 4 + Math.max(...fadeDataArray) / 255 * 6;
     ctx.shadowBlur = 25;
     ctx.shadowColor = '#00ffff';
     ctx.stroke();
 }
 
 function drawBars() {
-    analyser.getByteFrequencyData(dataArray);
-    
-    const barWidth = (canvas.width / bufferLength) * 2.5;
-    let x = 0;
-    
+    const barWidth = (canvas.width / bufferLength) * 1.65;
+    let x = 15;
     for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
-        ctx.fillStyle = `hsl(${i * 2}, 100%, 60%)`;
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
+        const height = (fadeDataArray[i] / 255) * (canvas.height * 0.82);
+        ctx.fillStyle = `hsl(${190 + (i * 1.4)}, 100%, 65%)`;
+        ctx.fillRect(x, canvas.height - height - 55, barWidth, height);
+        x += barWidth + 4;
     }
 }
 
@@ -590,8 +571,7 @@ function drawLightning() {
         return;
     }
 
-    analyser.getByteFrequencyData(dataArray);
-    const bass = Math.max(...Array.from(dataArray.slice(0,40))) / 255;
+    const bass = Math.max(...fadeDataArray.slice(0,40)) / 255;
 
     ctx.fillStyle = `rgba(0,255,255,${bass * 0.08})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -622,11 +602,15 @@ function drawVisualizer() {
     animationId = requestAnimationFrame(drawVisualizer);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Sicherstellen, dass wir Daten haben
-    analyser.getByteFrequencyData(dataArray);
-    
     if (audio.paused || audio.ended || audio.currentTime === 0) {
-        return;
+        // Fade-Out: Werte langsam reduzieren
+        for (let i = 0; i < bufferLength; i++) {
+            fadeDataArray[i] *= 0.95; // Langsamer Abkling-Faktor (0.95 = langsam, 0.8 = schneller)
+            if (fadeDataArray[i] < 1) fadeDataArray[i] = 0;
+        }
+    } else {
+        // Aktuelle Daten kopieren
+        analyser.getByteFrequencyData(fadeDataArray);
     }
     
     if (vizMode === 0) drawRing();
@@ -641,12 +625,7 @@ function startVisualizer() {
     resizeCanvas(); 
     if (!animationId) drawVisualizer(); 
 }
-function stopVisualizer() { 
-    if (animationId) { 
-        cancelAnimationFrame(animationId); 
-        animationId = null; 
-    } 
-}
+function stopVisualizer() { if (animationId) { cancelAnimationFrame(animationId); animationId = null; } }
 
 function populateVizSongSelect() {
     vizSongSelect.innerHTML = songSelect.innerHTML;
