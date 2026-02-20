@@ -123,7 +123,7 @@ button:disabled, button:disabled:hover {
 #volumeContainer input[type="range"] { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; }
 #infoBox {
     display: flex;
-    gap: 20px; 
+    gap: 20px; /* Abstand zwischen den Spalten */
     justify-content: space-between;
     background: rgba(10,10,30,0.9);
     padding: 12px;
@@ -132,19 +132,39 @@ button:disabled, button:disabled:hover {
     max-width: 600px;
     color: #c8c8ff;
     text-align: left;
-    flex-wrap: wrap; 
-    height: 250px;          
-    overflow-y: auto;       
-    scrollbar-width: thin;  
-    scrollbar-color: #00ffff rgba(10,10,30,0.7); 
+    flex-wrap: wrap; /* falls Bildschirm zu klein ist */
+    
+    height: 250px;          /* feste Höhe */
+    overflow-y: auto;       /* scrollen, wenn Inhalt größer wird */
+    scrollbar-width: thin;  /* für Firefox */
+    scrollbar-color: #00ffff rgba(10,10,30,0.7); /* Farbe des Scrollbars */
 }
-#infoBox::-webkit-scrollbar { width: 8px; }
-#infoBox::-webkit-scrollbar-thumb { background-color: #00ffff; border-radius: 4px; }
-#infoBox::-webkit-scrollbar-track { background: rgba(10,10,30,0.7); }
 
-#infoBox .infoColumn { flex: 1; min-width: 200px; }
-#infoBox .infoColumn h3 { margin-top: 0; margin-bottom: 8px; color: #00ffff; }
+/* Optional: schöner Scrollbar für Webkit-Browser */
+#infoBox::-webkit-scrollbar {
+    width: 8px;
+}
+#infoBox::-webkit-scrollbar-thumb {
+    background-color: #00ffff;
+    border-radius: 4px;
+}
+#infoBox::-webkit-scrollbar-track {
+    background: rgba(10,10,30,0.7);
+}
 
+
+#infoBox .infoColumn {
+    flex: 1; /* beide Spalten gleich breit */
+    min-width: 200px; /* verhindert zu enge Darstellung auf kleinen Screens */
+}
+
+#infoBox .infoColumn h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #00ffff;
+}
+
+/* Loop-Button Styling */
 .loop-btn {
     width: 38px;
     height: 38px;
@@ -180,31 +200,64 @@ button:disabled, button:disabled:hover {
     margin: 20px auto 12px auto;
 }
 
-/* Visualizer Overlay */
-#visualizerOverlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9998;
-    flex-direction: column;
+/* ────────────────────────────────────────────── */
+/*          Light / Dark Mode Ergänzung           */
+/* ────────────────────────────────────────────── */
+[data-theme="light"] #overlay {
+    background: rgba(245,245,255,0.88);
 }
-#visualizerOverlay canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
+[data-theme="light"] header {
+    background: rgba(255,255,255,0.75);
 }
-#visualizerOverlay button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+[data-theme="light"] body {
+    color: #1a1a40;
+}
+[data-theme="light"] #infoText {
+    color: #3a3a70;
+}
+[data-theme="light"] h1,
+[data-theme="light"] #currentSong {
+    color: #1a1a40;
+    text-shadow: 0 0 8px rgba(65,105,225,0.5);
+}
+[data-theme="light"] button,
+[data-theme="light"] select,
+[data-theme="light"] #downloadBtn {
+    background: rgba(230,230,255,0.9);
+    border-color: #4169e1;
+    color: #1a1a40;
+}
+[data-theme="light"] button:hover,
+[data-theme="light"] #downloadBtn:hover,
+[data-theme="light"] select:hover {
+    background: rgba(210,210,255,0.95);
+    border-color: #6a0dad;
+    color: #000033;
+}
+[data-theme="light"] .loop-btn {
+    border-color: #4169e1;
+    background: rgba(230,230,255,0.8);
+    color: #1a1a40;
+}
+[data-theme="light"] .loop-btn:hover:not(:disabled) {
+    border-color: #6a0dad;
+    background: rgba(210,210,255,0.9);
+}
+[data-theme="light"] .loop-btn.active {
+    border-color: #cc9900;
+    color: #cc9900;
 }
 
-/* Light/Dark Mode Styles hier weggelassen, bleiben unverändert */
-
+/* Speziell für die Info-Box im Light-Modus */
+[data-theme="light"] #infoBox {
+    background: rgba(240, 240, 255, 0.92);
+    border: 1px solid #4169e1;
+    color: #1a1a40;
+}
+[data-theme="light"] #infoBox h3,
+[data-theme="light"] #infoBox p {
+    color: #1a1a40;
+}
 </style>
 </head>
 <body>
@@ -219,7 +272,6 @@ button:disabled, button:disabled:hover {
             <li><a href="index.html">Startseite</a></li>
             <li><a href="donation.html">Spenden</a></li>
             <li><a href="kontakt.html">Kontakt</a></li>
-            <li><button id="visualizerBtn">Visualizer</button></li>
         </ul>
     </nav>
     <button id="themeBtn" onclick="toggleTheme()" style="padding: 6px 12px; font-size: 1.2rem; background: rgba(145,70,255,0.3); border: 1px solid #9146ff; border-radius: 6px; color: white; cursor: pointer;">
@@ -229,7 +281,7 @@ button:disabled, button:disabled:hover {
 
 <div id="overlay">
     <h1>VenomSnake_Twitch´s Musikplayer</h1>
-    <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com hochgeladen habe. Diese kannst du dir anhören und herunterladen.</div>
+    <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com (https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
     <audio id="audioPlayer"></audio>
     <div id="songControls">
@@ -265,7 +317,7 @@ button:disabled, button:disabled:hover {
     <div id="progressContainer">
         <span id="timeLabel">0:00</span>
         <input type="range" id="progress" min="0" max="100" value="0">
-        <button id="loopBtn" type="button" class="loop-btn">🔁</button>
+        <button id="loopBtn" type="button" title="Aktuellen Song wiederholen (nicht im Radio-Modus möglich)" class="loop-btn">🔁</button>
         <span id="durationLabel">0:00</span>
     </div>
     <div id="controls">
@@ -277,32 +329,25 @@ button:disabled, button:disabled:hover {
         <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
     <div id="infoBox">
-        <div class="infoColumn">
-            <h3>Neue Songs Sind Da!</h3>
-            <p>Bleed out My Frend</p>
-            <p>Revange</p>
-            <p>Revange 2</p>
-            <p>Survival Of Death</p>
-            <p>Pile of Total Wreck</p>
-        </div>
-        <div class="infoColumn">
-            <h3>Bald Erscheinende Songs</h3>
-            <p>Industrial Breakdown</p>
-            <p>Mental Breakdown</p>
-            <p>Operation Stealth Destruction</p>
-            <p>Desert Storm Ahead</p>
-        </div>
+    <div class="infoColumn">
+        <h3>Neue Songs Sind Da!</h3>
+        <p>Bleed out My Frend</p>
+        <p>Revange</p>
+        <p>Revange 2</p>
+        <p>Survival Of Death</p>
+        <p>Pile of Total Wreck</p>
+    </div>
+    <div class="infoColumn">
+        <h3>Bald Erscheinende Songs</h3>
+        <p>Industrial Breakdown</p>
+        <p>Mental Breakdown</p>
+        <p>Operation Stealth Destruction</p>
+        <p>Desert Storm Ahead</p>
     </div>
 </div>
 
-<!-- Visualizer Overlay -->
-<div id="visualizerOverlay">
-    <button onclick="closeVisualizer()">Schließen</button>
-    <canvas id="visualizerCanvas"></canvas>
-</div>
 
 <script>
-// Songs und Player
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3",
     "Ghost Town by VenomSnake_Twitch.mp3",
@@ -325,6 +370,7 @@ const songs = [
     "Revange 2.mp3",
     "Survival Of Death.mp3",
     "Pile of Total Wreck.mp3"
+    
 ];
 let currentIndex = 0;
 let radioMode = false;
@@ -447,4 +493,46 @@ volumeSlider.addEventListener("input", () => {
     audio.volume = volumeSlider.value;
 });
 
-function format
+function formatTime(time) {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+    return minutes + ":" + seconds;
+}
+
+audio.addEventListener("ended", () => {
+    if (loopCurrent && !radioMode) {
+        audio.currentTime = 0;
+        audio.play();
+    } else {
+        nextSong();
+    }
+});
+
+// Theme Toggle
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', next);
+    
+    const btn = document.getElementById('themeBtn');
+    btn.textContent = next === 'light' ? '☀️' : '🌙';
+    
+    localStorage.setItem('playerTheme', next);
+}
+
+// Theme beim Laden wiederherstellen
+window.addEventListener('load', () => {
+    const saved = localStorage.getItem('playerTheme');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+    loadSong(0);
+    updateLoopButtonState();
+});
+</script>
+</body>
+</html>
