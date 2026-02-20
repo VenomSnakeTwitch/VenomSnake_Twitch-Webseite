@@ -17,7 +17,8 @@ body {
     background-size: cover;
     color: #f0f0ff;
     text-align: center;
-    overflow: hidden;
+    overflow-y: auto; /* Ermöglicht Scrollen nach unten */
+    overflow-x: hidden;
 }
 header {
     position: fixed;
@@ -66,7 +67,7 @@ header nav ul li a:hover {
 #overlay {
     background: rgba(0,0,50,0.85);
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -196,7 +197,7 @@ button:disabled, button:disabled:hover {
 [data-theme="light"] #infoBox { background: rgba(240, 240, 255, 0.92); border: 1px solid #4169e1; color: #1a1a40; }
 [data-theme="light"] #infoBox h3, [data-theme="light"] #infoBox p { color: #1a1a40; }
 
-/* ==================== VISUALIZER STYLES ==================== */
+/* ==================== VISUALIZER ==================== */
 #visualizerOverlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(3,3,25,0.97); backdrop-filter: blur(14px);
@@ -310,22 +311,22 @@ button:disabled, button:disabled:hover {
         <button id="radioToggle" onclick="toggleRadioMode()">🎧 Radio-Modus</button>
     </div>
     <div id="infoBox">
-    <div class="infoColumn">
-        <h3>Neue Songs Sind Da!</h3>
-        <p>Bleed out My Frend</p>
-        <p>Revange</p>
-        <p>Revange 2</p>
-        <p>Survival Of Death</p>
-        <p>Pile of Total Wreck</p>
+        <div class="infoColumn">
+            <h3>Neue Songs Sind Da!</h3>
+            <p>Bleed out My Frend</p>
+            <p>Revange</p>
+            <p>Revange 2</p>
+            <p>Survival Of Death</p>
+            <p>Pile of Total Wreck</p>
+        </div>
+        <div class="infoColumn">
+            <h3>Bald Erscheinende Songs</h3>
+            <p>Industrial Breakdown</p>
+            <p>Mental Breakdown</p>
+            <p>Operation Stealth Destruction</p>
+            <p>Desert Storm Ahead</p>
+        </div>
     </div>
-    <div class="infoColumn">
-        <h3>Bald Erscheinende Songs</h3>
-        <p>Industrial Breakdown</p>
-        <p>Mental Breakdown</p>
-        <p>Operation Stealth Destruction</p>
-        <p>Desert Storm Ahead</p>
-    </div>
-</div>
 </div>
 
 <!-- VISUALIZER OVERLAY -->
@@ -353,6 +354,7 @@ button:disabled, button:disabled:hover {
 </div>
 
 <script>
+// Dein kompletter JavaScript-Code (mit Blitz-Fix, Logo usw.)
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3",
     "Ghost Town by VenomSnake_Twitch.mp3",
