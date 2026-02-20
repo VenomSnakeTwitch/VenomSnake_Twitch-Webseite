@@ -258,6 +258,81 @@ button:disabled, button:disabled:hover {
 [data-theme="light"] #infoBox p {
     color: #1a1a40;
 }
+
+/* ==================== VISUALIZER STYLES ==================== */
+#visualizerOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(3,3,25,0.97);
+    backdrop-filter: blur(14px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+#visualizerOverlay.active {
+    display: flex;
+}
+.viz-header {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.viz-header h2 {
+    margin: 0;
+    font-size: 2.6rem;
+    text-shadow: 0 0 25px #00ffff;
+    letter-spacing: 4px;
+    color: #00ffff;
+}
+.close-viz-btn {
+    position: absolute;
+    top: 25px;
+    right: 40px;
+    font-size: 3rem;
+    background: none;
+    border: none;
+    color: #ff3366;
+    cursor: pointer;
+    width: 70px;
+    height: 70px;
+    transition: all 0.3s;
+}
+.close-viz-btn:hover { transform: rotate(90deg) scale(1.15); }
+#visualizerCanvas {
+    border-radius: 24px;
+    box-shadow: 0 0 60px #00ffff88, 0 0 120px #9146ff55;
+    background: #00000033;
+}
+.viz-mode-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+.mode-btn {
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    background: rgba(0,0,60,0.6);
+    border: 2px solid #00ffff;
+    color: #fff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.mode-btn:hover { background: rgba(145,70,255,0.4); }
+.mode-btn.active {
+    background: linear-gradient(90deg, #9146ff, #00ffff);
+    border-color: #ffffff;
+    box-shadow: 0 0 30px #00ffff;
+}
 </style>
 </head>
 <body>
@@ -272,6 +347,7 @@ button:disabled, button:disabled:hover {
             <li><a href="index.html">Startseite</a></li>
             <li><a href="donation.html">Spenden</a></li>
             <li><a href="kontakt.html">Kontakt</a></li>
+            <li><button id="visualizerBtn">🎵 Visualizer</button></li>
         </ul>
     </nav>
     <button id="themeBtn" onclick="toggleTheme()" style="padding: 6px 12px; font-size: 1.2rem; background: rgba(145,70,255,0.3); border: 1px solid #9146ff; border-radius: 6px; color: white; cursor: pointer;">
@@ -345,7 +421,21 @@ button:disabled, button:disabled:hover {
         <p>Desert Storm Ahead</p>
     </div>
 </div>
+</div>
 
+<!-- ==================== VISUALIZER OVERLAY ==================== -->
+<div id="visualizerOverlay">
+    <div class="viz-header">
+        <h2>VENOM VISUALIZER</h2>
+    </div>
+    <button id="closeVisualizer" class="close-viz-btn">✕</button>
+    <canvas id="visualizerCanvas" width="900" height="620"></canvas>
+    <div class="viz-mode-buttons">
+        <button class="mode-btn active" data-mode="0">RING</button>
+        <button class="mode-btn" data-mode="1">WAVE</button>
+        <button class="mode-btn" data-mode="2">BARS</button>
+    </div>
+</div>
 
 <script>
 const songs = [
@@ -386,6 +476,147 @@ const downloadBtn = document.getElementById("downloadBtn");
 const loopBtn = document.getElementById("loopBtn");
 const radioToggle = document.getElementById("radioToggle");
 
+// ==================== VISUALIZER CODE ====================
+const visualizerOverlay = document.getElementById('visualizerOverlay');
+const visualizerBtn = document.getElementById('visualizerBtn');
+const closeVisualizer = document.getElementById('closeVisualizer');
+const canvas = document.getElementById('visualizerCanvas');
+const ctx = canvas.getContext('2d');
+const modeBtns = document.querySelectorAll('.mode-btn');
+
+let audioContext, analyser, bufferLength, dataArray;
+let animationId = null;
+let vizMode = 0; // 0 = Ring, 1 = Wave, 2 = Bars
+
+function initAudioContext() {
+    if (audioContext) return;
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 512;
+    bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+}
+
+function drawRing() {
+    ctx.save();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2 - 30;
+    const radius = 150;
+    analyser.getByteFrequencyData(dataArray);
+
+    for (let i = 0; i < bufferLength; i++) {
+        const angle = (i / bufferLength) * Math.PI * 2;
+        const amp = dataArray[i] / 255;
+        const barHeight = amp * 210;
+
+        const x1 = centerX + Math.cos(angle) * radius;
+        const y1 = centerY + Math.sin(angle) * radius;
+        const x2 = centerX + Math.cos(angle) * (radius + barHeight);
+        const y2 = centerY + Math.sin(angle) * (radius + barHeight);
+
+        const hue = 180 + (i * 1.8);
+        ctx.strokeStyle = `hsl(${hue}, 100%, 68%)`;
+        ctx.lineWidth = 5 + amp * 8;
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = `hsl(${hue}, 100%, 80%)`;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawWaveform() {
+    analyser.getByteFrequencyData(dataArray);
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height / 2);
+
+    const sliceWidth = canvas.width * 1.0 / bufferLength;
+    let x = 0;
+
+    for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = (v * canvas.height / 2.8) + canvas.height / 3.5;
+
+        ctx.lineTo(x, y);
+        x += sliceWidth;
+    }
+
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 6;
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = '#00ffff';
+    ctx.stroke();
+}
+
+function drawBars() {
+    analyser.getByteFrequencyData(dataArray);
+    const barWidth = (canvas.width / bufferLength) * 1.6;
+    let x = 20;
+
+    for (let i = 0; i < bufferLength; i++) {
+        const height = (dataArray[i] / 255) * (canvas.height * 0.78);
+        ctx.fillStyle = `hsl(${190 + (i * 1.4)}, 100%, 65%)`;
+        ctx.fillRect(x, canvas.height - height - 70, barWidth, height);
+        x += barWidth + 5;
+    }
+}
+
+function drawVisualizer() {
+    animationId = requestAnimationFrame(drawVisualizer);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (vizMode === 0) drawRing();
+    else if (vizMode === 1) drawWaveform();
+    else drawBars();
+}
+
+function startVisualizer() {
+    initAudioContext();
+    if (audioContext.state === 'suspended') audioContext.resume();
+    if (!animationId) drawVisualizer();
+}
+
+function stopVisualizer() {
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+}
+
+// Event Listener
+visualizerBtn.addEventListener('click', () => {
+    visualizerOverlay.classList.add('active');
+    startVisualizer();
+});
+
+closeVisualizer.addEventListener('click', () => {
+    visualizerOverlay.classList.remove('active');
+    stopVisualizer();
+});
+
+modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        modeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        vizMode = parseInt(btn.dataset.mode);
+    });
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape" && visualizerOverlay.classList.contains('active')) {
+        closeVisualizer.click();
+    }
+});
+
+// ==================== DEIN ORIGINALER CODE (unverändert) ====================
 function updateLoopButtonState() {
     if (radioMode) {
         loopCurrent = false;
