@@ -7,7 +7,6 @@
 <title>Musikplayer Test – Radiomodus</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
 body {
     margin: 0;
     padding: 0;
@@ -143,7 +142,6 @@ button:disabled, button:disabled:hover {
 #infoBox::-webkit-scrollbar-track { background: rgba(10,10,30,0.7); }
 #infoBox .infoColumn { flex: 1; min-width: 200px; }
 #infoBox .infoColumn h3 { margin-top: 0; margin-bottom: 8px; color: #00ffff; }
-
 /* Loop-Button Styling */
 .loop-btn {
     width: 38px;
@@ -179,9 +177,8 @@ button:disabled, button:disabled:hover {
     max-width: 520px;
     margin: 20px auto 12px auto;
 }
-
 /* ────────────────────────────────────────────── */
-/*          Light / Dark Mode Ergänzung           */
+/* Light / Dark Mode Ergänzung */
 /* ────────────────────────────────────────────── */
 [data-theme="light"] #overlay { background: rgba(245,245,255,0.88); }
 [data-theme="light"] header { background: rgba(255,255,255,0.75); }
@@ -195,7 +192,6 @@ button:disabled, button:disabled:hover {
 [data-theme="light"] .loop-btn.active { border-color: #cc9900; color: #cc9900; }
 [data-theme="light"] #infoBox { background: rgba(240, 240, 255, 0.92); border: 1px solid #4169e1; color: #1a1a40; }
 [data-theme="light"] #infoBox h3, [data-theme="light"] #infoBox p { color: #1a1a40; }
-
 /* ==================== VISUALIZER ==================== */
 #visualizerOverlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -208,29 +204,25 @@ button:disabled, button:disabled:hover {
 .viz-header h2 { margin: 0; font-size: 2.6rem; text-shadow: 0 0 25px #00ffff; color: #00ffff; letter-spacing: 4px; }
 .close-viz-btn { position: absolute; top: 25px; right: 40px; font-size: 3rem; background: none; border: none; color: #ff3366; cursor: pointer; transition: all 0.3s; }
 .close-viz-btn:hover { transform: rotate(90deg) scale(1.15); }
-
-#visualizerCanvas { 
-    border-radius: 24px; box-shadow: 0 0 60px #00ffff88, 0 0 120px #9146ff55; 
-    background: #00000033; max-width: 96vw; max-height: 72vh; width: auto; height: auto; 
+#visualizerCanvas {
+    border-radius: 24px; box-shadow: 0 0 60px #00ffff88, 0 0 120px #9146ff55;
+    background: #00000033; max-width: 96vw; max-height: 72vh; width: auto; height: auto;
 }
-
 .viz-mode-buttons { margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 .mode-btn { padding: 10px 24px; font-size: 1.05rem; background: rgba(0,0,60,0.6); border: 2px solid #00ffff; color: #fff; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
 .mode-btn:hover { background: rgba(145,70,255,0.4); }
 .mode-btn.active { background: linear-gradient(90deg, #9146ff, #00ffff); border-color: #ffffff; box-shadow: 0 0 30px #00ffff; }
-
-#vizControls { 
-    margin-top: 22px; display: flex; align-items: center; gap: 10px; 
-    background: rgba(0,0,40,0.92); padding: 10px 18px; border-radius: 50px; 
-    border: 2px solid #00ffff55; box-shadow: 0 0 40px rgba(0,255,255,0.3); 
-    flex-wrap: wrap; justify-content: center; 
+#vizControls {
+    margin-top: 22px; display: flex; align-items: center; gap: 10px;
+    background: rgba(0,0,40,0.92); padding: 10px 18px; border-radius: 50px;
+    border: 2px solid #00ffff55; box-shadow: 0 0 40px rgba(0,255,255,0.3);
+    flex-wrap: wrap; justify-content: center;
 }
-.viz-btn { width: 48px; height: 48px; font-size: 1.65rem; display: flex; align-items: center; justify-content: center; 
-    background: rgba(0,0,60,0.8); border: 3px solid #00ffff; color: #fff; border-radius: 50%; cursor: pointer; transition: all 0.25s; 
+.viz-btn { width: 48px; height: 48px; font-size: 1.65rem; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,60,0.8); border: 3px solid #00ffff; color: #fff; border-radius: 50%; cursor: pointer; transition: all 0.25s;
 }
 #vizPlayPauseBtn { width: 62px; height: 62px; font-size: 2.15rem; }
 .viz-select { padding: 11px 18px; font-size: 0.98rem; background: rgba(0,0,60,0.85); border: 2px solid #00ffff; color: #fff; border-radius: 14px; min-width: 220px; }
-
 /* Versionsnummer */
 #vizVersion {
     position: absolute; bottom: 18px; right: 24px; font-size: 0.95rem;
@@ -241,7 +233,6 @@ button:disabled, button:disabled:hover {
 </style>
 </head>
 <body>
-
 <header>
     <div class="logo-container">
         <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
@@ -259,10 +250,9 @@ button:disabled, button:disabled:hover {
         🌙
     </button>
 </header>
-
 <div id="overlay">
     <h1>VenomSnake_Twitch´s Musikplayer</h1>
-    <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com (https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
+    <div id="infoText">Hier lade ich meine Musik, die ich mit Suno.com[](https://suno.com/@venomsnake_94)erstellt habe, hoch. Diese kannst du dir anhören und herunterladen.</div>
     <h2 id="currentSong">▶ Kein Song ausgewählt</h2>
     <audio id="audioPlayer"></audio>
     <div id="songControls">
@@ -298,7 +288,7 @@ button:disabled, button:disabled:hover {
             <option value="28">Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</option>
             <option value="29">Operation Stealth Destruction</option>
             <option value="30">Takin' On The Shagohod Remake</option>
-</select>
+        </select>
         <a id="downloadBtn" href="" download>Download</a>
         <div id="volumeContainer">
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
@@ -338,40 +328,34 @@ button:disabled, button:disabled:hover {
         <p>Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</p>
         <p>Takin' On The Shagohod Remake</p>
     </div>
-
     <div class="infoColumn">
         <h3>Bald Erscheinende Songs</h3>
         <p>Weitere Projekte in Planung...</p>
     </div>
 </div>
 </div>
-
 <!-- VISUALIZER OVERLAY -->
 <div id="visualizerOverlay">
     <div class="viz-header"><h2>VENOM VISUALIZER</h2></div>
     <button id="closeVisualizer" class="close-viz-btn">✕</button>
-    
+   
     <canvas id="visualizerCanvas"></canvas>
-
     <div class="viz-mode-buttons">
         <button class="mode-btn" data-mode="0">RING</button>
         <button class="mode-btn" data-mode="1">WAVE</button>
         <button class="mode-btn active" data-mode="2">BARS</button>
         <button class="mode-btn" data-mode="3">⚡ BLITZ</button>
     </div>
-
     <div id="vizControls">
         <button onclick="prevSong()" class="viz-btn">⏮</button>
         <button id="vizPlayPauseBtn" onclick="togglePlay()" class="viz-btn">▶</button>
         <button onclick="nextSong()" class="viz-btn">⏭</button>
         <select id="vizSongSelect" onchange="selectSongFromViz()" class="viz-select"></select>
     </div>
-
     <div id="vizVersion">Visualizer v4.5</div>
 </div>
 
 <script>
-// Dein kompletter JavaScript-Code (mit Blitz-Fix, Logo usw.)
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3",
     "Ghost Town by VenomSnake_Twitch.mp3",
@@ -405,7 +389,7 @@ const songs = [
     "Operation Stealth Destruction.mp3",
     "Takin' On The Shagohod Remake.mp3"
 ];
-</script>
+
 let currentIndex = 0;
 let radioMode = false;
 let loopCurrent = false;
@@ -427,18 +411,17 @@ const closeVisualizer = document.getElementById('closeVisualizer');
 const canvas = document.getElementById('visualizerCanvas');
 const ctx = canvas.getContext('2d');
 const modeBtns = document.querySelectorAll('.mode-btn');
-
 const vizPlayPauseBtn = document.getElementById('vizPlayPauseBtn');
 const vizSongSelect = document.getElementById('vizSongSelect');
-
-let audioContext, analyser, bufferLength, dataArray;
+let audioContext = null;
+let analyser = null;
+let bufferLength = 0;
+let dataArray = null;
+let fadeDataArray = null;
 let animationId = null;
 let vizMode = 2; // BARS als Standard
-
 const logoImg = new Image();
 logoImg.src = "DogVenomsnakeLogo.png";
-
-let fadeDataArray = new Uint8Array(bufferLength); // Für Fade-Out
 
 function initAudioContext() {
     if (audioContext) return;
@@ -451,264 +434,60 @@ function initAudioContext() {
     const source = audioContext.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioContext.destination);
+    console.log("AudioContext initialisiert");
 }
 
 function resumeAudioContext() {
-    if (audioContext && audioContext.state === 'suspended') {
+    if (!audioContext) initAudioContext();
+    if (audioContext.state === 'suspended') {
         audioContext.resume().then(() => {
-            console.log("AudioContext resumed");
+            console.log("AudioContext resumed → running");
         }).catch(e => {
-            console.error("Resume failed:", e);
-            setTimeout(resumeAudioContext, 300); // Nochmal versuchen
+            console.error("Resume fehlgeschlagen:", e);
         });
     }
 }
 
-audio.addEventListener('play', resumeAudioContext);
-document.addEventListener('touchstart', resumeAudioContext, { once: true });
-visualizerBtn.addEventListener('click', resumeAudioContext);
-visualizerOverlay.addEventListener('click', resumeAudioContext);
-visualizerOverlay.addEventListener('touchstart', resumeAudioContext, { once: true });
+function togglePlay() {
+    resumeAudioContext();  // Immer zuerst resumern – im selben Click!
 
-function resizeCanvas() {
-    const maxW = Math.min(window.innerWidth * 0.94, 1100);
-    const maxH = window.innerHeight * 0.72;
-    const ratio = 900 / 620;
-
-    let w = maxW;
-    let h = w / ratio;
-    if (h > maxH) { h = maxH; w = h * ratio; }
-    canvas.width = Math.floor(w);
-    canvas.height = Math.floor(h);
-}
-
-function drawRing() {
-    ctx.save();
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    
-    // Logo immer zeichnen, auch bei Pause
-    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    const logoSize = logoBase;
-    
-    if (logoImg.complete) {
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = 'rgba(0,255,255,0.5)';
-        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
-    }
-    
-    const ringRadius = logoSize * 0.6;
-    
-    const ringThickness = 6;
-    const ringOpacity = 0.4;
-    
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
-    ctx.lineWidth = ringThickness;
-    ctx.strokeStyle = `hsla(200, 100%, 70%, ${ringOpacity})`;
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = `rgba(0, 255, 255, 0.6)`;
-    ctx.stroke();
-    
-    // Strahlen – mit Fade-Data
-    const rayCount = 72;
-    for (let i = 0; i < rayCount; i++) {
-        const angle = (i / rayCount) * Math.PI * 2;
-        
-        const mirroredIndex = Math.min(i, rayCount - 1 - i);
-        const freqIndex = Math.floor((mirroredIndex / rayCount) * bufferLength);
-        const amp = fadeDataArray[freqIndex] / 255;
-        
-        const rayLength = amp * (ringRadius * 0.5);
-        
-        const innerX = centerX + Math.cos(angle) * ringRadius;
-        const innerY = centerY + Math.sin(angle) * ringRadius;
-        const outerX = centerX + Math.cos(angle) * (ringRadius + rayLength);
-        const outerY = centerY + Math.sin(angle) * (ringRadius + rayLength);
-        
-        const hue = 180 + (i * 5) % 180;
-        ctx.strokeStyle = `hsla(${hue}, 100%, ${60 + amp * 40}%, ${0.7 + amp * 0.3})`;
-        ctx.lineWidth = 2 + amp * 8;
-        ctx.shadowBlur = 15 + amp * 30;
-        ctx.shadowColor = `hsla(${hue}, 100%, 80%, 0.7)`;
-        
-        ctx.beginPath();
-        ctx.moveTo(innerX, innerY);
-        ctx.lineTo(outerX, outerY);
-        ctx.stroke();
-    }
-    
-    ctx.restore();
-}
-
-function drawWaveform() {
-    const baseY = canvas.height - 40;
-    ctx.beginPath();
-    ctx.moveTo(0, baseY);
-    
-    const sliceWidth = canvas.width * 1.0 / bufferLength;
-    let x = 0;
-    
-    for (let i = 0; i < bufferLength; i++) {
-        const mirroredIndex = Math.min(i, bufferLength - 1 - i);
-        let v = fadeDataArray[mirroredIndex] / 128.0;
-        
-        if (mirroredIndex > bufferLength * 0.6) {
-            v *= 1.35 + Math.random() * 0.15;
-            v = Math.min(v, 2.0);
-        }
-        
-        const y = baseY - (v * canvas.height * 0.45);
-        
-        ctx.lineTo(x, y);
-        x += sliceWidth;
-    }
-    
-    ctx.lineTo(canvas.width, baseY);
-    ctx.lineTo(0, baseY);
-    ctx.closePath();
-    
-    const gradient = ctx.createLinearGradient(0, baseY, 0, baseY - canvas.height * 0.45);
-    gradient.addColorStop(0, 'rgba(0, 255, 255, 0.7)');
-    gradient.addColorStop(0.5, 'rgba(145, 70, 255, 0.5)');
-    gradient.addColorStop(1, 'rgba(0, 255, 255, 0.2)');
-    
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    
-    ctx.strokeStyle = '#00ffff';
-    ctx.lineWidth = 4 + Math.max(...fadeDataArray) / 255 * 6;
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = '#00ffff';
-    ctx.stroke();
-}
-
-function drawBars() {
-    const barWidth = (canvas.width / bufferLength) * 1.65;
-    let x = 15;
-    for (let i = 0; i < bufferLength; i++) {
-        const height = (fadeDataArray[i] / 255) * (canvas.height * 0.82);
-        ctx.fillStyle = `hsl(${190 + (i * 1.4)}, 100%, 65%)`;
-        ctx.fillRect(x, canvas.height - height - 55, barWidth, height);
-        x += barWidth + 4;
-    }
-}
-
-function drawLightning() {
-    if (audio.paused || audio.ended || !audio.duration || audio.currentTime === 0) {
-        return;
-    }
-
-    const bass = Math.max(...fadeDataArray.slice(0,40)) / 255;
-
-    ctx.fillStyle = `rgba(0,255,255,${bass * 0.08})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const numBolts = 2 + Math.floor(bass * 8);
-    for (let i = 0; i < numBolts; i++) {
-        let x = 30 + Math.random() * (canvas.width - 60);
-        let y = 0;
-        ctx.strokeStyle = `hsl(195, 100%, ${60 + bass * 25}%)`;
-        ctx.lineWidth = 1.8 + bass * 7;
-        ctx.shadowBlur = 30 + bass * 35;
-        ctx.shadowColor = 'rgba(160,255,255,0.6)';
-
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-
-        const steps = 8 + Math.floor(bass * 5);
-        for (let s = 1; s < steps; s++) {
-            y += canvas.height / steps * (0.7 + Math.random() * 0.4);
-            x += (Math.random() - 0.5) * (60 + bass * 140);
-            ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-    }
-}
-
-function drawVisualizer() {
-    animationId = requestAnimationFrame(drawVisualizer);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    if (audio.paused || audio.ended || audio.currentTime === 0) {
-        // Fade-Out: Werte langsam reduzieren
-        for (let i = 0; i < bufferLength; i++) {
-            fadeDataArray[i] *= 0.95; // Langsamer Abkling-Faktor (0.95 = langsam, 0.8 = schneller)
-            if (fadeDataArray[i] < 1) fadeDataArray[i] = 0;
-        }
+    if (audio.paused || audio.ended) {
+        audio.play().then(() => {
+            playPauseBtn.textContent = "⏸ Pause";
+            vizPlayPauseBtn.textContent = "⏸";
+        }).catch(e => {
+            console.error("Play-Fehler:", e.name, e.message);
+            alert("Play fehlgeschlagen: " + e.name + " – siehe Konsole (F12)");
+        });
     } else {
-        // Aktuelle Daten kopieren
-        analyser.getByteFrequencyData(fadeDataArray);
-    }
-    
-    if (vizMode === 0) drawRing();
-    else if (vizMode === 1) drawWaveform();
-    else if (vizMode === 2) drawBars();
-    else drawLightning();
-}
-
-function startVisualizer() { 
-    initAudioContext(); 
-    resumeAudioContext();
-    resizeCanvas(); 
-    if (!animationId) drawVisualizer(); 
-}
-function stopVisualizer() { if (animationId) { cancelAnimationFrame(animationId); animationId = null; } }
-
-function populateVizSongSelect() {
-    vizSongSelect.innerHTML = songSelect.innerHTML;
-    vizSongSelect.value = currentIndex;
-}
-
-function updateVizPlayBtn() {
-    vizPlayPauseBtn.textContent = audio.paused ? '▶' : '⏸';
-}
-
-function selectSongFromViz() {
-    loadSong(parseInt(vizSongSelect.value));
-    audio.play();
-    updateVizPlayBtn();
-}
-
-// ==================== ORIGINALER CODE (unverändert) ====================
-function updateLoopButtonState() {
-    if (radioMode) {
-        loopCurrent = false;
-        loopBtn.classList.remove("active");
-        loopBtn.disabled = true;
-    } else {
-        loopBtn.disabled = false;
+        audio.pause();
+        playPauseBtn.textContent = "▶ Play";
+        vizPlayPauseBtn.textContent = "▶";
     }
 }
 
 function loadSong(index) {
     currentIndex = index;
     const fileName = songs[index];
+    console.log("Lade:", fileName);
     audio.src = fileName;
     songSelect.value = index;
+    if (vizSongSelect) vizSongSelect.value = index;
     downloadBtn.href = fileName;
     downloadBtn.setAttribute("download", fileName);
     document.getElementById("currentSong").textContent = "▶ " + songSelect.options[index].text;
-    if (vizSongSelect) vizSongSelect.value = currentIndex;
-    updateVizPlayBtn();
 }
 
-function togglePlay() {
-    if (audio.paused) {
-        audio.play().catch(e => console.error("Play-Fehler:", e));
-        playPauseBtn.textContent = "⏸ Pause";
-    } else {
-        audio.pause();
-        playPauseBtn.textContent = "▶ Play";
-    }
-    updateVizPlayBtn();
+function selectSong() {
+    resumeAudioContext();
+    loadSong(parseInt(songSelect.value));
+    togglePlay();
 }
 
-function stopSong() {
-    audio.pause();
-    audio.currentTime = 0;
-    playPauseBtn.textContent = "▶ Play";
-    updateVizPlayBtn();
+function selectSongFromViz() {
+    resumeAudioContext();
+    loadSong(parseInt(vizSongSelect.value));
+    togglePlay();
 }
 
 function nextSong() {
@@ -717,24 +496,20 @@ function nextSong() {
     } else {
         loadSong((currentIndex + 1) % songs.length);
     }
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-    updateVizPlayBtn();
+    togglePlay();
 }
 
 function prevSong() {
     if (radioMode) return;
     loadSong((currentIndex - 1 + songs.length) % songs.length);
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-    updateVizPlayBtn();
+    togglePlay();
 }
 
-function selectSong() {
-    loadSong(parseInt(songSelect.value));
-    audio.play();
-    playPauseBtn.textContent = "⏸ Pause";
-    updateVizPlayBtn();
+function stopSong() {
+    audio.pause();
+    audio.currentTime = 0;
+    playPauseBtn.textContent = "▶ Play";
+    vizPlayPauseBtn.textContent = "▶";
 }
 
 function toggleRadioMode() {
@@ -744,15 +519,13 @@ function toggleRadioMode() {
         loopCurrent = false;
         updateLoopButtonState();
         loadSong(Math.floor(Math.random() * songs.length));
-        audio.play();
-        playPauseBtn.textContent = "⏸ Pause";
+        togglePlay();
         radioToggle.textContent = "🎧 Radio aus";
     } else {
         alert("Radio-Modus deaktiviert.\nNormale Playlist-Wiedergabe.");
         updateLoopButtonState();
         radioToggle.textContent = "🎧 Radio-Modus";
     }
-    updateVizPlayBtn();
 }
 
 function toggleFullscreen() {
@@ -794,32 +567,219 @@ function formatTime(time) {
 audio.addEventListener("ended", () => {
     if (loopCurrent && !radioMode) {
         audio.currentTime = 0;
-        audio.play();
+        togglePlay();
     } else {
         nextSong();
     }
 });
 
-// Theme Toggle
-function toggleTheme() {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    
-    html.setAttribute('data-theme', next);
-    
-    const btn = document.getElementById('themeBtn');
-    btn.textContent = next === 'light' ? '☀️' : '🌙';
-    
-    localStorage.setItem('playerTheme', next);
+function updateLoopButtonState() {
+    if (radioMode) {
+        loopCurrent = false;
+        loopBtn.classList.remove("active");
+        loopBtn.disabled = true;
+    } else {
+        loopBtn.disabled = false;
+    }
 }
 
-// VISUALIZER EVENTS
+// ─── VISUALIZER FUNKTIONEN (unverändert) ────────────────────────
+function resizeCanvas() {
+    const maxW = Math.min(window.innerWidth * 0.94, 1100);
+    const maxH = window.innerHeight * 0.72;
+    const ratio = 900 / 620;
+    let w = maxW;
+    let h = w / ratio;
+    if (h > maxH) { h = maxH; w = h * ratio; }
+    canvas.width = Math.floor(w);
+    canvas.height = Math.floor(h);
+}
+
+function drawRing() {
+    ctx.save();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+   
+    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
+    const logoSize = logoBase;
+   
+    if (logoImg.complete) {
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'rgba(0,255,255,0.5)';
+        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
+    }
+   
+    const ringRadius = logoSize * 0.6;
+    const ringThickness = 6;
+    const ringOpacity = 0.4;
+   
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+    ctx.lineWidth = ringThickness;
+    ctx.strokeStyle = `hsla(200, 100%, 70%, ${ringOpacity})`;
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = `rgba(0, 255, 255, 0.6)`;
+    ctx.stroke();
+   
+    const rayCount = 72;
+    for (let i = 0; i < rayCount; i++) {
+        const angle = (i / rayCount) * Math.PI * 2;
+        const mirroredIndex = Math.min(i, rayCount - 1 - i);
+        const freqIndex = Math.floor((mirroredIndex / rayCount) * bufferLength);
+        const amp = fadeDataArray[freqIndex] / 255;
+       
+        const rayLength = amp * (ringRadius * 0.5);
+       
+        const innerX = centerX + Math.cos(angle) * ringRadius;
+        const innerY = centerY + Math.sin(angle) * ringRadius;
+        const outerX = centerX + Math.cos(angle) * (ringRadius + rayLength);
+        const outerY = centerY + Math.sin(angle) * (ringRadius + rayLength);
+       
+        const hue = 180 + (i * 5) % 180;
+        ctx.strokeStyle = `hsla(${hue}, 100%, ${60 + amp * 40}%, ${0.7 + amp * 0.3})`;
+        ctx.lineWidth = 2 + amp * 8;
+        ctx.shadowBlur = 15 + amp * 30;
+        ctx.shadowColor = `hsla(${hue}, 100%, 80%, 0.7)`;
+       
+        ctx.beginPath();
+        ctx.moveTo(innerX, innerY);
+        ctx.lineTo(outerX, outerY);
+        ctx.stroke();
+    }
+   
+    ctx.restore();
+}
+
+function drawWaveform() {
+    const baseY = canvas.height - 40;
+    ctx.beginPath();
+    ctx.moveTo(0, baseY);
+   
+    const sliceWidth = canvas.width * 1.0 / bufferLength;
+    let x = 0;
+   
+    for (let i = 0; i < bufferLength; i++) {
+        const mirroredIndex = Math.min(i, bufferLength - 1 - i);
+        let v = fadeDataArray[mirroredIndex] / 128.0;
+       
+        if (mirroredIndex > bufferLength * 0.6) {
+            v *= 1.35 + Math.random() * 0.15;
+            v = Math.min(v, 2.0);
+        }
+       
+        const y = baseY - (v * canvas.height * 0.45);
+       
+        ctx.lineTo(x, y);
+        x += sliceWidth;
+    }
+   
+    ctx.lineTo(canvas.width, baseY);
+    ctx.lineTo(0, baseY);
+    ctx.closePath();
+   
+    const gradient = ctx.createLinearGradient(0, baseY, 0, baseY - canvas.height * 0.45);
+    gradient.addColorStop(0, 'rgba(0, 255, 255, 0.7)');
+    gradient.addColorStop(0.5, 'rgba(145, 70, 255, 0.5)');
+    gradient.addColorStop(1, 'rgba(0, 255, 255, 0.2)');
+   
+    ctx.fillStyle = gradient;
+    ctx.fill();
+   
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 4 + Math.max(...fadeDataArray) / 255 * 6;
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = '#00ffff';
+    ctx.stroke();
+}
+
+function drawBars() {
+    const barWidth = (canvas.width / bufferLength) * 1.65;
+    let x = 15;
+    for (let i = 0; i < bufferLength; i++) {
+        const height = (fadeDataArray[i] / 255) * (canvas.height * 0.82);
+        ctx.fillStyle = `hsl(${190 + (i * 1.4)}, 100%, 65%)`;
+        ctx.fillRect(x, canvas.height - height - 55, barWidth, height);
+        x += barWidth + 4;
+    }
+}
+
+function drawLightning() {
+    if (audio.paused || audio.ended || !audio.duration || audio.currentTime === 0) {
+        return;
+    }
+    const bass = Math.max(...fadeDataArray.slice(0,40)) / 255;
+    ctx.fillStyle = `rgba(0,255,255,${bass * 0.08})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const numBolts = 2 + Math.floor(bass * 8);
+    for (let i = 0; i < numBolts; i++) {
+        let x = 30 + Math.random() * (canvas.width - 60);
+        let y = 0;
+        ctx.strokeStyle = `hsl(195, 100%, ${60 + bass * 25}%)`;
+        ctx.lineWidth = 1.8 + bass * 7;
+        ctx.shadowBlur = 30 + bass * 35;
+        ctx.shadowColor = 'rgba(160,255,255,0.6)';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        const steps = 8 + Math.floor(bass * 5);
+        for (let s = 1; s < steps; s++) {
+            y += canvas.height / steps * (0.7 + Math.random() * 0.4);
+            x += (Math.random() - 0.5) * (60 + bass * 140);
+            ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+}
+
+function drawVisualizer() {
+    animationId = requestAnimationFrame(drawVisualizer);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   
+    if (audio.paused || audio.ended || audio.currentTime === 0) {
+        for (let i = 0; i < bufferLength; i++) {
+            fadeDataArray[i] *= 0.95;
+            if (fadeDataArray[i] < 1) fadeDataArray[i] = 0;
+        }
+    } else {
+        analyser.getByteFrequencyData(fadeDataArray);
+    }
+   
+    if (vizMode === 0) drawRing();
+    else if (vizMode === 1) drawWaveform();
+    else if (vizMode === 2) drawBars();
+    else drawLightning();
+}
+
+function startVisualizer() {
+    if (!audioContext) initAudioContext();
+    resumeAudioContext();
+    resizeCanvas();
+    if (!animationId) drawVisualizer();
+}
+
+function stopVisualizer() { 
+    if (animationId) { 
+        cancelAnimationFrame(animationId); 
+        animationId = null; 
+    } 
+}
+
+function populateVizSongSelect() {
+    vizSongSelect.innerHTML = songSelect.innerHTML;
+    vizSongSelect.value = currentIndex;
+}
+
+function updateVizPlayBtn() {
+    vizPlayPauseBtn.textContent = audio.paused ? '▶' : '⏸';
+}
+
+// ─── EVENT LISTENER ─────────────────────────────────────────────
 visualizerBtn.addEventListener('click', () => {
+    resumeAudioContext();
     visualizerOverlay.classList.add('active');
     populateVizSongSelect();
     startVisualizer();
 });
+
 closeVisualizer.addEventListener('click', () => {
     visualizerOverlay.classList.remove('active');
     stopVisualizer();
@@ -841,7 +801,7 @@ window.addEventListener('resize', () => {
     if (visualizerOverlay.classList.contains('active')) resizeCanvas();
 });
 
-// Start
+// ─── START ──────────────────────────────────────────────────────
 window.addEventListener('load', () => {
     const saved = localStorage.getItem('playerTheme');
     if (saved === 'light') {
@@ -852,6 +812,7 @@ window.addEventListener('load', () => {
     updateLoopButtonState();
     populateVizSongSelect();
     resizeCanvas();
+    volumeSlider.value = 0.5;
 });
 </script>
 </body>
