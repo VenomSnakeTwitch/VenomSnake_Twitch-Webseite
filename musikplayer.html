@@ -16,7 +16,6 @@
             --mgs-panel: #0a0f0a;
             --mgs-border: #1a2e1a;
             --text-primary: #d1ffd1;
-            --mgs-red: #ff4141;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -27,6 +26,8 @@
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
+            background-position: center;
+            background-repeat: no-repeat;
             background-attachment: fixed;
             color: var(--text-primary);
             overflow-x: hidden;
@@ -74,14 +75,14 @@
         }
         button:hover, select:hover, .download-btn:hover, .home-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
         
-        button.active-mode { background: var(--mgs-green); color: #000; font-weight: bold; }
+        /* Aktiver Modus Style */
+        .active-mode { background: var(--mgs-green) !important; color: #000 !important; }
 
         .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
         .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
 
         input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none; }
 
-        /* Infobox Style */
         #infoBox {
             margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
             border-top: 2px solid var(--mgs-border); padding-top: 20px;
@@ -97,9 +98,17 @@
         #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
         
         .vis-player-ui {
-            margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green);
-            background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid var(--mgs-green);
+            background: rgba(0, 255, 65, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 90%;
+            max-width: 800px;
         }
+
         .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
@@ -124,7 +133,7 @@
         <h1>CODEC INTERFACE</h1>
         <div class="suno-notice">
             [ STATUS: TRANSMISSION ACTIVE ]<br>
-            AUTO-PLAY & RADIO-MODUS VERFÜGBAR
+            Hier werden alle Songs hochgeladen, die ich auf <strong>Suno.com</strong> erstelle.
         </div>
 
         <h2 id="currentSong">INITIALISIERE...</h2>
@@ -174,26 +183,37 @@
             <span class="slider-label" id="durationLabel">0:00</span>
         </div>
 
+        <div class="slider-row">
+            <span class="slider-label">VOL</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <span class="slider-label" id="volumeLabel">50%</span>
+        </div>
+
         <div class="control-grid">
-            <button id="btnRadio" onclick="toggleRadio()">📻 RADIO: AUS</button>
-            <button id="btnLoop" onclick="toggleLoop()">🔂 LOOP: AUS</button>
+            <button id="radioModeBtn" onclick="toggleRadioMode()">📻 RADIO: AUS</button>
+            <button id="loopModeBtn" onclick="toggleLoopMode()">🔂 LOOP: AUS</button>
             <button onclick="prevSong()">⏮ ZURÜCK</button>
             <button id="playPauseBtn" onclick="togglePlay()">▶ PLAY</button>
             <button onclick="nextSong()">WEITER ⏭</button>
-            <a href="index.html" class="home-btn">[ HOME ]</a>
         </div>
 
         <div id="infoBox">
             <div class="infoColumn">
-                <h3>Neu Erschienene Songs</h3>
+                <h3>Neue Songs Sind Da!</h3>
                 <p>Bleed out My Frend</p>
-                <p>Revange / Revange 2</p>
+                <p>Revange</p>
+                <p>Revange 2</p>
                 <p>Survival Of Death</p>
                 <p>Pile of Total Wreck</p>
-                <p>Industrial / Mental Breakdown</p>
+                <p>Industrial Breakdown</p>
+                <p>Mental Breakdown</p>
                 <p>Operation Stealth Destruction</p>
                 <p>Dessert Storm Ahead</p>
-                <p>Metal Gear 2 Remix Series (5 Tracks)</p>
+                <p>Metal Gear 2 Solid Snake Chasing the Green Beret Remix</p>
+                <p>Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026</p>
+                <p>Metal Gear 2 Solid Snake Level1 Warning Remix</p>
+                <p>Metal Gear 2 Solid Snake Level3 Warning Remix</p>
+                <p>Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</p>
                 <p>Takin' On The Shagohod Remake</p>
             </div>
             <div class="infoColumn">
@@ -202,33 +222,49 @@
                 <p>Weitere Projekte in Planung...</p>
             </div>
         </div>
+        <div style="margin-top: 20px;">
+            <a href="index.html" class="home-btn">[ STARTSEITE ]</a>
+        </div>
     </div>
 </main>
 
 <div id="visualizerOverlay">
     <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
+    
     <canvas id="visualizerCanvas"></canvas>
+
     <div class="vis-player-ui">
         <div class="slider-row" style="margin:0; background:none; border:none;">
             <span class="slider-label" id="visTimeLabel">0:00</span>
             <input type="range" id="visProgress" min="0" max="100" value="0" oninput="seekAudio(this.value)">
             <span class="slider-label" id="visDurationLabel">0:00</span>
         </div>
+
+        <div class="vis-row">
+            <select id="visSongSelect" onchange="selectSong(this.value)" style="flex-grow:1;"></select>
+        </div>
+
         <div class="vis-row">
             <button onclick="prevSong()">⏮</button>
             <button id="visPlayPauseBtn" onclick="togglePlay()" style="min-width:100px;">▶ PLAY</button>
             <button onclick="nextSong()">⏭</button>
-            <button id="visRadio" onclick="toggleRadio()">📻</button>
-            <button id="visLoop" onclick="toggleLoop()">🔂</button>
+            <button id="visRadioBtn" onclick="toggleRadioMode()">📻</button>
+            <button id="visLoopBtn" onclick="toggleLoopMode()">🔂</button>
             <button onclick="setVisMode('ring')">RING</button>
             <button onclick="setVisMode('bars')">BARS</button>
-            <button onclick="closeVisualizer()" style="color:var(--mgs-red); border-color:var(--mgs-red);">EXIT</button>
+            <select onchange="handleBackgroundOption(this.value); this.value='';" style="width:auto;">
+                <option value="">BG</option>
+                <option value="change">EDIT</option>
+                <option value="reset">X</option>
+            </select>
+            <button onclick="closeVisualizer()" style="color:#ff4141; border-color:#ff4141;">EXIT</button>
         </div>
     </div>
+    <input type="file" id="bgFileInput" accept="image/*" style="display:none;">
 </div>
 
 <footer>
-    <p>© 2026 // FOXHOUND AUDIO UNIT // ENCRYPTED CONNECTION</p>
+    <p>EST. 2026 // FREQUENCY: 140.85 MHz // OPERATOR: VENOMSNAKE_TWITCH</p>
 </footer>
 
 <script>
@@ -250,68 +286,72 @@ const BASE_URL = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_
 let currentIndex = 0;
 let audioCtx, analyser, dataArray, animationId;
 let visMode = 'ring';
-let isRadio = false;
-let isLoop = false;
+let customCanvasBg = null;
+let isRadioMode = false;
+let isLoopMode = false;
 
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 
-// AUTO-PLAY LOGIK
-audio.onended = () => {
-    if (isLoop) {
-        audio.play();
-    } else if (isRadio) {
-        let next;
-        do { next = Math.floor(Math.random() * songs.length); } while (next === currentIndex);
-        loadSong(next);
-        audio.play();
-    } else {
-        nextSong();
+const bgInput = document.getElementById('bgFileInput');
+
+window.addEventListener('DOMContentLoaded', () => {
+    const mainSelect = document.getElementById("songSelect");
+    const visSelect = document.getElementById("visSongSelect");
+    visSelect.innerHTML = mainSelect.innerHTML;
+});
+
+function handleBackgroundOption(val) {
+    if(val === 'change') bgInput.click();
+    if(val === 'reset') {
+        localStorage.removeItem('codec_canvas_bg');
+        customCanvasBg = null;
     }
-};
-
-function toggleRadio() {
-    isRadio = !isRadio;
-    if (isRadio) isLoop = false;
-    updateModeButtons();
 }
 
-function toggleLoop() {
-    isLoop = !isLoop;
-    if (isLoop) isRadio = false;
-    updateModeButtons();
+bgInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgData = event.target.result;
+            localStorage.setItem('codec_canvas_bg', imgData);
+            loadCanvasBackground(imgData);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function loadCanvasBackground(data) {
+    const img = new Image();
+    img.onload = () => { customCanvasBg = img; };
+    img.src = data;
 }
 
-function updateModeButtons() {
-    const rBtn = document.getElementById("btnRadio");
-    const lBtn = document.getElementById("btnLoop");
-    const vrBtn = document.getElementById("visRadio");
-    const vlBtn = document.getElementById("visLoop");
-
-    rBtn.textContent = isRadio ? "📻 RADIO: AN" : "📻 RADIO: AUS";
-    rBtn.className = isRadio ? "active-mode" : "";
-    vrBtn.className = isRadio ? "active-mode" : "";
-
-    lBtn.textContent = isLoop ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
-    lBtn.className = isLoop ? "active-mode" : "";
-    vlBtn.className = isLoop ? "active-mode" : "";
+if(localStorage.getItem('codec_canvas_bg')) {
+    loadCanvasBackground(localStorage.getItem('codec_canvas_bg'));
 }
 
 function loadSong(index) {
     currentIndex = parseInt(index);
     audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
     document.getElementById("songSelect").value = currentIndex;
+    document.getElementById("visSongSelect").value = currentIndex;
     document.getElementById("downloadBtn").href = audio.src;
     const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
     document.getElementById("currentSong").textContent = "▶ " + songTitle;
-    updatePlayButtons("⏸ PAUSE");
 }
 
 function togglePlay() {
     if(!audioCtx) initAudioSystem();
-    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
-    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
+    if (audio.paused) { 
+        audio.play(); 
+        updatePlayButtons("⏸ PAUSE");
+    } else { 
+        audio.pause(); 
+        updatePlayButtons("▶ PLAY");
+    }
 }
 
 function updatePlayButtons(text) {
@@ -319,8 +359,48 @@ function updatePlayButtons(text) {
     document.getElementById("visPlayPauseBtn").textContent = text;
 }
 
-function nextSong() { let next = (currentIndex + 1) % songs.length; loadSong(next); audio.play(); }
-function prevSong() { let prev = (currentIndex - 1 + songs.length) % songs.length; loadSong(prev); audio.play(); }
+// AUTO PLAY FUNKTION
+audio.onended = () => {
+    if (isLoopMode) {
+        audio.currentTime = 0;
+        audio.play();
+    } else if (isRadioMode) {
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * songs.length);
+        } while (randomIndex === currentIndex && songs.length > 1);
+        selectSong(randomIndex);
+    } else {
+        nextSong();
+    }
+};
+
+function toggleRadioMode() {
+    isRadioMode = !isRadioMode;
+    if (isRadioMode) isLoopMode = false;
+    updateModeUI();
+}
+
+function toggleLoopMode() {
+    isLoopMode = !isLoopMode;
+    if (isLoopMode) isRadioMode = false;
+    updateModeUI();
+}
+
+function updateModeUI() {
+    const radioBtn = document.getElementById("radioModeBtn");
+    const loopBtn = document.getElementById("loopModeBtn");
+    const visRadioBtn = document.getElementById("visRadioBtn");
+    const visLoopBtn = document.getElementById("visLoopBtn");
+
+    radioBtn.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
+    loopBtn.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
+    
+    radioBtn.classList.toggle("active-mode", isRadioMode);
+    loopBtn.classList.toggle("active-mode", isLoopMode);
+    visRadioBtn.classList.toggle("active-mode", isRadioMode);
+    visLoopBtn.classList.toggle("active-mode", isLoopMode);
+}
 
 function initAudioSystem() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -332,43 +412,70 @@ function initAudioSystem() {
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
-function openVisualizer() { 
-    if(!audioCtx) initAudioSystem();
-    document.getElementById("visualizerOverlay").classList.add("active");
-    const canvas = document.getElementById("visualizerCanvas");
-    canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.6;
-    draw();
-}
+function setVisMode(mode) { visMode = mode; }
 
 function draw() {
     animationId = requestAnimationFrame(draw);
     analyser.getByteFrequencyData(dataArray);
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
+
+    if (customCanvasBg) {
+        let hRatio = canvas.width / customCanvasBg.width;
+        let vRatio = canvas.height / customCanvasBg.height;
+        let ratio  = Math.max(hRatio, vRatio);
+        let centerShiftX = (canvas.width - customCanvasBg.width * ratio) / 2;
+        let centerShiftY = (canvas.height - customCanvasBg.height * ratio) / 2;
+        
+        ctx.globalAlpha = 0.7; 
+        ctx.drawImage(customCanvasBg, 0, 0, customCanvasBg.width, customCanvasBg.height,
+                      centerShiftX, centerShiftY, customCanvasBg.width * ratio, customCanvasBg.height * ratio);
+        ctx.globalAlpha = 1.0;
+    }
+
+    if (visMode === 'ring') {
+        drawRing(ctx, canvas);
+    } else {
+        drawBars(ctx, canvas);
+    }
 }
 
 function drawRing(ctx, canvas) {
     ctx.save();
-    const centerX = canvas.width / 2, centerY = canvas.height / 2;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
     const bufferLength = dataArray.length;
     const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    let sum = 0; for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
+    
+    let sum = 0;
+    for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
     let avgAmp = sum / bufferLength;
     let pulse = avgAmp * 0.4;
+    
     const logoSize = logoBase + pulse;
+
     if (logoImg.complete) {
         ctx.shadowBlur = 20 + pulse;
         ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
         ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
     }
+
     const ringRadius = (logoBase * 0.6) + (pulse * 0.2);
-    for (let i = 0; i < 80; i++) {
-        const angle = (i / 80) * Math.PI * 2;
-        const amp = dataArray[i % (bufferLength/2)] / 255;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = `rgba(0, 255, 65, 0.4)`;
+    ctx.stroke();
+
+    const rayCount = 80;
+    for (let i = 0; i < rayCount; i++) {
+        const angle = (i / rayCount) * Math.PI * 2;
+        const mirroredIndex = Math.floor(Math.abs((i % (rayCount / 2)) - (rayCount / 4)) * (bufferLength / (rayCount / 4)));
+        const amp = dataArray[mirroredIndex] / 255;
         const rayLength = amp * (ringRadius * 0.8);
+
         ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`;
         ctx.lineWidth = 2 + amp * 5;
         ctx.beginPath();
@@ -390,11 +497,29 @@ function drawBars(ctx, canvas) {
     }
 }
 
-function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
-function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-function selectSong(val) { loadSong(val); audio.play(); }
+function openVisualizer() { 
+    if(!audioCtx) initAudioSystem();
+    document.getElementById("visualizerOverlay").classList.add("active");
+    const canvas = document.getElementById("visualizerCanvas");
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.6;
+    draw();
+}
+
+function closeVisualizer() { 
+    document.getElementById("visualizerOverlay").classList.remove("active");
+    cancelAnimationFrame(animationId);
+}
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+}
+
+function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function nextSong() { let next = (currentIndex + 1) % songs.length; loadSong(next); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function prevSong() { let prev = (currentIndex - 1 + songs.length) % songs.length; loadSong(prev); audio.play(); updatePlayButtons("⏸ PAUSE"); }
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
-function setVisMode(m) { visMode = m; }
 
 audio.ontimeupdate = () => {
     if(!isNaN(audio.duration)) {
@@ -408,9 +533,15 @@ audio.ontimeupdate = () => {
     }
 };
 
+document.getElementById("volumeSlider").oninput = function() {
+    audio.volume = this.value;
+    document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
+};
+
+document.getElementById("progress").oninput = function() { seekAudio(this.value); };
+
 function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
 window.onload = () => { loadSong(0); audio.volume = 0.5; };
 </script>
 </body>
 </html>
-
