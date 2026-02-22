@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONTACT // VenomSnake_Twitch - Secure Line</title>
-    
+
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -32,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -40,18 +39,16 @@
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
-        /* Navigation */
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
-        .nav-container { max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
-        /* Main Content */
         .container { max-width: 600px; margin: 120px auto 40px; padding: 0 20px; }
-        
+
         .contact-box {
             border: 2px solid var(--mgs-green); background: var(--mgs-panel); padding: 2.5rem;
             position: relative; box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.05);
@@ -65,7 +62,7 @@
 
         .form-group { margin-bottom: 1.5rem; text-align: left; }
         label { display: block; font-size: 0.7rem; margin-bottom: 5px; color: var(--mgs-green); letter-spacing: 1px; }
-        
+
         input, textarea {
             width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--mgs-border);
             padding: 12px; color: #fff; font-family: 'JetBrains Mono', monospace;
@@ -73,12 +70,30 @@
         }
         input:focus, textarea:focus { outline: none; border-color: var(--mgs-green); box-shadow: 0 0 10px rgba(0, 255, 65, 0.2); }
 
+        /* Buttons */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        
         .btn-submit {
             background: var(--mgs-green-dim); border: 1px solid var(--mgs-green); color: var(--mgs-green);
             padding: 15px; font-family: 'Chakra Petch'; font-weight: bold; cursor: pointer;
             text-transform: uppercase; transition: 0.3s; width: 100%; letter-spacing: 1px;
         }
         .btn-submit:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 20px var(--mgs-green); }
+
+        .btn-back {
+            background: transparent; border: 1px solid #ff4141; color: #ff4141;
+            padding: 10px; font-family: 'Chakra Petch'; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s; width: 100%; letter-spacing: 1px;
+            text-decoration: none; text-align: center; font-size: 0.8rem;
+        }
+        .btn-back:hover { background: #ff4141; color: #000; box-shadow: 0 0 15px #ff4141; }
+
+        .nav-btn {
+            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
+            padding: 8px 15px; text-decoration: none; font-size: 0.7rem; font-weight: bold;
+            transition: 0.2s; text-transform: uppercase;
+        }
+        .nav-btn:hover { background: var(--mgs-green); color: #000; }
 
         #messageStatus { margin-top: 15px; font-size: 0.8rem; font-weight: bold; text-align: center; min-height: 1.2em; }
 
@@ -93,19 +108,20 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span>VENOM_SNAKE_OPS</span>
         </a>
+        <a href="index.html" class="nav-btn">[ ZURÜCK ZUR BASIS ]</a>
     </div>
 </nav>
 
 <main class="container">
     <div class="contact-box">
         <h1>Funkverbindung</h1>
-        
+
         <form id="contactForm">
             <div class="form-group">
                 <label>OPERATOR_NAME</label>
                 <input type="text" name="from_name" placeholder="Name eingeben..." required>
             </div>
-            
+
             <div class="form-group">
                 <label>SIGNAL_ADRESSE (E-MAIL)</label>
                 <input type="email" name="reply_to" placeholder="E-Mail eingeben..." required>
@@ -116,7 +132,11 @@
                 <textarea name="message" rows="6" placeholder="Nachricht verfassen..." required></textarea>
             </div>
 
-            <button type="submit" class="btn-submit">SIGNAL SENDEN (BURST TRANSMISSION)</button>
+            <div class="btn-group">
+                <button type="submit" class="btn-submit">SIGNAL SENDEN (BURST TRANSMISSION)</button>
+                <a href="index.html" class="btn-back">VORGANG ABBRECHEN</a>
+            </div>
+            
             <div id="messageStatus"></div>
         </form>
     </div>
@@ -129,7 +149,7 @@
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
     (function() {
-        emailjs.init("Bw8SYa2jG4vcW4APx"); // Deine User-ID
+        emailjs.init("Bw8SYa2jG4vcW4APx");
     })();
 
     const form = document.getElementById('contactForm');
