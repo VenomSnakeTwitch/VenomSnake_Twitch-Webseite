@@ -23,11 +23,19 @@
         body {
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--mgs-bg);
-            color: var(--text-primary);
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--text-primary);
             overflow-x: hidden;
+        }
+
+        /* Falls ein Hintergrundbild gesetzt wird */
+        body.custom-bg {
+            background-size: cover;
         }
 
         body::before {
@@ -48,8 +56,9 @@
         .main-container { max-width: 1000px; margin: 100px auto 50px; padding: 0 20px; text-align: center; }
         
         .player-box {
-            background: var(--mgs-panel); border: 2px solid var(--mgs-green); padding: 2rem;
+            background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem;
             position: relative; box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1); width: 100%;
+            backdrop-filter: blur(5px);
         }
 
         h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2rem; }
@@ -84,13 +93,13 @@
         .infoColumn p { font-size: 0.75rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
 
         #visualizerOverlay {
-            position: fixed; inset: 0; background: #000; z-index: 2000;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
         #visualizerOverlay.active { display: flex; }
-        #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 70vh; background: #000; }
+        #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 70vh; background: transparent; }
         
-        .vis-controls { margin-top: 20px; display: flex; gap: 15px; }
+        .vis-controls { margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
 
@@ -209,10 +218,16 @@
     <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V4.5</div>
     <canvas id="visualizerCanvas"></canvas>
     <div class="vis-controls">
+        <select onchange="handleBackgroundOption(this.value); this.value='';" style="border-color: var(--mgs-green);">
+            <option value="">[ HINTERGRUND ]</option>
+            <option value="change">BILD ÄNDERN</option>
+            <option value="reset">ZURÜCKSETZEN</option>
+        </select>
         <button onclick="setVisMode('ring')">[ RING MODUS ]</button>
         <button onclick="setVisMode('bars')">[ BARS MODUS ]</button>
         <button onclick="closeVisualizer()" style="color:#ff4141; border-color:#ff4141;">[ DISCONNECT ]</button>
     </div>
+    <input type="file" id="bgFileInput" accept="image/*" style="display:none;">
 </div>
 
 <footer>
@@ -234,6 +249,7 @@ const songs = [
     "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3"
 ];
 
+const BASE_URL = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/";
 let currentIndex = 0;
 let audioCtx, analyser, dataArray, animationId;
 let visMode = 'ring';
@@ -241,11 +257,47 @@ const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 
+// --- HINTERGRUND FUNKTIONEN ---
+const bgInput = document.getElementById('bgFileInput');
+
+function handleBackgroundOption(val) {
+    if(val === 'change') bgInput.click();
+    if(val === 'reset') {
+        localStorage.removeItem('codec_bg');
+        document.body.style.backgroundImage = '';
+        document.body.classList.remove('custom-bg');
+    }
+}
+
+bgInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgData = event.target.result;
+            localStorage.setItem('codec_bg', imgData);
+            applyBackground(imgData);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function applyBackground(data) {
+    document.body.style.backgroundImage = `url(${data})`;
+    document.body.classList.add('custom-bg');
+}
+
+// Beim Laden prüfen ob Hintergrund gespeichert ist
+if(localStorage.getItem('codec_bg')) {
+    applyBackground(localStorage.getItem('codec_bg'));
+}
+
+// --- PLAYER FUNKTIONEN ---
 function loadSong(index) {
     currentIndex = index;
-    audio.src = songs[index];
+    audio.src = BASE_URL + encodeURIComponent(songs[index]);
     document.getElementById("songSelect").value = index;
-    document.getElementById("downloadBtn").href = songs[index];
+    document.getElementById("downloadBtn").href = audio.src;
     document.getElementById("currentSong").textContent = "▶ " + document.getElementById("songSelect").options[index].text.toUpperCase();
 }
 
@@ -273,44 +325,29 @@ function draw() {
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
     
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Transparenter Hintergrund für den Canvas
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
     if (visMode === 'ring') {
         const radius = 110;
         if(logoImg.complete) ctx.drawImage(logoImg, centerX - 80, centerY - 80, 160, 160);
-        
         ctx.strokeStyle = "#00ff41";
         ctx.lineWidth = 3;
-
         for (let i = 0; i < dataArray.length; i++) {
             let angle = (i / dataArray.length) * Math.PI; 
             let freqValue = dataArray[i];
             let len = freqValue * 0.7;
-
-            // Rechte Seite (spiegelt zum Takt)
             let xStartR = centerX + Math.cos(angle - Math.PI / 2) * radius;
             let yStartR = centerY + Math.sin(angle - Math.PI / 2) * radius;
             let xEndR = centerX + Math.cos(angle - Math.PI / 2) * (radius + len);
             let yEndR = centerY + Math.sin(angle - Math.PI / 2) * (radius + len);
-
-            ctx.beginPath();
-            ctx.moveTo(xStartR, yStartR);
-            ctx.lineTo(xEndR, yEndR);
-            ctx.stroke();
-
-            // Linke Seite (spiegelt zum Takt)
+            ctx.beginPath(); ctx.moveTo(xStartR, yStartR); ctx.lineTo(xEndR, yEndR); ctx.stroke();
             let xStartL = centerX + Math.cos(-angle - Math.PI / 2) * radius;
             let yStartL = centerY + Math.sin(-angle - Math.PI / 2) * radius;
             let xEndL = centerX + Math.cos(-angle - Math.PI / 2) * (radius + len);
             let yEndL = centerY + Math.sin(-angle - Math.PI / 2) * (radius + len);
-
-            ctx.beginPath();
-            ctx.moveTo(xStartL, yStartL);
-            ctx.lineTo(xEndL, yEndL);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xStartL, yStartL); ctx.lineTo(xEndL, yEndL); ctx.stroke();
         }
     } else {
         const barWidth = (canvas.width / dataArray.length) * 2.5;
