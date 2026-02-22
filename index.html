@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -41,7 +40,6 @@
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
-        /* Navigation */
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
@@ -121,7 +119,7 @@
             <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ MISSION ]</a>
             <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ DATA_FILE ]</a>
             <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="nav-link nav-link-discord">
-                <i data-lucide="message-square" style="width:14px; vertical-align:middle;"></i> DISCORD
+                <i data-lucide="message-square" style="width:14px; vertical-align:middle; margin-right:5px;"></i> DISCORD
             </a>
             
             <div class="dropdown">
@@ -189,13 +187,10 @@
 </footer>
 
 <script>
-    // --- TWITCH API KONFIGURATION ---
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
     const CHANNEL_NAME = 'VenomSnake_Twitch';
     const BIRTH_DATE = "1994-06-08";
-    
-    // Sendeplan: 1=Mo, 3=Mi, 5=Fr
     const schedule = [{d:1,h:13,m:30},{d:3,h:13,m:30},{d:5,h:13,m:30}];
 
     lucide.createIcons();
@@ -204,11 +199,25 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         document.getElementById('page-' + id).classList.add('active');
-        document.getElementById('btn-' + id).classList.add('active');
+        const btn = document.getElementById('btn-' + id);
+        if(btn) btn.classList.add('active');
         window.scrollTo(0,0);
     }
 
-    // --- TWITCH LIVE DATA (TITEL & KATEGORIE) ---
+    // --- REPARIERTE TWITCH PLAYER FUNKTION ---
+    function loadTwitch() {
+        const domain = window.location.hostname || "localhost";
+        const playerDiv = document.getElementById('player');
+        const chatDiv = document.getElementById('chat');
+        
+        if(playerDiv) {
+            playerDiv.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}&muted=false" height="100%" width="100%" allowfullscreen="true"></iframe>`;
+        }
+        if(chatDiv) {
+            chatDiv.innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
+        }
+    }
+
     async function fetchTwitchLiveInfo() {
         try {
             const authResp = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
@@ -217,6 +226,7 @@
 
             const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const userData = await userResp.json();
+            if(!userData.data.length) return;
             const userId = userData.data[0].id;
 
             const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${userId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
@@ -226,70 +236,58 @@
             document.getElementById('twitch-title').textContent = info.title.toUpperCase();
             document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
         } catch (e) {
-            document.getElementById('twitch-title').textContent = "OFFLINE / NO DATA";
+            console.error("Twitch API Error", e);
+            document.getElementById('twitch-title').textContent = "OFFLINE / STANDBY";
         }
     }
 
-    // --- DYNAMISCHER COUNTDOWN (HH:MM:SS) ---
-function updateCountdown() {
-    const now = new Date();
-    let next = null;
-
-    // Finde den nächsten Termin im Sendeplan
-    for(let i = 0; i < 7; i++) {
-        let d = new Date();
-        d.setDate(now.getDate() + i);
-        let s = schedule.find(x => x.d === d.getDay());
-        if(s) {
-            d.setHours(s.h, s.m, 0, 0);
-            if(d > now) {
-                next = d;
-                break;
+    function updateCountdown() {
+        const now = new Date();
+        let next = null;
+        for(let i = 0; i < 7; i++) {
+            let d = new Date();
+            d.setDate(now.getDate() + i);
+            let s = schedule.find(x => x.d === d.getDay());
+            if(s) {
+                d.setHours(s.h, s.m, 0, 0);
+                if(d > now) { next = d; break; }
             }
         }
-    }
-    
-    const display = document.getElementById('countdown-display');
-    
-    // Check ob gerade Stream-Zeit ist (Mo, Mi, Fr 13:30 - 16:00)
-    const isStreamDay = schedule.some(s => s.d === now.getDay());
-    const currentHour = now.getHours();
-    const currentMin = now.getMinutes();
-    const totalMin = currentHour * 60 + currentMin;
-    const startMin = 13 * 60 + 30; // 13:30
-    const endMin = 16 * 60;        // 16:00
-
-    if(isStreamDay && totalMin >= startMin && totalMin < endMin) {
-        display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE (13:30 - 16:00)</span>`;
-    } else if (next) {
-        const diff = next - now;
         
-        // Berechnung von Stunden, Minuten und Sekunden
-        const h = Math.floor(diff / (1000 * 60 * 60));
-        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        const display = document.getElementById('countdown-display');
+        const isStreamDay = schedule.some(s => s.d === now.getDay());
+        const totalMin = now.getHours() * 60 + now.getMinutes();
+        const startMin = 13 * 60 + 30; 
+        const endMin = 16 * 60;
 
-        // Formatierung auf zwei Stellen (01, 02 etc.)
-        const hDisplay = h.toString().padStart(2, '0');
-        const mDisplay = m.toString().padStart(2, '0');
-        const sDisplay = s.toString().padStart(2, '0');
-
-        display.textContent = `T-MINUS: ${hDisplay}:${mDisplay}:${sDisplay} BIS ZUR TRANSMISSION`;
+        if(isStreamDay && totalMin >= startMin && totalMin < endMin) {
+            display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE (13:30 - 16:00)</span>`;
+        } else if (next) {
+            const diff = next - now;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            display.textContent = `T-MINUS: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} BIS ZUR TRANSMISSION`;
+        }
     }
-}
 
-// --- ÄNDERUNG IM DOMCONTENTLOADED ---
-document.addEventListener('DOMContentLoaded', () => {
-    loadTwitch();
-    calculateAge();
-    fetchTwitchLiveInfo();
-    
-    // WICHTIG: Auf 1000ms (1 Sekunde) setzen für den Sekunden-Ticker
-    updateCountdown(); 
-    setInterval(updateCountdown, 1000); 
-    
-    setInterval(fetchTwitchLiveInfo, 300000); // Twitch-Info alle 5 Min
-});
+    function calculateAge() {
+        const birth = new Date(BIRTH_DATE);
+        const now = new Date();
+        let age = now.getFullYear() - birth.getFullYear();
+        if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
+        const el = document.getElementById('age-val');
+        if(el) el.textContent = age;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTwitch();
+        calculateAge();
+        fetchTwitchLiveInfo();
+        updateCountdown(); 
+        setInterval(updateCountdown, 1000); 
+        setInterval(fetchTwitchLiveInfo, 300000); 
+    });
 </script>
 </body>
 </html>
