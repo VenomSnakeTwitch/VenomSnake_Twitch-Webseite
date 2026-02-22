@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VenomSnake_Twitch - Tactical Operations Center</title>
-<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
-
+    <title>VenomSnake_Twitch - Taktisches Operationszentrum</title>
+    
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -120,14 +120,14 @@
         </a>
         
         <div class="nav-links">
-            <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ MISSION ]</a>
-            <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ DATA_FILE ]</a>
+            <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ EINSATZ ]</a>
+            <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ PERSONALAKTE ]</a>
             <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="nav-link nav-link-discord">
                 <i data-lucide="message-square" style="width:14px; vertical-align:middle; margin-right:5px;"></i> DISCORD
             </a>
             
             <div class="dropdown">
-                <a href="#" class="nav-link">[ SUB_OPERATIONS <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
+                <a href="#" class="nav-link">[ UNTER-OPERATIONEN <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
                 <div class="dropdown-content">
                     <a href="kontakt.html">Kontakt</a>
                     <a href="musikplayer.html">Musikplayer</a>
@@ -142,16 +142,16 @@
 <main class="container">
     <section id="page-stream" class="page active">
         <div class="mgs-header">
-            <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALIZING MISSION DATA...</div>
+            <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALISIERE MISSIONS-DATEN...</div>
             
             <div id="live-data-container" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,255,65,0.1);">
                 <div style="margin-bottom: 4px;">
-                    <span style="color: var(--mgs-green);">CURRENT_MISSION: </span>
+                    <span style="color: var(--mgs-green);">AKTUELLER_EINSATZ: </span>
                     <span id="twitch-title" style="color: #fff;">LADE DATEN...</span>
                 </div>
                 <div>
-                    <span style="color: var(--tactical-blue);">OBJECTIVE: </span>
-                    <span id="twitch-game" style="color: #52b6ca;">STANDBY</span>
+                    <span style="color: var(--tactical-blue);">MISSIONS-ZIEL: </span>
+                    <span id="twitch-game" style="color: #52b6ca;">BEREITSCHAFT</span>
                 </div>
             </div>
         </div>
@@ -173,28 +173,28 @@
             <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
                 <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);">
                 <div style="flex: 1; min-width: 300px;">
-                    <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green); border-bottom: 2px solid var(--mgs-green); padding-bottom: 5px;">PERSONNEL_FILE: VENOMSNAKE</h1>
+                    <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green); border-bottom: 2px solid var(--mgs-green); padding-bottom: 5px;">PERSONALAKTE: VENOMSNAKE</h1>
                     <div style="margin-top: 1.5rem; line-height: 1.6; font-size: 0.9rem;">
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[IDENTITÄT]:</span> VenomSnake</p>
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[ALTER]:</span> <span id="age-val" style="color:#fff">..</span> JAHRE</p>
-                        <p><span style="color: var(--mgs-green); font-weight: bold;">[STATUS]:</span> AKTIV / PRE-SHIFT OPERATIONS</p>
+                        <p><span style="color: var(--mgs-green); font-weight: bold;">[STATUS]:</span> AKTIV / VOR-SCHICHT OPERATIONEN</p>
                         
                         <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
                         
                         <p style="margin-bottom: 10px;">
                             <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
-                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der **Tactical Espionage Action**. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth sind meine Natur.
+                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth liegen mir im Blut.
                         </p>
                         
                         <p style="margin-bottom: 10px;">
-                            Doch ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**. Ich adaptiere mich an jedes Schlachtfeld.
+                            Doch ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**. Ich passe mich jedem Schlachtfeld an.
                         </p>
 
                         <p style="margin-top: 15px; padding: 10px; border: 1px dashed var(--mgs-green); background: rgba(0, 255, 65, 0.05);">
-                            <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHER LOG]:</span><br>
+                            <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHES PROTOKOLL]:</span><br>
                             Trotz regelmäßiger **Dialyse-Einsätze** (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Nachtschicht-Behandlung statt. 
                             <br><br>
-                            <span style="font-weight: bold; color: #fff;">OPERATIONAL WINDOW: 13:30 - 16:00 UHR.</span>
+                            <span style="font-weight: bold; color: #fff;">ZEITFENSTER: 13:30 - 16:00 UHR.</span>
                         </p>
                     </div>
                 </div>
@@ -204,11 +204,11 @@
 </main>
 
 <footer>
-    <p>© 2026 // FOXHOUND DIGITAL COMMAND // SECURE LINE TERMINATED</p>
+    <p>© 2026 // FOXHOUND DIGITAL COMMAND // GESICHERTE LEITUNG GETRENNT</p>
 </footer>
 
 <script>
-    // CONFIG
+    // KONFIGURATION
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
     const CHANNEL_NAME = 'VenomSnake_Twitch';
@@ -251,7 +251,7 @@
             document.getElementById('twitch-title').textContent = info.title.toUpperCase();
             document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
         } catch (e) {
-            document.getElementById('twitch-title').textContent = "OFFLINE / STANDBY";
+            document.getElementById('twitch-title').textContent = "OFFLINE / BEREITSCHAFT";
         }
     }
 
@@ -280,7 +280,7 @@
             const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
             const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
             const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-            display.textContent = `T-MINUS: ${h}:${m}:${s} BIS ZUR TRANSMISSION`;
+            display.textContent = `T-MINUS: ${h}:${m}:${s} BIS ZUR ÜBERTRAGUNG`;
         }
     }
 
