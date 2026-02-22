@@ -3,291 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <title>Impressum - VenomSnake_Twitch</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-
-    <!-- Lucide Icons -->
+    <title>RECHTLICHES // VenomSnake_Twitch - Archiv</title>
+    
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
-            --twitch: #9146FF;
-            --twitch-dim: #772ce8;
-            --tactical-blue: #52b6ca;
-            --base: #0a0b0e;
-            --surface: #13151a;
-            --overlay: #1c1f26;
-            --live: #ff4444;
-            --text-primary: #e6eef3;
-            --text-secondary: #94a3b8;
-            --text-muted: #475569;
-            --border: rgba(255, 255, 255, 0.08);
+            --mgs-green: #00ff41; 
+            --mgs-green-dim: #003b00;
+            --mgs-bg: #050805;
+            --mgs-panel: #0a0f0a;
+            --mgs-border: #1a2e1a;
+            --text-primary: #d1ffd1;
+            --live-red: #ff0000;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
 
         body {
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 500;
-            background-color: var(--base);
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--mgs-bg);
             color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.8;
+            background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow-x: hidden;
         }
 
-        .grid-bg {
-            background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
-            background-size: 40px 40px;
+        /* Scanline Overlay */
+        body::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
-        .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
-        .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
-        .glow-text { text-shadow: 0 0 20px rgba(145, 70, 255, 0.5); }
-
-        /* ──── LOGIN OVERLAY ──────────────────────────────────────── */
+        /* Login Overlay */
         #login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 11, 14, 0.97);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease;
+            position: fixed; inset: 0; background: var(--mgs-bg); z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
         }
-
-        #login-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
+        #login-overlay.hidden { display: none; }
 
         .login-box {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 3rem 2.5rem;
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            border: 2px solid var(--mgs-green); background: var(--mgs-panel);
+            padding: 3rem; width: 100%; max-width: 500px; text-align: center;
+            position: relative;
+        }
+        .login-box::before {
+            content: "AUTHENTIFIZIERUNG ERFORDERLICH"; position: absolute; top: -12px; left: 20px;
+            background: var(--mgs-bg); padding: 0 10px; font-size: 0.7rem; color: var(--mgs-green);
         }
 
-        .login-box h2 {
-            font-family: 'Chakra Petch', sans-serif;
-            color: var(--twitch);
-            font-size: 2.4rem;
-            margin-bottom: 1rem;
-            letter-spacing: 0.1em;
+        input[type="password"] {
+            width: 100%; padding: 12px; margin: 20px 0; background: #000;
+            border: 1px solid var(--mgs-green); color: var(--mgs-green);
+            font-family: 'JetBrains Mono'; text-align: center; outline: none;
         }
 
-        .login-box p.info {
-            color: var(--text-secondary);
-            margin: 1.2rem 0 1.8rem;
-            font-size: 1.05rem;
-            line-height: 1.6;
+        button#login-btn {
+            background: var(--mgs-green); color: #000; border: none; padding: 10px 30px;
+            font-family: 'Chakra Petch'; font-weight: bold; cursor: pointer; text-transform: uppercase;
         }
 
-        .login-box input {
-            width: 100%;
-            padding: 1rem;
-            margin: 1.2rem 0 1.8rem;
-            background: #0f1117;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.15rem;
-            text-align: center;
-            letter-spacing: 0.15em;
+        /* Navigation */
+        .nav {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
+        .nav-container { max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-link { color: var(--mgs-green); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; padding: 8px 12px; border: 1px solid transparent; }
+        .nav-link:hover { background: var(--mgs-green-dim); border-color: var(--mgs-green); color: #fff; }
 
-        .login-box input:focus {
-            outline: none;
-            border-color: var(--twitch);
-            box-shadow: 0 0 0 3px rgba(145,70,255,0.3);
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; top: 100%;
+            background: var(--mgs-panel); border: 2px solid var(--mgs-green); min-width: 200px;
         }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: var(--mgs-green); padding: 12px; text-decoration: none; display: block; font-size: 0.8rem; border-bottom: 1px solid var(--mgs-border); }
+        .dropdown-content a:hover { background: var(--mgs-green-dim); }
 
-        #login-btn {
-            background: var(--twitch);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-family: 'Chakra Petch', sans-serif;
-            font-size: 1.15rem;
-            letter-spacing: 0.15em;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
+        /* Impressum Content */
+        .container { max-width: 900px; margin: 120px auto 40px; padding: 0 20px; }
+        .impressum-box { border: 1px solid var(--mgs-border); background: var(--mgs-panel); padding: 3rem; position: relative; }
+        
+        h1, h2 { font-family: 'Chakra Petch'; text-transform: uppercase; color: var(--mgs-green); margin-bottom: 1.5rem; }
+        h2 { font-size: 1.2rem; border-bottom: 1px solid var(--mgs-border); padding-bottom: 5px; margin-top: 2rem; }
+        p, address { line-height: 1.8; font-size: 0.9rem; margin-bottom: 1.5rem; font-style: normal; }
+        a { color: var(--mgs-green); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .btn-back {
+            display: inline-block; margin-top: 2rem; padding: 10px 20px;
+            border: 1px solid var(--mgs-green-dim); color: var(--mgs-green); text-decoration: none; font-size: 0.8rem;
         }
+        .btn-back:hover { background: var(--mgs-green-dim); }
 
-        #login-btn:hover {
-            background: var(--twitch-dim);
-            transform: translateY(-1px);
-        }
-
-        #error-msg {
-            color: #ff5555;
-            font-size: 0.95rem;
-            margin-top: 1.2rem;
-            min-height: 1.3rem;
-        }
-
-        /* Zurück-Button Styling (für beide Ebenen) */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            background: transparent;
-            border: 1px solid var(--twitch-dim);
-            color: var(--twitch);
-            padding: 0.8rem 1.6rem;
-            font-family: 'Chakra Petch', sans-serif;
-            font-size: 1.05rem;
-            letter-spacing: 0.08em;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.25s;
-            margin: 2rem auto 1rem;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background: rgba(145, 70, 255, 0.12);
-            border-color: var(--twitch);
-            transform: translateY(-1px);
-        }
-
-        .back-btn i {
-            width: 20px;
-            height: 20px;
-        }
-
-        .page { min-height: 100vh; padding-top: 96px; padding-bottom: 4rem; }
-        .container { max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; }
-        .page-header { margin-bottom: 3rem; text-align: center; }
-        .page-header h1 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 3.2rem; text-transform: uppercase; letter-spacing: -0.025em; }
-        .page-header .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 1rem; letter-spacing: 0.25em; color: var(--text-secondary); margin-top: 0.75rem; }
-
-        .impressum-content {
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            padding: 3rem 2.5rem;
-            border-radius: 12px;
-        }
-
-        .impressum-content h2 {
-            font-family: 'Chakra Petch', sans-serif;
-            color: var(--twitch);
-            font-size: 1.8rem;
-            margin: 2.5rem 0 1.25rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.75rem;
-        }
-
-        .impressum-content p, .impressum-content address {
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .impressum-content address {
-            font-style: normal;
-            line-height: 1.9;
-        }
-
-        /* Deine restlichen Styles (nav, footer, mobile etc.) bitte hier einfügen */
+        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; }
     </style>
 </head>
-<body class="grid-bg">
+<body>
 
-<!-- LOGIN OVERLAY mit Zurück-Button -->
 <div id="login-overlay">
     <div class="login-box">
-        <h2>SECURED ACCESS</h2>
+        <h1>STRENG GEHEIM</h1>
+        <p style="font-size: 0.8rem; margin: 10px 0;">ZUGRIFF NUR FÜR AUTORISIERTES PERSONAL</p>
+        <p style="font-size: 0.7rem; color: var(--mgs-green-dim);">Anfrage für Passwort via Discord oder E-Mail.</p>
         
-        <p class="info">
-            Streng Vertaulicher Inhalt – Passwort erforderlich
-        </p>
+        <input type="password" id="password" placeholder="CODE EINGEBEN">
+        <button id="login-btn">VERIFIZIEREN</button>
+        <div id="error-msg" style="color: var(--live-red); font-size: 0.8rem; margin-top: 10px;"></div>
         
-        <p class="info">
-            Berechtigtes Interesse? Schreib mir einfach – ich schicke dir das Passwort schnellstmöglich:<br><br>
-            → <strong>Discord</strong>: VenomSnake_Twitch<br>
-            → <strong>E-Mail</strong>: <a href="mailto:VenomSnakeTwitch@gmail.com" style="color: var(--tactical-blue);">VenomSnakeTwitch@gmail.com</a><br><br>
-            (Twitch-Whisper oder DM auch möglich)
-        </p>
-        
-        <input type="password" id="password" placeholder="PASSWORT EINGEBEN" autocomplete="off">
-        <button id="login-btn">→ EINLOGGEN</button>
-        <div id="error-msg"></div>
-
-        <!-- Zurück-Button im Login-Screen -->
-        <a href="index.html" class="back-btn">
-            <i data-lucide="arrow-left"></i>
-            ZURÜCK ZUR STARTSEITE
-        </a>
+        <br><br>
+        <a href="index.html" style="color: var(--mgs-green-dim); font-size: 0.7rem; text-decoration: none;">[ ABBRUCH / ZURÜCK ]</a>
     </div>
 </div>
 
-<!-- Navigation – deinen originalen Nav-Code hier einfügen -->
-
-<!-- Hauptinhalt -->
-<main class="page" id="main-content" style="display: none; opacity: 0; transition: opacity 0.8s ease;">
-    <div class="container">
-        <div class="page-header">
-            <h1><span class="glow-text" style="color: var(--twitch);">IMPRESSUM</span></h1>
-            <p class="subtitle">ANBIETERKENNZEICHNUNG NACH § 5 DDG</p>
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" style="text-decoration:none; color: var(--mgs-green); display:flex; align-items:center; gap:10px;">
+            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" height="40">
+            <span style="font-family:'Chakra Petch'; font-weight:bold;">VENOM_SNAKE_OPS</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">[ ZURÜCK ]</a>
+            <div class="dropdown">
+                <a href="#" class="nav-link" style="background: var(--mgs-green-dim); border: 1px solid var(--mgs-green);">[ ARCHIV <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
+                <div class="dropdown-content">
+                    <a href="kontakt.html">Kontakt</a>
+                    <a href="musikplayer.html">Musikplayer</a>
+                    <a href="donation.html">Spenden</a>
+                    <a href="impressum.html" style="color:#fff">Impressum</a>
+                </div>
+            </div>
         </div>
+    </div>
+</nav>
 
-        <div class="impressum-content cut-corner">
-            <h2>Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG)</h2>
-            <address>
-                <strong>Kevin Hilgert</strong><br>
-                Göbensiedlung 3/2<br>
-                56077 Koblenz<br><br>
-                E-Mail: <a href="mailto:VenomSnakeTwitch@gmail.com" style="color: var(--tactical-blue);">VenomSnakeTwitch@gmail.com</a><br>
-                Telefon: <a href="tel:+4915120519920" style="color: var(--tactical-blue);">+49 151 20519920</a>
-            </address>
+<main class="container" id="main-content" style="display:none;">
+    <div class="impressum-box">
+        <h1>Impressum</h1>
+        <p style="color: var(--mgs-green-dim);">ANBIETERKENNZEICHNUNG NACH § 5 DDG</p>
 
-            <h2>Vertretungsberechtigte Person</h2>
-            <p><strong>Kevin Hilgert</strong> (Webseiten Betreiber)</p>
+        <h2>Angaben gemäß § 5 DDG</h2>
+        <address>
+            <strong>Kevin Hilgert</strong><br>
+            Göbensiedlung 3/2<br>
+            56077 Koblenz<br><br>
+            E-Mail: <a href="mailto:VenomSnakeTwitch@gmail.com">VenomSnakeTwitch@gmail.com</a><br>
+            Telefon: <a href="tel:+4915120519920">+49 151 20519920</a>
+        </address>
 
-            <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
-            <p>Kevin Hilgert<br>Göbensiedlung 3/2<br>56077 Koblenz</p>
+        <h2>Verantwortlich für den Inhalt</h2>
+        <p>Kevin Hilgert (Webseiten-Betreiber)<br>Göbensiedlung 3/2<br>56077 Koblenz</p>
 
-            <h2>Hinweis zur Online-Streitbeilegung</h2>
-            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" style="color: var(--tactical-blue);">https://ec.europa.eu/consumers/odr/</a><br>
-            Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+        <h2>Streitbeilegung</h2>
+        <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank">https://ec.europa.eu/consumers/odr/</a><br>
+        Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 
-            <h2>Haftungsausschluss & Urheberrecht</h2>
-            <p>Die Inhalte dieser Seiten wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr.</p>
-            <p>Alle innerhalb dieses Angebots genannten und ggf. durch Dritte geschützten Marken- und Warenzeichen unterliegen uneingeschränkt den Bestimmungen des jeweils gültigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigentümer.</p>
+        <h2>Haftung & Urheberrecht</h2>
+        <p>Die Inhalte wurden mit größter Sorgfalt erstellt. Marken- und Warenzeichen Dritter unterliegen uneingeschränkt den Rechten der jeweiligen Eigentümer.</p>
 
-            <!-- Zurück-Button im Impressum-Inhalt -->
-            <a href="index.html" class="back-btn">
-                <i data-lucide="arrow-left"></i>
-                ZURÜCK ZUR STARTSEITE
-            </a>
-        </div>
+        <a href="index.html" class="btn-back">ZURÜCK ZUR BASIS</a>
     </div>
 </main>
 
-<!-- Footer – deinen originalen Footer-Code hier einfügen -->
+<footer>
+    <p>© 2026 // FOXHOUND LEGAL DEPARTMENT // DATA ENCRYPTED</p>
+</footer>
 
 <script>
     lucide.createIcons();
 
-    function toggleMobileMenu() {
-        const mobileNav = document.getElementById('mobileNav');
-        if (mobileNav) mobileNav.classList.toggle('open');
-    }
-
-    // Passwort-Logik
     const CORRECT_PW = "VenomSnake";
     const overlay = document.getElementById('login-overlay');
     const mainContent = document.getElementById('main-content');
@@ -298,24 +189,15 @@
     function checkPassword() {
         if (passwordInput.value === CORRECT_PW) {
             overlay.classList.add('hidden');
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                mainContent.style.display = 'block';
-                setTimeout(() => mainContent.style.opacity = '1', 100);
-            }, 500);
+            mainContent.style.display = 'block';
         } else {
-            errorMsg.textContent = "Falsches Passwort – erneut versuchen";
+            errorMsg.textContent = "ZUGRIFF VERWEIGERT - CODE UNGÜLTIG";
             passwordInput.value = "";
-            passwordInput.focus();
         }
     }
 
     loginBtn.addEventListener('click', checkPassword);
-    passwordInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') checkPassword();
-    });
-
-    passwordInput.focus();
+    passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkPassword(); });
 </script>
 
 </body>
