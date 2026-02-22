@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VenomSnake_Twitch - Tactical Operations Center</title>
     
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -20,6 +18,7 @@
             --text-primary: #d1ffd1;
             --live-red: #ff0000;
             --discord-blurple: #5865F2;
+            --tactical-blue: #52b6ca;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -65,18 +64,9 @@
         }
         .nav-link:hover, .nav-link.active { background: var(--mgs-green-dim); border: 1px solid var(--mgs-green); color: #fff; }
 
-        /* Discord Spezial Button */
-        .nav-link-discord {
-            color: var(--discord-blurple);
-            border: 1px solid var(--discord-blurple);
-        }
-        .nav-link-discord:hover {
-            background: var(--discord-blurple);
-            color: #fff;
-            box-shadow: 0 0 10px var(--discord-blurple);
-        }
+        .nav-link-discord { color: var(--discord-blurple); border: 1px solid var(--discord-blurple); }
+        .nav-link-discord:hover { background: var(--discord-blurple); color: #fff; box-shadow: 0 0 10px var(--discord-blurple); }
 
-        /* Dropdown */
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content {
             display: none; position: absolute; right: 0; top: 100%;
@@ -130,18 +120,17 @@
         <div class="nav-links">
             <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ MISSION ]</a>
             <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ DATA_FILE ]</a>
-            
             <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="nav-link nav-link-discord">
-                <i data-lucide="message-square" style="width:14px; vertical-align:middle; margin-right:5px;"></i> DISCORD
+                <i data-lucide="message-square" style="width:14px; vertical-align:middle;"></i> DISCORD
             </a>
             
             <div class="dropdown">
                 <a href="#" class="nav-link">[ SUB_OPERATIONS <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
                 <div class="dropdown-content">
-                    <a href="kontakt.html"><i data-lucide="mail" style="width:14px; margin-right:8px;"></i> Kontakt</a>
-                    <a href="musikplayer.html"><i data-lucide="music" style="width:14px; margin-right:8px;"></i> Musikplayer</a>
-                    <a href="donation.html"><i data-lucide="heart" style="width:14px; margin-right:8px;"></i> Spenden</a>
-                    <a href="impressum.html"><i data-lucide="info" style="width:14px; margin-right:8px;"></i> Impressum</a>
+                    <a href="kontakt.html">Kontakt</a>
+                    <a href="musikplayer.html">Musikplayer</a>
+                    <a href="donation.html">Spenden</a>
+                    <a href="impressum.html">Impressum</a>
                 </div>
             </div>
         </div>
@@ -151,9 +140,17 @@
 <main class="container">
     <section id="page-stream" class="page active">
         <div class="mgs-header">
-            <div id="status-text" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">SCANNING FOR SIGNALS...</div>
-            <div style="font-size: 0.8rem; margin-top: 5px; color: #52b6ca;">
-                CURRENT_OBJECTIVE: <span id="twitch-game">CLASSIFIED</span> | INTEL: <span id="twitch-title">AWAITING CONNECTION</span>
+            <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALIZING MISSION DATA...</div>
+            
+            <div id="live-data-container" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,255,65,0.1);">
+                <div style="margin-bottom: 4px;">
+                    <span style="color: var(--mgs-green);">CURRENT_MISSION: </span>
+                    <span id="twitch-title" style="color: #fff;">LADE DATEN...</span>
+                </div>
+                <div>
+                    <span style="color: var(--tactical-blue);">OBJECTIVE: </span>
+                    <span id="twitch-game" style="color: #52b6ca;">STANDBY</span>
+                </div>
             </div>
         </div>
 
@@ -163,9 +160,9 @@
         </div>
 
         <div class="schedule-grid">
-            <div class="schedule-card"><h3>MONTAG</h3><p>13:30 - 16:00 UHR</p><small style="color:var(--mgs-green)">FREQ: 140.15</small></div>
-            <div class="schedule-card"><h3>MITTWOCH</h3><p>13:30 - 16:00 UHR</p><small style="color:var(--mgs-green)">FREQ: 140.48</small></div>
-            <div class="schedule-card"><h3>FREITAG</h3><p>13:30 - 16:00 UHR</p><small style="color:var(--mgs-green)">FREQ: 140.85</small></div>
+            <div class="schedule-card"><h3>MONTAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.15</small></div>
+            <div class="schedule-card"><h3>MITTWOCH</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.48</small></div>
+            <div class="schedule-card"><h3>FREITAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.85</small></div>
         </div>
     </section>
 
@@ -175,19 +172,11 @@
                 <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg);">
                 <div style="flex: 1; min-width: 300px;">
                     <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green); border-bottom: 2px solid var(--mgs-green);">PERSONNEL_FILE: VENOMSNAKE</h1>
-                    <p style="margin-top: 1.5rem; line-height: 1.8; font-size: 0.95rem;">
-                        <span style="color: var(--mgs-green);">[IDENTITÄT]:</span> VenomSnake<br>
-                        <span style="color: var(--mgs-green);">[ALTER]:</span> <span id="age-val" style="color:#fff">..</span> JAHRE<br>
-                        <span style="color: var(--mgs-green);">[STATUS]:</span> AKTIV / PRE-SHIFT OPERATIONS<br><br>
-                        
-                        <span style="color: var(--mgs-green);">[MISSION_LOG]:</span><br>
-                        Dieser Operator ist trotz der **Dialyse (Montag, Mittwoch & Freitag)** im Einsatz. 
-                        Da er die Nachtschicht der Behandlung übernimmt, findet die Live-Transmission 
-                        an diesen Tagen unmittelbar vor der Abfahrt zur Basis statt.<br><br>
-                        
-                        <span style="color: var(--mgs-green);">[EINSATZZEITEN]:</span><br>
-                        <span style="font-weight: bold; color: #fff;">MO, MI & FR: 13:30 - 16:00 UHR</span><br>
-                        <span style="font-size: 0.8rem; color: #52b6ca;">(Abmarsch zur Dialyse erfolgt pünktlich um 17:30 Uhr)</span>
+                    <p style="margin-top: 1.5rem; line-height: 1.8;">
+                        IDENTITÄT: VenomSnake | ALTER: <span id="age-val">..</span> JAHRE<br>
+                        STATUS: AKTIV / PRE-SHIFT OPERATIONS<br><br>
+                        Dialyse (Mo, Mi, Fr). Stream-Einsatz vor Abfahrt zur Nachtschicht-Behandlung.<br>
+                        ZEITFENSTER: 13:30 - 16:00 UHR.
                     </p>
                 </div>
             </div>
@@ -196,12 +185,19 @@
 </main>
 
 <footer>
-    <p>© 2026 // FOXHOUND DIGITAL COMMAND // NO PLACE TO HIDE</p>
+    <p>© 2026 // FOXHOUND DIGITAL COMMAND // SECURE LINE TERMINATED</p>
 </footer>
 
 <script>
-    const CHANNEL = 'VenomSnake_Twitch';
+    // --- TWITCH API KONFIGURATION ---
+    const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
+    const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
+    const CHANNEL_NAME = 'VenomSnake_Twitch';
     const BIRTH_DATE = "1994-06-08";
+    
+    // Sendeplan: 1=Mo, 3=Mi, 5=Fr
+    const schedule = [{d:1,h:13,m:30},{d:3,h:13,m:30},{d:5,h:13,m:30}];
+
     lucide.createIcons();
 
     function showPage(id) {
@@ -210,6 +206,61 @@
         document.getElementById('page-' + id).classList.add('active');
         document.getElementById('btn-' + id).classList.add('active');
         window.scrollTo(0,0);
+    }
+
+    // --- TWITCH LIVE DATA (TITEL & KATEGORIE) ---
+    async function fetchTwitchLiveInfo() {
+        try {
+            const authResp = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
+            const authData = await authResp.json();
+            const token = authData.access_token;
+
+            const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            const userData = await userResp.json();
+            const userId = userData.data[0].id;
+
+            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${userId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            const channelData = await channelResp.json();
+            const info = channelData.data[0];
+
+            document.getElementById('twitch-title').textContent = info.title.toUpperCase();
+            document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
+        } catch (e) {
+            document.getElementById('twitch-title').textContent = "OFFLINE / NO DATA";
+        }
+    }
+
+    // --- DYNAMISCHER COUNTDOWN ---
+    function updateCountdown() {
+        const now = new Date();
+        let next = null;
+        for(let i=0; i<7; i++) {
+            let d = new Date(); d.setDate(now.getDate()+i);
+            let s = schedule.find(x => x.d === d.getDay());
+            if(s) {
+                d.setHours(s.h, s.m, 0, 0);
+                if(d > now) { next = d; break; }
+            }
+        }
+        
+        const diff = next - now;
+        const display = document.getElementById('countdown-display');
+        
+        // Wenn Zeit zwischen 13:30 und 16:00 an Stream-Tagen
+        const isStreamDay = schedule.some(s => s.d === now.getDay());
+        const currentHour = now.getHours();
+        const currentMin = now.getMinutes();
+        const totalMin = currentHour * 60 + currentMin;
+        const startMin = 13 * 60 + 30;
+        const endMin = 16 * 60;
+
+        if(isStreamDay && totalMin >= startMin && totalMin < endMin) {
+            display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE (13:30 - 16:00)</span>`;
+        } else {
+            const h = Math.floor(diff/3600000);
+            const min = Math.floor((diff%3600000)/60000);
+            display.textContent = `T-MINUS: ${h}H ${min}M BIS ZUM NÄCHSTEN EINSATZ`;
+        }
     }
 
     function calculateAge() {
@@ -222,24 +273,17 @@
 
     function loadTwitch() {
         const d = window.location.hostname || "localhost";
-        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL}&parent=${d}&muted=true" height="100%" width="100%" allowfullscreen="true"></iframe>`;
-        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL}/chat?parent=${d}&darkpopout" height="100%" width="100%"></iframe>`;
-    }
-
-    function startTicker() {
-        const status = document.getElementById('status-text');
-        const day = new Date().getDay();
-        if([1,3,5].includes(day)) {
-            status.innerHTML = `<span class="live-pulse">● SIGNAL DETECTED: MISSION LIVE</span>`;
-        } else {
-            status.textContent = "NEXT DEPLOYMENT: MONTAG 13:30";
-        }
+        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${d}&muted=true" height="100%" width="100%" allowfullscreen="true"></iframe>`;
+        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${d}&darkpopout" height="100%" width="100%"></iframe>`;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         loadTwitch();
         calculateAge();
-        startTicker();
+        updateCountdown();
+        fetchTwitchLiveInfo();
+        setInterval(updateCountdown, 60000);
+        setInterval(fetchTwitchLiveInfo, 300000); // Alle 5 Min Titel aktualisieren
     });
 </script>
 </body>
