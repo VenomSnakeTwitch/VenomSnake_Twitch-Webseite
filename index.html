@@ -230,61 +230,66 @@
         }
     }
 
-    // --- DYNAMISCHER COUNTDOWN ---
-    function updateCountdown() {
-        const now = new Date();
-        let next = null;
-        for(let i=0; i<7; i++) {
-            let d = new Date(); d.setDate(now.getDate()+i);
-            let s = schedule.find(x => x.d === d.getDay());
-            if(s) {
-                d.setHours(s.h, s.m, 0, 0);
-                if(d > now) { next = d; break; }
+    // --- DYNAMISCHER COUNTDOWN (HH:MM:SS) ---
+function updateCountdown() {
+    const now = new Date();
+    let next = null;
+
+    // Finde den nächsten Termin im Sendeplan
+    for(let i = 0; i < 7; i++) {
+        let d = new Date();
+        d.setDate(now.getDate() + i);
+        let s = schedule.find(x => x.d === d.getDay());
+        if(s) {
+            d.setHours(s.h, s.m, 0, 0);
+            if(d > now) {
+                next = d;
+                break;
             }
         }
-        
+    }
+    
+    const display = document.getElementById('countdown-display');
+    
+    // Check ob gerade Stream-Zeit ist (Mo, Mi, Fr 13:30 - 16:00)
+    const isStreamDay = schedule.some(s => s.d === now.getDay());
+    const currentHour = now.getHours();
+    const currentMin = now.getMinutes();
+    const totalMin = currentHour * 60 + currentMin;
+    const startMin = 13 * 60 + 30; // 13:30
+    const endMin = 16 * 60;        // 16:00
+
+    if(isStreamDay && totalMin >= startMin && totalMin < endMin) {
+        display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE (13:30 - 16:00)</span>`;
+    } else if (next) {
         const diff = next - now;
-        const display = document.getElementById('countdown-display');
         
-        // Wenn Zeit zwischen 13:30 und 16:00 an Stream-Tagen
-        const isStreamDay = schedule.some(s => s.d === now.getDay());
-        const currentHour = now.getHours();
-        const currentMin = now.getMinutes();
-        const totalMin = currentHour * 60 + currentMin;
-        const startMin = 13 * 60 + 30;
-        const endMin = 16 * 60;
+        // Berechnung von Stunden, Minuten und Sekunden
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-        if(isStreamDay && totalMin >= startMin && totalMin < endMin) {
-            display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE (13:30 - 16:00)</span>`;
-        } else {
-            const h = Math.floor(diff/3600000);
-            const min = Math.floor((diff%3600000)/60000);
-            display.textContent = `T-MINUS: ${h}H ${min}M BIS ZUM NÄCHSTEN EINSATZ`;
-        }
+        // Formatierung auf zwei Stellen (01, 02 etc.)
+        const hDisplay = h.toString().padStart(2, '0');
+        const mDisplay = m.toString().padStart(2, '0');
+        const sDisplay = s.toString().padStart(2, '0');
+
+        display.textContent = `T-MINUS: ${hDisplay}:${mDisplay}:${sDisplay} BIS ZUR TRANSMISSION`;
     }
+}
 
-    function calculateAge() {
-        const birth = new Date(BIRTH_DATE);
-        const now = new Date();
-        let age = now.getFullYear() - birth.getFullYear();
-        if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
-        document.getElementById('age-val').textContent = age;
-    }
-
-    function loadTwitch() {
-        const d = window.location.hostname || "localhost";
-        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${d}&muted=true" height="100%" width="100%" allowfullscreen="true"></iframe>`;
-        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${d}&darkpopout" height="100%" width="100%"></iframe>`;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadTwitch();
-        calculateAge();
-        updateCountdown();
-        fetchTwitchLiveInfo();
-        setInterval(updateCountdown, 60000);
-        setInterval(fetchTwitchLiveInfo, 300000); // Alle 5 Min Titel aktualisieren
-    });
+// --- ÄNDERUNG IM DOMCONTENTLOADED ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadTwitch();
+    calculateAge();
+    fetchTwitchLiveInfo();
+    
+    // WICHTIG: Auf 1000ms (1 Sekunde) setzen für den Sekunden-Ticker
+    updateCountdown(); 
+    setInterval(updateCountdown, 1000); 
+    
+    setInterval(fetchTwitchLiveInfo, 300000); // Twitch-Info alle 5 Min
+});
 </script>
 </body>
 </html>
