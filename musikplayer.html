@@ -172,7 +172,7 @@
 
         <div class="slider-row">
             <span class="slider-label" id="timeLabel">0:00</span>
-            <input type="range" id="progress" min="0" max="100" value="0">
+            <input type="range" id="progress" min="0" max="100" value="0" oninput="seekAudio(this.value)">
             <span class="slider-label" id="durationLabel">0:00</span>
         </div>
 
@@ -242,6 +242,7 @@
 <footer>
     <p>EST. 2026 // FREQUENCY: 140.85 MHz // OPERATOR: VENOMSNAKE_TWITCH</p>
 </footer>
+<input type="file" id="bgFileInput" accept="image/*" style="display:none;">
 
 <script>
 const songs = [
@@ -269,6 +270,8 @@ let isRadioMode = false;
 let isLoopMode = false;
 
 const audio = document.getElementById("audioPlayer");
+const volSlider = document.getElementById("volumeSlider");
+const volLabel = document.getElementById("volumeLabel");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 const bgInput = document.getElementById('bgFileInput');
@@ -277,6 +280,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const mainSelect = document.getElementById("songSelect");
     const visSelect = document.getElementById("visSongSelect");
     visSelect.innerHTML = mainSelect.innerHTML;
+});
+
+// Lautstärke-Logik
+volSlider.addEventListener('input', (e) => {
+    const vol = e.target.value;
+    audio.volume = vol;
+    volLabel.textContent = Math.round(vol * 100) + "%";
 });
 
 function handleBackgroundOption(val) {
