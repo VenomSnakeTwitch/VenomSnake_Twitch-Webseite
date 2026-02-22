@@ -87,15 +87,12 @@
         .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 12px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
         .infoColumn p { font-size: 0.75rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
 
-        /* VISUALIZER OVERLAY STYLES */
         #visualizerOverlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
         #visualizerOverlay.active { display: flex; }
         #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
-        
-        .vis-controls { margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center; width: 90%; max-width: 800px; }
         
         .vis-player-ui {
             margin-top: 20px;
@@ -225,7 +222,7 @@
 </main>
 
 <div id="visualizerOverlay">
-    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V4.5</div>
+    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
     
     <canvas id="visualizerCanvas"></canvas>
 
@@ -237,8 +234,7 @@
         </div>
 
         <div class="vis-row">
-            <select id="visSongSelect" onchange="selectSong(this.value)" style="flex-grow:1;">
-                </select>
+            <select id="visSongSelect" onchange="selectSong(this.value)" style="flex-grow:1;"></select>
         </div>
 
         <div class="vis-row">
@@ -290,7 +286,6 @@ logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twi
 
 const bgInput = document.getElementById('bgFileInput');
 
-// Synchronisiere Dropdown im Visualizer beim Start
 window.addEventListener('DOMContentLoaded', () => {
     const mainSelect = document.getElementById("songSelect");
     const visSelect = document.getElementById("visSongSelect");
@@ -331,11 +326,8 @@ if(localStorage.getItem('codec_canvas_bg')) {
 function loadSong(index) {
     currentIndex = parseInt(index);
     audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
-    
-    // Sync Selectors
     document.getElementById("songSelect").value = currentIndex;
     document.getElementById("visSongSelect").value = currentIndex;
-    
     document.getElementById("downloadBtn").href = audio.src;
     const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
     document.getElementById("currentSong").textContent = "▶ " + songTitle;
@@ -383,7 +375,8 @@ function draw() {
         let ratio  = Math.max(hRatio, vRatio);
         let centerShiftX = (canvas.width - customCanvasBg.width * ratio) / 2;
         let centerShiftY = (canvas.height - customCanvasBg.height * ratio) / 2;
-        ctx.globalAlpha = 0.3;
+        
+        ctx.globalAlpha = 0.7; 
         ctx.drawImage(customCanvasBg, 0, 0, customCanvasBg.width, customCanvasBg.height,
                       centerShiftX, centerShiftY, customCanvasBg.width * ratio, customCanvasBg.height * ratio);
         ctx.globalAlpha = 1.0;
@@ -420,7 +413,7 @@ function drawRing(ctx, canvas) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
     ctx.lineWidth = 4;
-    ctx.strokeStyle = `rgba(0, 255, 65, 0.3)`;
+    ctx.strokeStyle = `rgba(0, 255, 65, 0.4)`;
     ctx.stroke();
 
     const rayCount = 80;
@@ -430,7 +423,7 @@ function drawRing(ctx, canvas) {
         const amp = dataArray[mirroredIndex] / 255;
         const rayLength = amp * (ringRadius * 0.8);
 
-        ctx.strokeStyle = `rgba(0, 255, 65, ${0.6 + amp * 0.4})`;
+        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`;
         ctx.lineWidth = 2 + amp * 5;
         ctx.beginPath();
         ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
@@ -473,25 +466,17 @@ function toggleFullscreen() {
 function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
 function nextSong() { let next = (currentIndex + 1) % songs.length; loadSong(next); audio.play(); updatePlayButtons("⏸ PAUSE"); }
 function prevSong() { let prev = (currentIndex - 1 + songs.length) % songs.length; loadSong(prev); audio.play(); updatePlayButtons("⏸ PAUSE"); }
-
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
 
-// Fortschrittsbalken und Zeit aktualisieren
 audio.ontimeupdate = () => {
     if(!isNaN(audio.duration)) {
         const prog = (audio.currentTime / audio.duration) * 100;
-        const time = formatTime(audio.currentTime);
-        const dur = formatTime(audio.duration);
-        
-        // Update Main UI
         document.getElementById("progress").value = prog;
-        document.getElementById("timeLabel").textContent = time;
-        document.getElementById("durationLabel").textContent = dur;
-        
-        // Update Visualizer UI
+        document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("durationLabel").textContent = formatTime(audio.duration);
         document.getElementById("visProgress").value = prog;
-        document.getElementById("visTimeLabel").textContent = time;
-        document.getElementById("visDurationLabel").textContent = dur;
+        document.getElementById("visTimeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
     }
 };
 
