@@ -393,16 +393,26 @@ function draw() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
     
-    // PERFEKTES COVER-SCALING FÜR DAS HINTERGRUNDBILD
+    // PERFEKTES "CONTAIN"-SCALING FÜR DAS HINTERGRUNDBILD
     if (customCanvasBg) {
         let hRatio = canvas.width / customCanvasBg.width;
         let vRatio = canvas.height / customCanvasBg.height;
-        let ratio  = Math.max(hRatio, vRatio);
+        
+        // Math.min sorgt dafür, dass das Bild vollständig in den Canvas passt
+        let ratio  = Math.min(hRatio, vRatio);
+        
         let cx = (canvas.width - customCanvasBg.width * ratio) / 2;
         let cy = (canvas.height - customCanvasBg.height * ratio) / 2;
         
         ctx.globalAlpha = 0.7; 
-        ctx.drawImage(customCanvasBg, 0, 0, customCanvasBg.width, customCanvasBg.height, cx, cy, customCanvasBg.width * ratio, customCanvasBg.height * ratio);
+        ctx.drawImage(
+            customCanvasBg, 
+            0, 0, 
+            customCanvasBg.width, customCanvasBg.height, 
+            cx, cy, 
+            customCanvasBg.width * ratio, 
+            customCanvasBg.height * ratio
+        );
         ctx.globalAlpha = 1.0;
     }
     
