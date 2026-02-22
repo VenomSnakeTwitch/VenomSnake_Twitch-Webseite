@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RECHTLICHES // VenomSnake_Twitch - Archiv</title>
-    
+
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -59,15 +58,26 @@
         }
 
         input[type="password"] {
-            width: 100%; padding: 12px; margin: 20px 0; background: #000;
+            width: 100%; padding: 12px; margin: 20px 0 10px 0; background: #000;
             border: 1px solid var(--mgs-green); color: var(--mgs-green);
             font-family: 'JetBrains Mono'; text-align: center; outline: none;
         }
 
+        .login-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+
         button#login-btn {
-            background: var(--mgs-green); color: #000; border: none; padding: 10px 30px;
+            background: var(--mgs-green); color: #000; border: none; padding: 12px;
             font-family: 'Chakra Petch'; font-weight: bold; cursor: pointer; text-transform: uppercase;
+            transition: 0.2s;
         }
+        button#login-btn:hover { box-shadow: 0 0 15px var(--mgs-green); }
+
+        .btn-abort {
+            background: transparent; border: 1px solid var(--mgs-green-dim); color: var(--mgs-green-dim);
+            padding: 10px; font-family: 'Chakra Petch'; text-decoration: none; font-size: 0.8rem;
+            text-transform: uppercase; transition: 0.2s;
+        }
+        .btn-abort:hover { border-color: #ff4141; color: #ff4141; background: rgba(255, 65, 65, 0.1); }
 
         /* Navigation */
         .nav {
@@ -90,7 +100,7 @@
         /* Impressum Content */
         .container { max-width: 900px; margin: 120px auto 40px; padding: 0 20px; }
         .impressum-box { border: 1px solid var(--mgs-border); background: var(--mgs-panel); padding: 3rem; position: relative; }
-        
+
         h1, h2 { font-family: 'Chakra Petch'; text-transform: uppercase; color: var(--mgs-green); margin-bottom: 1.5rem; }
         h2 { font-size: 1.2rem; border-bottom: 1px solid var(--mgs-border); padding-bottom: 5px; margin-top: 2rem; }
         p, address { line-height: 1.8; font-size: 0.9rem; margin-bottom: 1.5rem; font-style: normal; }
@@ -100,6 +110,7 @@
         .btn-back {
             display: inline-block; margin-top: 2rem; padding: 10px 20px;
             border: 1px solid var(--mgs-green-dim); color: var(--mgs-green); text-decoration: none; font-size: 0.8rem;
+            text-transform: uppercase;
         }
         .btn-back:hover { background: var(--mgs-green-dim); }
 
@@ -113,13 +124,15 @@
         <h1>STRENG GEHEIM</h1>
         <p style="font-size: 0.8rem; margin: 10px 0;">ZUGRIFF NUR FÜR AUTORISIERTES PERSONAL</p>
         <p style="font-size: 0.7rem; color: var(--mgs-green-dim);">Anfrage für Passwort via Discord oder E-Mail.</p>
-        
+
         <input type="password" id="password" placeholder="CODE EINGEBEN">
-        <button id="login-btn">VERIFIZIEREN</button>
-        <div id="error-msg" style="color: var(--live-red); font-size: 0.8rem; margin-top: 10px;"></div>
         
-        <br><br>
-        <a href="index.html" style="color: var(--mgs-green-dim); font-size: 0.7rem; text-decoration: none;">[ ABBRUCH / ZURÜCK ]</a>
+        <div class="login-btn-group">
+            <button id="login-btn">VERIFIZIEREN</button>
+            <a href="index.html" class="btn-abort">[ MISSION ABBRECHEN / ZURÜCK ]</a>
+        </div>
+        
+        <div id="error-msg" style="color: var(--live-red); font-size: 0.8rem; margin-top: 15px;"></div>
     </div>
 </div>
 
