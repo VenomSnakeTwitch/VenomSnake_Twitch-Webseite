@@ -18,7 +18,7 @@
             --mgs-panel: #0a0f0a;
             --mgs-border: #1a2e1a;
             --text-primary: #d1ffd1;
-            --live-red: #ff0000;
+            --live-red: #ff4141;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
@@ -33,6 +33,7 @@
             overflow-x: hidden;
         }
 
+        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -58,26 +59,30 @@
         }
 
         input[type="password"] {
-            width: 100%; padding: 12px; margin: 20px 0 10px 0; background: #000;
+            width: 100%; padding: 12px; margin: 20px 0 15px 0; background: #000;
             border: 1px solid var(--mgs-green); color: var(--mgs-green);
             font-family: 'JetBrains Mono'; text-align: center; outline: none;
         }
 
-        .login-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .login-actions { display: flex; flex-direction: column; gap: 12px; }
 
-        button#login-btn {
-            background: var(--mgs-green); color: #000; border: none; padding: 12px;
+        #login-btn {
+            background: var(--mgs-green); color: #000; border: none; padding: 14px;
             font-family: 'Chakra Petch'; font-weight: bold; cursor: pointer; text-transform: uppercase;
-            transition: 0.2s;
+            transition: 0.2s; font-size: 0.9rem;
         }
-        button#login-btn:hover { box-shadow: 0 0 15px var(--mgs-green); }
+        #login-btn:hover { box-shadow: 0 0 15px var(--mgs-green); background: #fff; }
 
-        .btn-abort {
-            background: transparent; border: 1px solid var(--mgs-green-dim); color: var(--mgs-green-dim);
-            padding: 10px; font-family: 'Chakra Petch'; text-decoration: none; font-size: 0.8rem;
-            text-transform: uppercase; transition: 0.2s;
+        .abort-link {
+            background: rgba(255, 65, 65, 0.05); border: 1px solid var(--mgs-green-dim); 
+            color: var(--mgs-green-dim); padding: 10px; text-decoration: none; 
+            font-family: 'Chakra Petch'; font-size: 0.8rem; text-transform: uppercase;
+            transition: 0.3s; font-weight: bold;
         }
-        .btn-abort:hover { border-color: #ff4141; color: #ff4141; background: rgba(255, 65, 65, 0.1); }
+        .abort-link:hover { 
+            border-color: var(--live-red); color: var(--live-red); 
+            background: rgba(255, 65, 65, 0.15); box-shadow: 0 0 10px rgba(255, 65, 65, 0.2);
+        }
 
         /* Navigation */
         .nav {
@@ -107,12 +112,12 @@
         a { color: var(--mgs-green); text-decoration: none; }
         a:hover { text-decoration: underline; }
 
-        .btn-back {
+        .btn-back-content {
             display: inline-block; margin-top: 2rem; padding: 10px 20px;
             border: 1px solid var(--mgs-green-dim); color: var(--mgs-green); text-decoration: none; font-size: 0.8rem;
             text-transform: uppercase;
         }
-        .btn-back:hover { background: var(--mgs-green-dim); }
+        .btn-back-content:hover { background: var(--mgs-green-dim); }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; }
     </style>
@@ -121,18 +126,18 @@
 
 <div id="login-overlay">
     <div class="login-box">
-        <h1>STRENG GEHEIM</h1>
-        <p style="font-size: 0.8rem; margin: 10px 0;">ZUGRIFF NUR FÜR AUTORISIERTES PERSONAL</p>
-        <p style="font-size: 0.7rem; color: var(--mgs-green-dim);">Anfrage für Passwort via Discord oder E-Mail.</p>
-
+        <h1 style="letter-spacing: 3px;">STRENG GEHEIM</h1>
+        <p style="font-size: 0.8rem; margin: 10px 0; color: var(--text-primary);">ZUGRIFF NUR FÜR AUTORISIERTES PERSONNEL</p>
+        
         <input type="password" id="password" placeholder="CODE EINGEBEN">
         
-        <div class="login-btn-group">
+        <div class="login-actions">
             <button id="login-btn">VERIFIZIEREN</button>
-            <a href="index.html" class="btn-abort">[ MISSION ABBRECHEN / ZURÜCK ]</a>
+            <a href="index.html" class="abort-link">MISSION ABBRECHEN / ZURÜCK</a>
         </div>
         
-        <div id="error-msg" style="color: var(--live-red); font-size: 0.8rem; margin-top: 15px;"></div>
+        <div id="error-msg" style="color: var(--live-red); font-size: 0.8rem; margin-top: 15px; font-weight: bold;"></div>
+        <p style="font-size: 0.6rem; color: var(--mgs-green-dim); margin-top: 20px;">ANFRAGE FÜR PASSWORT VIA DISCORD ODER E-MAIL.</p>
     </div>
 </div>
 
@@ -181,7 +186,7 @@
         <h2>Haftung & Urheberrecht</h2>
         <p>Die Inhalte wurden mit größter Sorgfalt erstellt. Marken- und Warenzeichen Dritter unterliegen uneingeschränkt den Rechten der jeweiligen Eigentümer.</p>
 
-        <a href="index.html" class="btn-back">ZURÜCK ZUR BASIS</a>
+        <a href="index.html" class="btn-back-content">ZURÜCK ZUR BASIS</a>
     </div>
 </main>
 
@@ -204,7 +209,7 @@
             overlay.classList.add('hidden');
             mainContent.style.display = 'block';
         } else {
-            errorMsg.textContent = "ZUGRIFF VERWEIGERT - CODE UNGÜLTIG";
+            errorMsg.textContent = ">>> ZUGRIFF VERWEIGERT: CODE UNGÜLTIG";
             passwordInput.value = "";
         }
     }
