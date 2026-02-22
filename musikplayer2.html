@@ -27,6 +27,7 @@
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
+            overflow-x: hidden;
         }
 
         body::before {
@@ -40,7 +41,7 @@
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
-        .nav-container { max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
@@ -51,32 +52,37 @@
             position: relative; box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1); width: 100%;
         }
 
-        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2.5rem; }
+        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2rem; }
         
-        #currentSong { color: #fff; font-size: 1rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 10px; border: 1px dashed var(--mgs-green); min-height: 45px; }
+        .suno-notice {
+            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 12px;
+            margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase;
+            line-height: 1.4;
+        }
+
+        #currentSong { color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; }
 
         .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
         
-        select, button, .download-btn {
+        select, button, .download-btn, .home-btn {
             background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
             padding: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; cursor: pointer;
-            font-size: 0.75rem; transition: 0.2s;
+            font-size: 0.75rem; transition: 0.2s; text-decoration: none; text-align: center;
         }
-        button:hover, select:hover { background: var(--mgs-green); color: #000; }
+        button:hover, select:hover, .download-btn:hover, .home-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
         
-        .control-row { display: flex; align-items: center; gap: 15px; margin: 15px 0; background: rgba(0,255,65,0.05); padding: 10px; border-radius: 4px; }
-        
-        input[type="range"] { 
-            flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none;
-        }
+        .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
+        .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
 
-        /* INFO PANEL */
-        .info-panel {
+        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none; }
+
+        /* INFO BOX DESIGN */
+        #infoBox {
             margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
             border-top: 2px solid var(--mgs-border); padding-top: 20px;
         }
-        .info-card h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 10px; border-left: 3px solid var(--mgs-green); padding-left: 10px; }
-        .info-card p { font-size: 0.75rem; margin-bottom: 4px; color: var(--text-primary); }
+        .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 12px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
+        .infoColumn p { font-size: 0.75rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
 
         /* VISUALIZER OVERLAY */
         #visualizerOverlay {
@@ -84,9 +90,13 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
         #visualizerOverlay.active { display: flex; }
-        #visualizerCanvas { border: 1px solid var(--mgs-green); max-width: 95vw; max-height: 75vh; }
+        #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 70vh; background: #000; }
+        
+        .vis-controls { margin-top: 20px; display: flex; gap: 15px; }
 
-        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; }
+        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
+
+        @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -97,15 +107,19 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
-        <button onclick="toggleFullscreen()" style="border:none; background:none; color:var(--mgs-green); cursor:pointer; font-size:0.7rem;">[ VOLLBILD ]</button>
+        <button onclick="toggleFullscreen()">[ VOLLBILD ]</button>
     </div>
 </nav>
 
 <main class="main-container">
     <div class="player-box">
-        <h1>CODEC</h1>
-        
-        <h2 id="currentSong">VERBINDUNG WIRD HERGESTELLT...</h2>
+        <h1>CODEC INTERFACE</h1>
+        <div class="suno-notice">
+            [ STATUS: TRANSMISSION ACTIVE ]<br>
+            Hier werden alle Songs hochgeladen, die ich auf <strong>Suno.com</strong> erstelle.
+        </div>
+
+        <h2 id="currentSong">INITIALISIERE...</h2>
         <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
         <div class="control-grid">
@@ -143,53 +157,68 @@
                 <option value="30">Takin' On The Shagohod Remake</option>
             </select>
             <button onclick="openVisualizer()">[ VISUALIZER ]</button>
-            <a id="downloadBtn" href="#" download class="download-btn" style="text-decoration:none; text-align:center;">Download</a>
+            <a id="downloadBtn" href="#" download class="download-btn">DOWNLOAD</a>
         </div>
 
-        <div class="control-row">
-            <span id="timeLabel">0:00</span>
+        <div class="slider-row">
+            <span class="slider-label" id="timeLabel">0:00</span>
             <input type="range" id="progress" min="0" max="100" value="0">
-            <span id="durationLabel">0:00</span>
+            <span class="slider-label" id="durationLabel">0:00</span>
         </div>
 
-        <div class="control-row">
-            <span style="color:var(--mgs-green); font-size:0.7rem;">VOL</span>
+        <div class="slider-row">
+            <span class="slider-label">VOL</span>
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
-            <span id="volumeLabel" style="min-width: 40px;">50%</span>
+            <span class="slider-label" id="volumeLabel">50%</span>
         </div>
 
         <div class="control-grid">
-            <button onclick="prevSong()">⏮ Zurück</button>
-            <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
-            <button onclick="nextSong()">Weiter ⏭</button>
-            <button id="radioToggle" onclick="toggleRadioMode()">Radio: AUS</button>
+            <button onclick="prevSong()">⏮ ZURÜCK</button>
+            <button id="playPauseBtn" onclick="togglePlay()">▶ PLAY</button>
+            <button onclick="nextSong()">WEITER ⏭</button>
+            <a href="index.html" class="home-btn">[ STARTSEITE ]</a>
         </div>
 
-        <div class="info-panel">
-            <div class="info-card">
-                <h3>NEU IM ARCHIV</h3>
+        <div id="infoBox">
+            <div class="infoColumn">
+                <h3>Neue Songs Sind Da!</h3>
                 <p>Bleed out My Frend</p>
-                <p>Revange 1 & 2</p>
-                <p>Metal Gear 2 Remix Serie</p>
+                <p>Revange</p>
+                <p>Revange 2</p>
+                <p>Survival Of Death</p>
+                <p>Pile of Total Wreck</p>
+                <p>Industrial Breakdown</p>
+                <p>Mental Breakdown</p>
+                <p>Operation Stealth Destruction</p>
+                <p>Dessert Storm Ahead</p>
+                <p>Metal Gear 2 Solid Snake Chasing the Green Beret Remix</p>
+                <p>Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026</p>
+                <p>Metal Gear 2 Solid Snake Level1 Warning Remix</p>
+                <p>Metal Gear 2 Solid Snake Level3 Warning Remix</p>
+                <p>Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</p>
+                <p>Takin' On The Shagohod Remake</p>
             </div>
-            <div class="info-card">
-                <h3>DEMNÄCHST</h3>
-                <p>Frequency 140.85 (Original)</p>
-                <p>The Best Is Yet To Come (Revamp)</p>
+            <div class="infoColumn">
+                <h3>Bald Erscheinende Songs</h3>
+                <p>Metal Gear 2 Solid Snake Frequency 140.85</p>
+                <p>Weitere Projekte in Planung...</p>
             </div>
         </div>
     </div>
 </main>
 
 <div id="visualizerOverlay">
+    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V4.5</div>
     <canvas id="visualizerCanvas"></canvas>
-    <div style="margin-top:20px;">
+    <div class="vis-controls">
+        <button onclick="setVisMode('ring')">[ RING MODUS ]</button>
+        <button onclick="setVisMode('bars')">[ BARS MODUS ]</button>
         <button onclick="closeVisualizer()" style="color:#ff4141; border-color:#ff4141;">[ DISCONNECT ]</button>
     </div>
 </div>
 
 <footer>
-    <p>FREQUENCY: 140.85 MHz // OPERATOR: VENOMSNAKE_TWITCH</p>
+    <p>EST. 2026 // FREQUENCY: 140.85 MHz // OPERATOR: VENOMSNAKE_TWITCH</p>
 </footer>
 
 <script>
@@ -207,8 +236,9 @@ const songs = [
     "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3"
 ];
 
-let currentIndex = 0; let radioMode = false;
+let currentIndex = 0;
 let audioCtx, analyser, dataArray, animationId;
+let visMode = 'ring';
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
@@ -222,12 +252,12 @@ function loadSong(index) {
 }
 
 function togglePlay() {
-    if(!audioCtx) initVisualizer();
+    if(!audioCtx) initAudioSystem();
     if (audio.paused) { audio.play(); document.getElementById("playPauseBtn").textContent = "⏸ PAUSE"; }
     else { audio.pause(); document.getElementById("playPauseBtn").textContent = "▶ PLAY"; }
 }
 
-function initVisualizer() {
+function initAudioSystem() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
     const source = audioCtx.createMediaElementSource(audio);
@@ -237,38 +267,53 @@ function initVisualizer() {
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
+function setVisMode(mode) { visMode = mode; }
+
 function draw() {
     animationId = requestAnimationFrame(draw);
     analyser.getByteFrequencyData(dataArray);
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    
+    ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const logoSize = 150;
-    ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
 
-    ctx.strokeStyle = "#00ff41";
-    ctx.lineWidth = 2;
-    for(let i=0; i<dataArray.length; i++) {
-        let angle = (i/dataArray.length) * Math.PI * 2;
-        let start = 85 + (dataArray[0]/5);
-        let len = dataArray[i] / 2;
-        ctx.beginPath();
-        ctx.moveTo(centerX + Math.cos(angle)*start, centerY + Math.sin(angle)*start);
-        ctx.lineTo(centerX + Math.cos(angle)*(start+len), centerY + Math.sin(angle)*(start+len));
-        ctx.stroke();
+    if (visMode === 'ring') {
+        const radius = 100;
+        if(logoImg.complete) ctx.drawImage(logoImg, centerX - 70, centerY - 70, 140, 140);
+        ctx.strokeStyle = "#00ff41";
+        ctx.lineWidth = 3;
+        for(let i=0; i<dataArray.length; i++) {
+            let angle = (i/dataArray.length) * Math.PI * 2;
+            let len = dataArray[i] * 0.7;
+            ctx.beginPath();
+            ctx.moveTo(centerX + Math.cos(angle)*radius, centerY + Math.sin(angle)*radius);
+            ctx.lineTo(centerX + Math.cos(angle)*(radius+len), centerY + Math.sin(angle)*(radius+len));
+            ctx.stroke();
+        }
+    } else {
+        const barWidth = (canvas.width / dataArray.length) * 2.5;
+        let x = 0;
+        for(let i=0; i<dataArray.length; i++) {
+            let barHeight = dataArray[i] * 1.5;
+            ctx.fillStyle = "#00ff41";
+            ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+            x += barWidth;
+        }
+        ctx.globalAlpha = 0.2;
+        ctx.drawImage(logoImg, centerX - 80, centerY - 150, 160, 160);
+        ctx.globalAlpha = 1.0;
     }
 }
 
 function openVisualizer() { 
-    if(!audioCtx) initVisualizer();
+    if(!audioCtx) initAudioSystem();
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
     canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.7;
+    canvas.height = window.innerHeight * 0.65;
     draw();
 }
 
@@ -283,23 +328,25 @@ function toggleFullscreen() {
 }
 
 function selectSong() { loadSong(parseInt(document.getElementById("songSelect").value)); togglePlay(); }
-function nextSong() { let i = radioMode ? Math.floor(Math.random()*songs.length) : (currentIndex+1)%songs.length; loadSong(i); audio.play(); }
+function nextSong() { loadSong((currentIndex+1)%songs.length); audio.play(); }
 function prevSong() { loadSong((currentIndex-1+songs.length)%songs.length); audio.play(); }
-function toggleRadioMode() { radioMode = !radioMode; document.getElementById("radioToggle").textContent = radioMode ? "Radio: AN" : "Radio: AUS"; }
 
 document.getElementById("volumeSlider").oninput = function() {
     audio.volume = this.value;
     document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
 };
 
+document.getElementById("progress").oninput = function() { audio.currentTime = (this.value / 100) * audio.duration; };
+
 audio.ontimeupdate = () => {
-    document.getElementById("progress").value = (audio.currentTime / audio.duration) * 100 || 0;
-    document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
-    document.getElementById("durationLabel").textContent = formatTime(audio.duration);
+    if(!isNaN(audio.duration)) {
+        document.getElementById("progress").value = (audio.currentTime / audio.duration) * 100;
+        document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("durationLabel").textContent = formatTime(audio.duration);
+    }
 };
 
-function formatTime(s) { if (isNaN(s)) return "0:00"; let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
-
+function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
 window.onload = () => { loadSong(0); audio.volume = 0.5; };
 </script>
 </body>
