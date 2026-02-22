@@ -1,216 +1,207 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTACT // VenomSnake_Twitch - Secure Line</title>
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Favicon -->
-   <link rel="icon" type="image/x-icon" href="favicon.ico">
-<title>Kontakt – VenomSnake_Twitch</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+    <style>
+        :root {
+            --mgs-green: #00ff41; 
+            --mgs-green-dim: #003b00;
+            --mgs-bg: #050805;
+            --mgs-panel: #0a0f0a;
+            --mgs-border: #1a2e1a;
+            --text-primary: #d1ffd1;
+            --discord-blurple: #5865F2;
+        }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Orbitron', sans-serif;
-    color: #f0f0ff;
-    text-align: center;
-    overflow: hidden;
-    background: linear-gradient(to bottom, #000000, #000044);
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
 
-/* HEADER FIXIEREN UND TRANSPARENT */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    z-index: 1000;
-    backdrop-filter: blur(5px);
-}
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--mgs-bg);
+            color: var(--text-primary);
+            background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow-x: hidden;
+        }
 
-/* Logo + Schriftzug */
-header .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-header .logo-container img {
-    height: 50px;
-    object-fit: contain;
-}
-header .logo-container span {
-    font-size: 24px;
-    font-weight: bold;
-    color: #a020f0; /* Twitch-Lila */
-    text-shadow: 0 0 5px #00ffff;
-}
-header .logo-container span span {
-    color: #00ffff; /* Hellblau für SNΛKE */
-}
+        /* Scanline Overlay (CRT Look) */
+        body::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
+        }
 
-/* Navigation */
-header nav ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-    margin: 0;
-    padding: 0;
-}
-header nav ul li a {
-    text-decoration: none;
-    color: #f0f0ff;
-    font-weight: bold;
-    transition: color 0.3s, text-shadow 0.3s;
-}
-header nav ul li a:hover {
-    color: #88f0ff;
-    text-shadow: 0 0 8px #88f0ff;
-}
+        /* Navigation */
+        .nav {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
+        }
 
-/* Hintergrundbild */
-#backgroundImage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("https://venomsnaketwitch.github.io/VenomSnake_Twitch-Webseite/backgroundcontact.png") no-repeat center center;
-    background-size: cover;
-    z-index: 0;
-}
+        .nav-container {
+            max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
 
-/* Kontaktformular Overlay */
-#overlay {
-    position: relative;
-    z-index: 1;
-    background: rgba(0,0,50,0.85);
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 120px 20px 20px 20px; /* Header berücksichtigt */
-    box-sizing: border-box;
-}
+        .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); }
+        .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
+        
+        .nav-links { display: flex; gap: 0.8rem; align-items: center; }
 
-h1 {
-    font-size: 36px;
-    margin-bottom: 30px;
-    text-shadow: 0 0 15px #a020f0, 0 0 30px #00ffff;
-}
+        .nav-link { 
+            color: var(--mgs-green); text-decoration: none; font-size: 0.8rem; 
+            text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px;
+            transition: 0.2s; border: 1px solid transparent;
+        }
+        .nav-link:hover { background: var(--mgs-green-dim); border: 1px solid var(--mgs-green); color: #fff; }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 500px;
-}
+        .nav-link-discord { color: var(--discord-blurple); border: 1px solid var(--discord-blurple); }
+        .nav-link-discord:hover { background: var(--discord-blurple); color: #fff; box-shadow: 0 0 10px var(--discord-blurple); }
 
-input, textarea {
-    padding: 15px;
-    border: 2px solid #a020f0;
-    border-radius: 5px;
-    background: black;
-    color: #f0f0ff;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
-    resize: none;
-}
+        /* Dropdown */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; top: 100%;
+            background: var(--mgs-panel); border: 2px solid var(--mgs-green);
+            min-width: 220px; z-index: 1001;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a {
+            color: var(--mgs-green); padding: 12px 16px; text-decoration: none;
+            display: block; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-border);
+        }
+        .dropdown-content a:hover { background: var(--mgs-green-dim); color: #fff; }
 
-input:focus, textarea:focus {
-    outline: none;
-    border-color: #00ffff;
-}
+        /* Main Content */
+        .container { max-width: 800px; margin: 120px auto 40px; padding: 0 20px; }
+        
+        .contact-box {
+            border: 2px solid var(--mgs-green); background: var(--mgs-panel); padding: 2rem;
+            position: relative; box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.05);
+        }
+        .contact-box::before {
+            content: "SECURE_COMMS_ENCRYPTED"; position: absolute; top: -12px; left: 20px;
+            background: var(--mgs-bg); padding: 0 10px; font-size: 0.7rem; color: var(--mgs-green);
+        }
 
-button {
-    background: black;
-    border: 2px solid #a020f0;
-    color: #f0f0ff;
-    padding: 12px 25px;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        h1 { font-family: 'Chakra Petch'; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; color: var(--mgs-green); }
 
-button:hover {
-    background: #a020f0;
-    color: #00ffff;
-}
+        .form-group { margin-bottom: 1.5rem; text-align: left; }
+        label { display: block; font-size: 0.75rem; margin-bottom: 5px; color: var(--mgs-green); }
+        
+        input, textarea {
+            width: 100%; background: #000; border: 1px solid var(--mgs-border);
+            padding: 12px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;
+            transition: 0.3s;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--mgs-green); box-shadow: 0 0 5px var(--mgs-green); }
 
-#messageStatus {
-    font-size: 16px;
-    margin-top: 15px;
-}
+        .btn-submit {
+            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
+            padding: 12px 30px; font-family: 'Chakra Petch'; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s; width: 100%;
+        }
+        .btn-submit:hover { background: var(--mgs-green); color: #000; }
 
-@media (max-width: 600px){
-    h1 { font-size: 28px; }
-    form { max-width: 90%; }
-    input, textarea, button { font-size: 16px; padding: 12px; }
-}
-</style>
+        #messageStatus { margin-top: 15px; font-size: 0.8rem; font-weight: bold; }
+
+        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; }
+    </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-    <div class="logo-container">
-        <img src="DogVenomsnakeLogo.png" alt="VenomSnake Logo">
-        <span>VENOM<span>SNΛKE</span></span>
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
+            <span style="font-family:'Chakra Petch'; font-weight:bold;">VENOM_SNAKE_OPS</span>
+        </a>
+        
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">[ MISSION ]</a>
+            <a href="index.html" class="nav-link">[ DATA_FILE ]</a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="nav-link nav-link-discord">
+                <i data-lucide="message-square" style="width:14px; vertical-align:middle; margin-right:5px;"></i> DISCORD
+            </a>
+            
+            <div class="dropdown">
+                <a href="#" class="nav-link" style="background: var(--mgs-green-dim); border: 1px solid var(--mgs-green);">[ SUB_OPERATIONS <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
+                <div class="dropdown-content">
+                    <a href="kontakt.html" style="color: #fff;">Kontakt</a>
+                    <a href="musikplayer.html">Musikplayer</a>
+                    <a href="donation.html">Spenden</a>
+                    <a href="impressum.html">Impressum</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <nav>
-        <ul>
-            <li><a href="index.html">Startseite</a></li>
-            <li><a href="musikplayer.html">Musikplayer</a></li> <!-- Korrigiert -->
-            <li><a href="donation.html">Spenden</a></li> <!-- Bleibt Spenden -->
-        </ul>
-    </nav>
-</header>
-<!-- Hintergrundbild -->
-<div id="backgroundImage"></div>
+</nav>
 
-<!-- Kontaktformular Overlay -->
-<div id="overlay">
-    <h1>Kontakt</h1>
-    
-    <form id="contactForm">
-        <input type="text" name="from_name" placeholder="Dein Name" required>
-        <input type="email" name="reply_to" placeholder="Deine E-Mail" required>
-        <textarea name="message" placeholder="Deine Nachricht" rows="7" required></textarea>
-        <button type="submit">Nachricht senden</button>
-        <div id="messageStatus"></div>
-    </form>
-</div>
+<main class="container">
+    <div class="contact-box">
+        <h1>Establish Connection</h1>
+        <p style="font-size: 0.8rem; margin-bottom: 2rem; color: #52b6ca;">Sende eine verschlüsselte Nachricht an das HQ.</p>
+        
+        <form id="contactForm">
+            <div class="form-group">
+                <label>OPERATOR_NAME</label>
+                <input type="text" name="from_name" placeholder="Rufname eingeben..." required>
+            </div>
+            <div class="form-group">
+                <label>RETURN_ADDRESS (EMAIL)</label>
+                <input type="email" name="reply_to" placeholder="email@frequenz.com" required>
+            </div>
+            <div class="form-group">
+                <label>ENCRYPTED_MESSAGE</label>
+                <textarea name="message" rows="5" placeholder="Nachricht hier eingeben..." required></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Sende Signal (Burst Transmission)</button>
+            <div id="messageStatus"></div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 // FOXHOUND COMMUNICATION RELAY // NO TRACE LEFT</p>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-    emailjs.init("Bw8SYa2jG4vcW4APx");
+    (function() {
+        emailjs.init("Bw8SYa2jG4vcW4APx");
+    })();
+
+    lucide.createIcons();
 
     const form = document.getElementById('contactForm');
     const status = document.getElementById('messageStatus');
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        status.textContent = "Sende Nachricht...";
+        status.textContent = ">>> ÜBERTRAGE DATEN...";
+        status.style.color = "var(--mgs-green)";
+
         emailjs.sendForm('service_v64fxbu', 'template_1f6t01d', this)
             .then(() => {
-                status.textContent = "✅ Nachricht erfolgreich gesendet!";
+                status.textContent = "✅ ÜBERTRAGUNG ERFOLGREICH: NACHRICHT GESENDET!";
+                status.style.color = "#00ff41";
                 form.reset();
             }, (error) => {
                 console.error(error);
-                status.textContent = "❌ Fehler beim Senden. Bitte erneut versuchen.";
+                status.textContent = "❌ FEHLER: VERBINDUNG UNTERBROCHEN. ERNEUT VERSUCHEN.";
+                status.style.color = "#ff0000";
             });
     });
 </script>
+
 </body>
 </html>
