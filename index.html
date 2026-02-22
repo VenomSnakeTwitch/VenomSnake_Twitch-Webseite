@@ -4,237 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VenomSnake_Twitch - Mission Control</title>
-    <meta name="description" content="VenomSnake_Twitch - Dein Twitch Streamer für Metal Gear Solid, Resident Evil und mehr.">
-
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
             --twitch: #9146FF;
-            --twitch-dim: #772ce8;
             --tactical-blue: #52b6ca;
             --base: #0a0b0e;
             --surface: #13151a;
-            --overlay: #1c1f26;
             --live: #ff4444;
             --text-primary: #e6eef3;
             --text-secondary: #94a3b8;
-            --text-muted: #475569;
             --border: rgba(255, 255, 255, 0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 500;
-            background-color: var(--base);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        .grid-bg {
-            background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
+        body { font-family: 'Rajdhani', sans-serif; background-color: var(--base); color: var(--text-primary); min-height: 100vh; }
+        .grid-bg { background-image: radial-gradient(rgba(82, 182, 202, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
         .glass { backdrop-filter: blur(16px); background-color: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border); }
         .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
-        .cut-corner-sm { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
         
-        /* Navigation */
-        .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; }
-        .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; }
-        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-        .logo img { height: 56px; width: auto; }
-        .logo-text { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.1em; }
-        .logo-text .venom { color: var(--twitch); }
-        .logo-text .snake { color: var(--tactical-blue); }
-        .nav-links { display: flex; align-items: center; gap: 1.25rem; }
-        .nav-link { font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; letter-spacing: 0.2em; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s; position: relative; }
-        .nav-link:hover, .nav-link.active { color: var(--twitch); }
-        .discord-btn { background-color: #5865F2; color: white; padding: 0.5rem 1rem; font-family: 'Chakra Petch', sans-serif; font-size: 0.875rem; text-decoration: none; border-radius: 4px; transition: 0.3s; }
-        .discord-btn:hover { background-color: #4752c4; }
+        .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; height: 80px; }
+        .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 100%; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; font-family: 'Chakra Petch'; font-weight: 700; font-size: 1.25rem; }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-family: 'Chakra Petch'; font-size: 0.875rem; letter-spacing: 0.1em; }
+        .nav-link:hover { color: var(--twitch); }
 
-        /* Dropdown */
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; top: 100%; right: 0; min-width: 200px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 4px; z-index: 100; margin-top: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .dropdown-content a { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.25rem; color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; }
-        .dropdown-content a:hover { background-color: rgba(145, 70, 255, 0.1); color: var(--twitch); }
-        .dropdown:hover .dropdown-content { display: block; }
-
-        /* Mobile Menu */
-        .mobile-menu-btn { display: none; background: none; border: none; color: white; cursor: pointer; }
-        .mobile-nav { display: none; background: var(--surface); border-top: 1px solid var(--border); padding: 10px; }
-        .mobile-nav.open { display: block; }
-        .mobile-nav a { display: block; padding: 12px; color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid var(--border); }
-
-        /* Pages */
-        .page { display: none; min-height: 100vh; padding-top: 100px; padding-bottom: 3rem; }
+        .page { display: none; padding-top: 100px; padding-bottom: 3rem; }
         .page.active { display: block; }
         .container { max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
 
-        /* Mission Control Header */
-        .mission-header { 
-            margin-bottom: 2rem; 
-            padding: 1.5rem; 
-            background: rgba(19, 21, 26, 0.6); 
-            border-left: 4px solid var(--twitch);
-        }
-        .countdown-box { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-primary); font-weight: 700; }
-        .live-data-row { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--border); padding-top: 10px; }
+        /* NEU: Zeitplan Design */
+        .mission-panel { background: rgba(19, 21, 26, 0.8); border-left: 4px solid var(--twitch); padding: 1.5rem; margin-bottom: 2rem; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; }
+        .schedule-item { background: rgba(255,255,255,0.03); padding: 10px; border: 1px solid var(--border); text-align: center; }
+        .schedule-day { color: var(--tactical-blue); font-family: 'Chakra Petch'; font-weight: bold; display: block; }
+        .schedule-time { font-family: 'JetBrains Mono'; font-size: 0.9rem; }
 
-        /* Stream Grid */
         .stream-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 1024px) { .stream-grid { grid-template-columns: 2fr 1fr; } }
-        
-        .stream-container { background-color: var(--surface); border: 1px solid var(--border); position: relative; }
+        .twitch-box { background: var(--surface); border: 1px solid var(--border); position: relative; }
         .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; }
-        .twitch-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .chat-container { background-color: var(--surface); border: 1px solid var(--border); height: 500px; display: flex; flex-direction: column; }
-        @media (min-width: 1024px) { .chat-container { height: auto; min-height: 600px; } }
-
-        /* Stats & Bio */
-        .about-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 1024px) { .about-grid { grid-template-columns: 1fr 2fr; } }
-        .profile-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; text-align: center; }
-        .profile-card img { width: 180px; height: 180px; border-radius: 8px; border: 3px solid var(--twitch); margin-bottom: 1rem; }
-        .profile-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-
-        footer { background: var(--base); border-top: 1px solid var(--border); padding: 2rem 0; text-align: center; }
+        .twitch-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
         
-        .live-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: gray; margin-right: 5px; }
-        .is-live { background: var(--live); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .mobile-menu-btn { display: block; }
-        }
+        .profile-card { background: var(--surface); border: 1px solid var(--border); padding: 2rem; }
+        .profile-card img { width: 150px; border: 3px solid var(--twitch); margin-bottom: 1rem; }
+        
+        footer { border-top: 1px solid var(--border); padding: 2rem 0; text-align: center; font-size: 0.8rem; opacity: 0.6; }
     </style>
 </head>
 <body class="grid-bg">
 
 <nav class="nav glass">
     <div class="nav-container">
-        <a href="#" class="logo" onclick="showPage('stream'); return false;">
-            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="VenomSnake Logo">
-            <span class="logo-text"><span class="venom">VENOM</span><span class="snake">SNAKE</span></span>
+        <a href="#" class="logo">
+            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="height: 50px;">
+            <span style="color:var(--twitch)">VENOM</span><span style="color:var(--tactical-blue)">SNAKE</span>
         </a>
         <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="stream" onclick="showPage('stream'); return false;"><i data-lucide="tv" style="width: 16px; height: 16px;"></i> STREAM</a>
-            <div class="dropdown">
-                <button class="nav-link" style="background:none; border:none; cursor:pointer;"><i data-lucide="menu" style="width: 16px; height: 16px;"></i> MEHR</button>
-                <div class="dropdown-content">
-                    <a href="#" onclick="showPage('about'); return false;"><i data-lucide="user"></i> ÜBER MICH</a>
-                    <a href="kontakt.html"><i data-lucide="mail"></i> KONTAKT</a>
-                    <a href="musikplayer.html"><i data-lucide="music"></i> MUSIK PLAYER</a>
-                    <a href="donation.html"><i data-lucide="heart-handshake"></i> SPENDEN</a>
-                    <a href="impressum.html"><i data-lucide="file-text"></i> IMPRESSUM</a>
-                </div>
-            </div>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="discord-btn cut-corner-sm">DISCORD</a>
+            <a href="#" class="nav-link" onclick="showPage('stream')">STREAM</a>
+            <a href="#" class="nav-link" onclick="showPage('about')">ÜBER MICH</a>
+            <a href="musikplayer.html" class="nav-link">MUSIK</a>
+            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="background: #5865F2; padding: 5px 15px; border-radius: 4px; color: white; text-decoration: none;">DISCORD</a>
         </div>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i data-lucide="menu"></i></button>
-    </div>
-    <div class="mobile-nav" id="mobileNav">
-        <a href="#" onclick="showPage('stream'); toggleMobileMenu();">STREAM</a>
-        <a href="#" onclick="showPage('about'); toggleMobileMenu();">ÜBER MICH</a>
-        <a href="musikplayer.html">MUSIK PLAYER</a>
-        <a href="https://discord.gg/SFzk4YxgRv">DISCORD BEITRETEN</a>
     </div>
 </nav>
 
 <main id="page-stream" class="page active">
     <div class="container">
-        <div class="mission-header cut-corner">
-            <div id="countdown-display" class="countdown-box">INITIALISIERE MISSION...</div>
-            <div class="live-data-row">
-                <div><span style="color: var(--twitch);">AKTUELLER TITEL:</span> <span id="twitch-title">LADE DATEN...</span></div>
-                <div><span style="color: var(--tactical-blue);">KATEGORIE:</span> <span id="twitch-game">STANDBY</span></div>
+        <div class="mission-panel cut-corner">
+            <div id="countdown-display" style="font-family: 'JetBrains Mono'; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px;">INITIALISIERE...</div>
+            
+            <div style="font-family: 'JetBrains Mono'; font-size: 0.85rem; margin-bottom: 15px;">
+                <span style="color: var(--twitch);">AKTUELLER EINSATZ:</span> <span id="twitch-title">LADE...</span><br>
+                <span style="color: var(--tactical-blue);">ZIELGEBIET:</span> <span id="twitch-game">STANDBY</span>
+            </div>
+
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <span class="schedule-day">MONTAG</span>
+                    <span class="schedule-time">13:30 UHR</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-day">MITTWOCH</span>
+                    <span class="schedule-time">13:30 UHR</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-day">FREITAG</span>
+                    <span class="schedule-time">13:30 UHR</span>
+                </div>
             </div>
         </div>
 
         <div class="stream-grid">
-            <div class="stream-container cut-corner">
-                <div class="twitch-embed" id="twitch-player"></div>
+            <div class="twitch-box cut-corner">
+                <div class="twitch-embed" id="player"></div>
             </div>
-            <div class="chat-container cut-corner">
-                <div class="twitch-embed" id="twitch-chat" style="height: 100%; padding-bottom: 0;"></div>
+            <div class="twitch-box cut-corner" style="height: 600px;">
+                <div id="chat" style="height: 100%;"></div>
             </div>
-        </div>
-
-        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 1rem; border: 1px solid var(--border);">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 50px; border: 2px solid var(--twitch);">
-                <div>
-                    <h2 style="font-family: 'Chakra Petch';">VenomSnake_Twitch</h2>
-                    <p id="footer-game-info" style="font-size: 0.8rem; color: var(--text-secondary);">Metal Gear Solid • Resident Evil • Stealth</p>
-                </div>
-            </div>
-            <a href="https://twitch.tv/VenomSnake_Twitch" target="_blank" class="discord-btn" style="background: var(--twitch);">AUF TWITCH FOLGEN</a>
         </div>
     </div>
 </main>
 
 <main id="page-about" class="page">
     <div class="container">
-        <div class="about-grid">
-            <div class="profile-card cut-corner">
-                <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="VenomSnake">
-                <h3>AGENT PROFIL</h3>
-                <div style="margin-top:15px;">
-                    <div class="profile-stat"><span>ALTER</span> <span id="age-val">...</span></div>
-                    <div class="profile-stat"><span>STATUS</span> <span style="color: var(--tactical-blue);">AKTIV</span></div>
-                    <div class="profile-stat"><span>EINSATZ</span> <span>Mo, Mi, Fr</span></div>
-                </div>
-            </div>
-            <div class="profile-card cut-corner" style="text-align: left;">
-                <h2 style="color: var(--twitch); font-family: 'Chakra Petch';">BIO // PERSÖNLICH</h2>
-                <p style="margin-top: 1rem; font-size: 1.1rem;">
-                    Hey! Ich bin <span style="color: var(--tactical-blue); font-weight: bold;">VenomSnake_Twitch</span>. 
-                    Ich bin Dialyse-Patient und streame regelmäßig, um meine Leidenschaft für Gaming mit euch zu teilen. 
-                    Bei mir findest du vor allem taktische Action und Survival Horror.
-                </p>
-                <h3 style="margin-top: 1.5rem; border-bottom: 1px solid var(--twitch); display: inline-block;">LIEBLINGSSPIELE</h3>
-                <ul style="margin-top: 10px; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <li>• Metal Gear Solid</li>
-                    <li>• Resident Evil</li>
-                    <li>• Silent Hill</li>
-                    <li>• Splinter Cell</li>
-                </ul>
-            </div>
+        <div class="profile-card cut-corner">
+            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png">
+            <h1>AGENTEN-PROFIL</h1>
+            <p style="margin-top: 1rem;">Alter: <span id="age-val"></span></p>
+            <p>Spezialisierung: Tactical Espionage & Survival Horror</p>
         </div>
     </div>
 </main>
 
 <footer>
-    <div class="container">
-        <p>© 2026 VenomSnake_Twitch // Tactical Entertainment</p>
-        <p style="font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">SYSTEM VERSION 1.6 - STABLE</p>
-    </div>
+    <p>© 2026 VenomSnake_Twitch // Mission Control v1.6</p>
 </footer>
 
 <script>
-    // KONFIGURATION
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
     const CHANNEL = 'VenomSnake_Twitch';
-    const BIRTH_DATE = "1994-06-08";
 
-    lucide.createIcons();
-
-    function showPage(pageId) {
+    function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + pageId).classList.add('active');
-        window.scrollTo(0,0);
+        document.getElementById('page-' + id).classList.add('active');
     }
 
-    function toggleMobileMenu() {
-        document.getElementById('mobileNav').classList.toggle('open');
-    }
-
-    // Twitch Daten laden
     async function getTwitchInfo() {
         try {
             const auth = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
@@ -251,51 +150,44 @@
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` }
             });
             const chanData = await chanResp.json();
-            const info = chanData.data[0];
-
-            document.getElementById('twitch-title').textContent = info.title.toUpperCase();
-            document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
-            document.getElementById('footer-game-info').textContent = info.game_name + " • Live von Twitch";
-        } catch (e) {
-            console.error("API Error", e);
-        }
+            
+            document.getElementById('twitch-title').textContent = chanData.data[0].title.toUpperCase();
+            document.getElementById('twitch-game').textContent = chanData.data[0].game_name.toUpperCase();
+        } catch (e) { console.error(e); }
     }
 
-    // Countdown & Schedule
     const schedule = [{d:1,h:13,m:30}, {d:3,h:13,m:30}, {d:5,h:13,m:30}];
     function updateCountdown() {
         const now = new Date();
         let next = null;
-        for(let i=0; i<7; i++){
+        for(let i=0; i<7; i++) {
             let d = new Date(); d.setDate(now.getDate()+i);
             let s = schedule.find(x => x.d === d.getDay());
-            if(s){
+            if(s) {
                 d.setHours(s.h, s.m, 0, 0);
-                if(d > now){ next = d; break; }
+                if(d > now) { next = d; break; }
             }
         }
         const diff = next - now;
         const disp = document.getElementById('countdown-display');
         if(diff < 3600000 && diff > -7200000) {
-            disp.textContent = "STATUS: AGENT IM EINSATZ (LIVE)";
+            disp.textContent = "STATUS: LIVE IM EINSATZ";
             disp.style.color = "var(--live)";
         } else {
             const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
-            disp.textContent = `T-MINUS: ${h}H ${m}M BIS ZUM NÄCHSTEN EINSATZ`;
+            disp.textContent = `T-MINUS: ${h}H ${m}M BIS ZUM EINSATZ`;
             disp.style.color = "var(--tactical-blue)";
         }
     }
 
-    // Embeds laden
     function loadEmbeds() {
-        const domain = window.location.hostname || "localhost";
-        document.getElementById('twitch-player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL}&parent=${domain}&muted=true" height="100%" width="100%" allowfullscreen="true"></iframe>`;
-        document.getElementById('twitch-chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
+        const d = window.location.hostname || "localhost";
+        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL}&parent=${d}&muted=true" height="100%" width="100%" allowfullscreen="true"></iframe>`;
+        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL}/chat?parent=${d}&darkpopout" height="100%" width="100%"></iframe>`;
     }
 
-    // Alter berechnen
     function setAge() {
-        const birth = new Date(BIRTH_DATE);
+        const birth = new Date("1994-06-08");
         const now = new Date();
         let age = now.getFullYear() - birth.getFullYear();
         if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
