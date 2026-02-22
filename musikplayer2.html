@@ -7,7 +7,6 @@
     
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
@@ -30,7 +29,6 @@
             background-size: 30px 30px;
         }
 
-        /* Scanline Effekt */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -55,11 +53,6 @@
 
         h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2.5rem; }
         
-        .suno-notice {
-            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 10px;
-            margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase;
-        }
-
         #currentSong { color: #fff; font-size: 1rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 10px; border: 1px dashed var(--mgs-green); min-height: 45px; }
 
         .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
@@ -72,9 +65,12 @@
         button:hover, select:hover { background: var(--mgs-green); color: #000; }
         
         .control-row { display: flex; align-items: center; gap: 15px; margin: 15px 0; background: rgba(0,255,65,0.05); padding: 10px; border-radius: 4px; }
-        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 4px; }
+        
+        input[type="range"] { 
+            flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none;
+        }
 
-        /* INFO BOX */
+        /* INFO PANEL */
         .info-panel {
             margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
             border-top: 2px solid var(--mgs-border); padding-top: 20px;
@@ -84,11 +80,11 @@
 
         /* VISUALIZER OVERLAY */
         #visualizerOverlay {
-            position: fixed; inset: 0; background: var(--mgs-bg); z-index: 2000;
+            position: fixed; inset: 0; background: #000; z-index: 2000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
         #visualizerOverlay.active { display: flex; }
-        canvas { background: #000; border: 1px solid var(--mgs-green); max-width: 95vw; max-height: 80vh; }
+        #visualizerCanvas { border: 1px solid var(--mgs-green); max-width: 95vw; max-height: 75vh; }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; }
     </style>
@@ -101,14 +97,14 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
+        <button onclick="toggleFullscreen()" style="border:none; background:none; color:var(--mgs-green); cursor:pointer; font-size:0.7rem;">[ VOLLBILD ]</button>
     </div>
 </nav>
 
 <main class="main-container">
     <div class="player-box">
         <h1>CODEC</h1>
-        <div class="suno-notice">[ SYSTEM-INFO: Audio-Archiv geladen. Alle Tracks von Suno.com verfügbar. ]</div>
-
+        
         <h2 id="currentSong">VERBINDUNG WIRD HERGESTELLT...</h2>
         <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
@@ -156,6 +152,12 @@
             <span id="durationLabel">0:00</span>
         </div>
 
+        <div class="control-row">
+            <span style="color:var(--mgs-green); font-size:0.7rem;">VOL</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <span id="volumeLabel" style="min-width: 40px;">50%</span>
+        </div>
+
         <div class="control-grid">
             <button onclick="prevSong()">⏮ Zurück</button>
             <button id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
@@ -168,17 +170,12 @@
                 <h3>NEU IM ARCHIV</h3>
                 <p>Bleed out My Frend</p>
                 <p>Revange 1 & 2</p>
-                <p>Survival Of Death</p>
-                <p>Pile of Total Wreck</p>
                 <p>Metal Gear 2 Remix Serie</p>
-                <p>Takin' On The Shagohod Remake</p>
             </div>
             <div class="info-card">
                 <h3>DEMNÄCHST</h3>
                 <p>Frequency 140.85 (Original)</p>
                 <p>The Best Is Yet To Come (Revamp)</p>
-                <p>Heavens Divide (Remix)</p>
-                <p>Weitere Projekte in Planung...</p>
             </div>
         </div>
     </div>
@@ -211,7 +208,10 @@ const songs = [
 ];
 
 let currentIndex = 0; let radioMode = false;
+let audioCtx, analyser, dataArray, animationId;
 const audio = document.getElementById("audioPlayer");
+const logoImg = new Image();
+logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 
 function loadSong(index) {
     currentIndex = index;
@@ -222,17 +222,75 @@ function loadSong(index) {
 }
 
 function togglePlay() {
+    if(!audioCtx) initVisualizer();
     if (audio.paused) { audio.play(); document.getElementById("playPauseBtn").textContent = "⏸ PAUSE"; }
     else { audio.pause(); document.getElementById("playPauseBtn").textContent = "▶ PLAY"; }
 }
 
-function selectSong() { loadSong(parseInt(document.getElementById("songSelect").value)); audio.play(); document.getElementById("playPauseBtn").textContent = "⏸ PAUSE"; }
+function initVisualizer() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    const source = audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+}
+
+function draw() {
+    animationId = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
+    const canvas = document.getElementById("visualizerCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const logoSize = 150;
+    ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
+
+    ctx.strokeStyle = "#00ff41";
+    ctx.lineWidth = 2;
+    for(let i=0; i<dataArray.length; i++) {
+        let angle = (i/dataArray.length) * Math.PI * 2;
+        let start = 85 + (dataArray[0]/5);
+        let len = dataArray[i] / 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX + Math.cos(angle)*start, centerY + Math.sin(angle)*start);
+        ctx.lineTo(centerX + Math.cos(angle)*(start+len), centerY + Math.sin(angle)*(start+len));
+        ctx.stroke();
+    }
+}
+
+function openVisualizer() { 
+    if(!audioCtx) initVisualizer();
+    document.getElementById("visualizerOverlay").classList.add("active");
+    const canvas = document.getElementById("visualizerCanvas");
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.7;
+    draw();
+}
+
+function closeVisualizer() { 
+    document.getElementById("visualizerOverlay").classList.remove("active");
+    cancelAnimationFrame(animationId);
+}
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+}
+
+function selectSong() { loadSong(parseInt(document.getElementById("songSelect").value)); togglePlay(); }
 function nextSong() { let i = radioMode ? Math.floor(Math.random()*songs.length) : (currentIndex+1)%songs.length; loadSong(i); audio.play(); }
 function prevSong() { loadSong((currentIndex-1+songs.length)%songs.length); audio.play(); }
 function toggleRadioMode() { radioMode = !radioMode; document.getElementById("radioToggle").textContent = radioMode ? "Radio: AN" : "Radio: AUS"; }
 
-function openVisualizer() { document.getElementById("visualizerOverlay").classList.add("active"); }
-function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); }
+document.getElementById("volumeSlider").oninput = function() {
+    audio.volume = this.value;
+    document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
+};
 
 audio.ontimeupdate = () => {
     document.getElementById("progress").value = (audio.currentTime / audio.duration) * 100 || 0;
@@ -242,7 +300,7 @@ audio.ontimeupdate = () => {
 
 function formatTime(s) { if (isNaN(s)) return "0:00"; let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
 
-window.onload = () => loadSong(0);
+window.onload = () => { loadSong(0); audio.volume = 0.5; };
 </script>
 </body>
 </html>
