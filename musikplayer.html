@@ -45,6 +45,10 @@
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
         .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Container für die Buttons oben rechts */
+        .nav-controls { display: flex; gap: 10px; }
+
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
@@ -75,7 +79,6 @@
         }
         button:hover, select:hover, .download-btn:hover, .home-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
         
-        /* Aktiver Modus Style */
         .active-mode { background: var(--mgs-green) !important; color: #000 !important; }
 
         .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
@@ -124,7 +127,10 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
-        <button onclick="toggleFullscreen()">[ VOLLBILD ]</button>
+        <div class="nav-controls">
+            <a href="index.html" class="home-btn" style="padding: 5px 15px;">[ STARTSEITE ]</a>
+            <button onclick="toggleFullscreen()" style="padding: 5px 15px;">[ VOLLBILD ]</button>
+        </div>
     </div>
 </nav>
 
@@ -221,9 +227,6 @@
                 <p>Metal Gear 2 Solid Snake Frequency 140.85</p>
                 <p>Weitere Projekte in Planung...</p>
             </div>
-        </div>
-        <div style="margin-top: 20px;">
-            <a href="index.html" class="home-btn">[ STARTSEITE ]</a>
         </div>
     </div>
 </main>
@@ -359,7 +362,6 @@ function updatePlayButtons(text) {
     document.getElementById("visPlayPauseBtn").textContent = text;
 }
 
-// AUTO PLAY FUNKTION
 audio.onended = () => {
     if (isLoopMode) {
         audio.currentTime = 0;
