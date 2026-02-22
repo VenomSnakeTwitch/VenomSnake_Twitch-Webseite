@@ -33,6 +33,7 @@
             overflow-x: hidden;
         }
 
+        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -40,6 +41,7 @@
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
+        /* Navigation */
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
@@ -167,15 +169,32 @@
     <section id="page-about" class="page">
         <div class="mgs-header">
             <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
-                <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg);">
+                <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);">
                 <div style="flex: 1; min-width: 300px;">
-                    <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green); border-bottom: 2px solid var(--mgs-green);">PERSONNEL_FILE: VENOMSNAKE</h1>
-                    <p style="margin-top: 1.5rem; line-height: 1.8;">
-                        IDENTITÄT: VenomSnake | ALTER: <span id="age-val">..</span> JAHRE<br>
-                        STATUS: AKTIV / PRE-SHIFT OPERATIONS<br><br>
-                        Dialyse (Mo, Mi, Fr). Stream-Einsatz vor Abfahrt zur Nachtschicht-Behandlung.<br>
-                        ZEITFENSTER: 13:30 - 16:00 UHR.
-                    </p>
+                    <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green); border-bottom: 2px solid var(--mgs-green); padding-bottom: 5px;">PERSONNEL_FILE: VENOMSNAKE</h1>
+                    <div style="margin-top: 1.5rem; line-height: 1.6; font-size: 0.9rem;">
+                        <p><span style="color: var(--mgs-green); font-weight: bold;">[IDENTITÄT]:</span> VenomSnake</p>
+                        <p><span style="color: var(--mgs-green); font-weight: bold;">[ALTER]:</span> <span id="age-val" style="color:#fff">..</span> JAHRE</p>
+                        <p><span style="color: var(--mgs-green); font-weight: bold;">[STATUS]:</span> AKTIV / PRE-SHIFT OPERATIONS</p>
+                        
+                        <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
+                        
+                        <p style="margin-bottom: 10px;">
+                            <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
+                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der **Tactical Espionage Action**. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth sind meine Natur.
+                        </p>
+                        
+                        <p style="margin-bottom: 10px;">
+                            Doch ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**. Ich adaptiere mich an jedes Schlachtfeld.
+                        </p>
+
+                        <p style="margin-top: 15px; padding: 10px; border: 1px dashed var(--mgs-green); background: rgba(0, 255, 65, 0.05);">
+                            <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHER LOG]:</span><br>
+                            Trotz regelmäßiger **Dialyse-Einsätze** (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Nachtschicht-Behandlung statt. 
+                            <br><br>
+                            <span style="font-weight: bold; color: #fff;">OPERATIONAL WINDOW: 13:30 - 16:00 UHR.</span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,6 +206,7 @@
 </footer>
 
 <script>
+    // CONFIG
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
     const CHANNEL_NAME = 'VenomSnake_Twitch';
@@ -204,18 +224,12 @@
         window.scrollTo(0,0);
     }
 
-    // --- REPARIERTE TWITCH PLAYER FUNKTION ---
     function loadTwitch() {
         const domain = window.location.hostname || "localhost";
         const playerDiv = document.getElementById('player');
         const chatDiv = document.getElementById('chat');
-        
-        if(playerDiv) {
-            playerDiv.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}&muted=false" height="100%" width="100%" allowfullscreen="true"></iframe>`;
-        }
-        if(chatDiv) {
-            chatDiv.innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
-        }
+        if(playerDiv) playerDiv.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}&muted=false" height="100%" width="100%" allowfullscreen="true"></iframe>`;
+        if(chatDiv) chatDiv.innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
     }
 
     async function fetchTwitchLiveInfo() {
@@ -227,16 +241,14 @@
             const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const userData = await userResp.json();
             if(!userData.data.length) return;
-            const userId = userData.data[0].id;
-
-            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${userId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            
+            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${userData.data[0].id}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const channelData = await channelResp.json();
             const info = channelData.data[0];
 
             document.getElementById('twitch-title').textContent = info.title.toUpperCase();
             document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
         } catch (e) {
-            console.error("Twitch API Error", e);
             document.getElementById('twitch-title').textContent = "OFFLINE / STANDBY";
         }
     }
@@ -245,8 +257,7 @@
         const now = new Date();
         let next = null;
         for(let i = 0; i < 7; i++) {
-            let d = new Date();
-            d.setDate(now.getDate() + i);
+            let d = new Date(); d.setDate(now.getDate() + i);
             let s = schedule.find(x => x.d === d.getDay());
             if(s) {
                 d.setHours(s.h, s.m, 0, 0);
@@ -256,18 +267,18 @@
         
         const display = document.getElementById('countdown-display');
         const isStreamDay = schedule.some(s => s.d === now.getDay());
-        const totalMin = now.getHours() * 60 + now.getMinutes();
+        const currentMinTotal = now.getHours() * 60 + now.getMinutes();
         const startMin = 13 * 60 + 30; 
         const endMin = 16 * 60;
 
-        if(isStreamDay && totalMin >= startMin && totalMin < endMin) {
+        if(isStreamDay && currentMinTotal >= startMin && currentMinTotal < endMin) {
             display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE (13:30 - 16:00)</span>`;
         } else if (next) {
             const diff = next - now;
-            const h = Math.floor(diff / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            display.textContent = `T-MINUS: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} BIS ZUR TRANSMISSION`;
+            const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            display.textContent = `T-MINUS: ${h}:${m}:${s} BIS ZUR TRANSMISSION`;
         }
     }
 
@@ -276,8 +287,7 @@
         const now = new Date();
         let age = now.getFullYear() - birth.getFullYear();
         if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
-        const el = document.getElementById('age-val');
-        if(el) el.textContent = age;
+        document.getElementById('age-val').textContent = age;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
