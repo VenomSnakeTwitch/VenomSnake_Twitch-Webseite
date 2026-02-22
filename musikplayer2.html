@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* Falls ein Hintergrundbild gesetzt wird */
         body.custom-bg {
             background-size: cover;
         }
@@ -41,7 +40,7 @@
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
@@ -257,7 +256,6 @@ const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 
-// --- HINTERGRUND FUNKTIONEN ---
 const bgInput = document.getElementById('bgFileInput');
 
 function handleBackgroundOption(val) {
@@ -287,12 +285,10 @@ function applyBackground(data) {
     document.body.classList.add('custom-bg');
 }
 
-// Beim Laden prüfen ob Hintergrund gespeichert ist
 if(localStorage.getItem('codec_bg')) {
     applyBackground(localStorage.getItem('codec_bg'));
 }
 
-// --- PLAYER FUNKTIONEN ---
 function loadSong(index) {
     currentIndex = index;
     audio.src = BASE_URL + encodeURIComponent(songs[index]);
@@ -325,29 +321,31 @@ function draw() {
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
     
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Transparenter Hintergrund für den Canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
     if (visMode === 'ring') {
-        const radius = 110;
+        const radius = 110; 
         if(logoImg.complete) ctx.drawImage(logoImg, centerX - 80, centerY - 80, 160, 160);
+        
         ctx.strokeStyle = "#00ff41";
         ctx.lineWidth = 3;
+
         for (let i = 0; i < dataArray.length; i++) {
-            let angle = (i / dataArray.length) * Math.PI; 
+            let angle = (i / dataArray.length) * (Math.PI * 2); 
             let freqValue = dataArray[i];
-            let len = freqValue * 0.7;
-            let xStartR = centerX + Math.cos(angle - Math.PI / 2) * radius;
-            let yStartR = centerY + Math.sin(angle - Math.PI / 2) * radius;
-            let xEndR = centerX + Math.cos(angle - Math.PI / 2) * (radius + len);
-            let yEndR = centerY + Math.sin(angle - Math.PI / 2) * (radius + len);
-            ctx.beginPath(); ctx.moveTo(xStartR, yStartR); ctx.lineTo(xEndR, yEndR); ctx.stroke();
-            let xStartL = centerX + Math.cos(-angle - Math.PI / 2) * radius;
-            let yStartL = centerY + Math.sin(-angle - Math.PI / 2) * radius;
-            let xEndL = centerX + Math.cos(-angle - Math.PI / 2) * (radius + len);
-            let yEndL = centerY + Math.sin(-angle - Math.PI / 2) * (radius + len);
-            ctx.beginPath(); ctx.moveTo(xStartL, yStartL); ctx.lineTo(xEndL, yEndL); ctx.stroke();
+            let len = freqValue * 0.7; 
+
+            let xStart = centerX + Math.cos(angle) * radius;
+            let yStart = centerY + Math.sin(angle) * radius;
+            let xEnd = centerX + Math.cos(angle) * (radius + len);
+            let yEnd = centerY + Math.sin(angle) * (radius + len);
+
+            ctx.beginPath();
+            ctx.moveTo(xStart, yStart);
+            ctx.lineTo(xEnd, yEnd);
+            ctx.stroke();
         }
     } else {
         const barWidth = (canvas.width / dataArray.length) * 2.5;
