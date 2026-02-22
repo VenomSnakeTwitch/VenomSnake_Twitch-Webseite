@@ -45,10 +45,7 @@
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
         .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Container für die Buttons oben rechts */
         .nav-controls { display: flex; gap: 10px; }
-
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
@@ -101,17 +98,9 @@
         #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
         
         .vis-player-ui {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid var(--mgs-green);
-            background: rgba(0, 255, 65, 0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 90%;
-            max-width: 800px;
+            margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green);
+            background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
         }
-
         .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
@@ -128,7 +117,7 @@
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
         <div class="nav-controls">
-            <a href="index.html" class="home-btn" style="padding: 5px 15px;">[ STARTSEITE ]</a>
+            <a href="index.html" class="home-btn" style="padding: 5px 15px;">[ HOME ]</a>
             <button onclick="toggleFullscreen()" style="padding: 5px 15px;">[ VOLLBILD ]</button>
         </div>
     </div>
@@ -233,20 +222,16 @@
 
 <div id="visualizerOverlay">
     <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
-    
     <canvas id="visualizerCanvas"></canvas>
-
     <div class="vis-player-ui">
         <div class="slider-row" style="margin:0; background:none; border:none;">
             <span class="slider-label" id="visTimeLabel">0:00</span>
             <input type="range" id="visProgress" min="0" max="100" value="0" oninput="seekAudio(this.value)">
             <span class="slider-label" id="visDurationLabel">0:00</span>
         </div>
-
         <div class="vis-row">
             <select id="visSongSelect" onchange="selectSong(this.value)" style="flex-grow:1;"></select>
         </div>
-
         <div class="vis-row">
             <button onclick="prevSong()">⏮</button>
             <button id="visPlayPauseBtn" onclick="togglePlay()" style="min-width:100px;">▶ PLAY</button>
@@ -348,13 +333,8 @@ function loadSong(index) {
 
 function togglePlay() {
     if(!audioCtx) initAudioSystem();
-    if (audio.paused) { 
-        audio.play(); 
-        updatePlayButtons("⏸ PAUSE");
-    } else { 
-        audio.pause(); 
-        updatePlayButtons("▶ PLAY");
-    }
+    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
+    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
 }
 
 function updatePlayButtons(text) {
@@ -363,18 +343,13 @@ function updatePlayButtons(text) {
 }
 
 audio.onended = () => {
-    if (isLoopMode) {
-        audio.currentTime = 0;
-        audio.play();
-    } else if (isRadioMode) {
+    if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
+    else if (isRadioMode) {
         let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * songs.length);
-        } while (randomIndex === currentIndex && songs.length > 1);
+        do { randomIndex = Math.floor(Math.random() * songs.length); } 
+        while (randomIndex === currentIndex && songs.length > 1);
         selectSong(randomIndex);
-    } else {
-        nextSong();
-    }
+    } else { nextSong(); }
 };
 
 function toggleRadioMode() {
@@ -390,18 +365,12 @@ function toggleLoopMode() {
 }
 
 function updateModeUI() {
-    const radioBtn = document.getElementById("radioModeBtn");
-    const loopBtn = document.getElementById("loopModeBtn");
-    const visRadioBtn = document.getElementById("visRadioBtn");
-    const visLoopBtn = document.getElementById("visLoopBtn");
-
-    radioBtn.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
-    loopBtn.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
-    
-    radioBtn.classList.toggle("active-mode", isRadioMode);
-    loopBtn.classList.toggle("active-mode", isLoopMode);
-    visRadioBtn.classList.toggle("active-mode", isRadioMode);
-    visLoopBtn.classList.toggle("active-mode", isLoopMode);
+    const rb = document.getElementById("radioModeBtn"), lb = document.getElementById("loopModeBtn");
+    const vrb = document.getElementById("visRadioBtn"), vlb = document.getElementById("visLoopBtn");
+    rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
+    lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
+    [rb, vrb].forEach(b => b.classList.toggle("active-mode", isRadioMode));
+    [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
 }
 
 function initAudioSystem() {
@@ -421,65 +390,36 @@ function draw() {
     analyser.getByteFrequencyData(dataArray);
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
-    
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
-
     if (customCanvasBg) {
-        let hRatio = canvas.width / customCanvasBg.width;
-        let vRatio = canvas.height / customCanvasBg.height;
+        let hRatio = canvas.width / customCanvasBg.width, vRatio = canvas.height / customCanvasBg.height;
         let ratio  = Math.max(hRatio, vRatio);
-        let centerShiftX = (canvas.width - customCanvasBg.width * ratio) / 2;
-        let centerShiftY = (canvas.height - customCanvasBg.height * ratio) / 2;
-        
+        let cx = (canvas.width - customCanvasBg.width * ratio) / 2, cy = (canvas.height - customCanvasBg.height * ratio) / 2;
         ctx.globalAlpha = 0.7; 
-        ctx.drawImage(customCanvasBg, 0, 0, customCanvasBg.width, customCanvasBg.height,
-                      centerShiftX, centerShiftY, customCanvasBg.width * ratio, customCanvasBg.height * ratio);
+        ctx.drawImage(customCanvasBg, 0, 0, customCanvasBg.width, customCanvasBg.height, cx, cy, customCanvasBg.width * ratio, customCanvasBg.height * ratio);
         ctx.globalAlpha = 1.0;
     }
-
-    if (visMode === 'ring') {
-        drawRing(ctx, canvas);
-    } else {
-        drawBars(ctx, canvas);
-    }
+    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
 }
 
 function drawRing(ctx, canvas) {
     ctx.save();
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    const centerX = canvas.width / 2, centerY = canvas.height / 2;
     const bufferLength = dataArray.length;
     const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    
-    let sum = 0;
-    for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
-    let avgAmp = sum / bufferLength;
-    let pulse = avgAmp * 0.4;
-    
+    let sum = 0; for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
+    let pulse = (sum / bufferLength) * 0.4;
     const logoSize = logoBase + pulse;
-
     if (logoImg.complete) {
-        ctx.shadowBlur = 20 + pulse;
-        ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
+        ctx.shadowBlur = 20 + pulse; ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
         ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
     }
-
     const ringRadius = (logoBase * 0.6) + (pulse * 0.2);
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = `rgba(0, 255, 65, 0.4)`;
-    ctx.stroke();
-
-    const rayCount = 80;
-    for (let i = 0; i < rayCount; i++) {
-        const angle = (i / rayCount) * Math.PI * 2;
-        const mirroredIndex = Math.floor(Math.abs((i % (rayCount / 2)) - (rayCount / 4)) * (bufferLength / (rayCount / 4)));
-        const amp = dataArray[mirroredIndex] / 255;
+    for (let i = 0; i < 80; i++) {
+        const angle = (i / 80) * Math.PI * 2;
+        const amp = dataArray[Math.floor(Math.abs((i % 40) - 20) * (bufferLength / 20))] / 255;
         const rayLength = amp * (ringRadius * 0.8);
-
-        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`;
-        ctx.lineWidth = 2 + amp * 5;
+        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`; ctx.lineWidth = 2 + amp * 5;
         ctx.beginPath();
         ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
         ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
@@ -503,35 +443,24 @@ function openVisualizer() {
     if(!audioCtx) initAudioSystem();
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
-    canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.6;
+    canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
     draw();
 }
 
-function closeVisualizer() { 
-    document.getElementById("visualizerOverlay").classList.remove("active");
-    cancelAnimationFrame(animationId);
-}
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
-}
-
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
+function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
-function nextSong() { let next = (currentIndex + 1) % songs.length; loadSong(next); audio.play(); updatePlayButtons("⏸ PAUSE"); }
-function prevSong() { let prev = (currentIndex - 1 + songs.length) % songs.length; loadSong(prev); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function nextSong() { selectSong((currentIndex + 1) % songs.length); }
+function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
 
 audio.ontimeupdate = () => {
     if(!isNaN(audio.duration)) {
         const prog = (audio.currentTime / audio.duration) * 100;
         document.getElementById("progress").value = prog;
-        document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
-        document.getElementById("durationLabel").textContent = formatTime(audio.duration);
         document.getElementById("visProgress").value = prog;
-        document.getElementById("visTimeLabel").textContent = formatTime(audio.currentTime);
-        document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
+        document.getElementById("timeLabel").textContent = document.getElementById("visTimeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("durationLabel").textContent = document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
     }
 };
 
@@ -539,7 +468,6 @@ document.getElementById("volumeSlider").oninput = function() {
     audio.volume = this.value;
     document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
 };
-
 document.getElementById("progress").oninput = function() { seekAudio(this.value); };
 
 function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
