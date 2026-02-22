@@ -73,15 +73,24 @@
         }
         #login-btn:hover { box-shadow: 0 0 15px var(--mgs-green); background: #fff; }
 
+        /* KORRIGIERTER ABBRECHEN BUTTON */
         .abort-link {
-            background: rgba(255, 65, 65, 0.05); border: 1px solid var(--mgs-green-dim); 
-            color: var(--mgs-green-dim); padding: 10px; text-decoration: none; 
-            font-family: 'Chakra Petch'; font-size: 0.8rem; text-transform: uppercase;
-            transition: 0.3s; font-weight: bold;
+            background: rgba(255, 65, 65, 0.1); 
+            border: 1px solid var(--live-red); 
+            color: var(--live-red); 
+            padding: 12px; 
+            text-decoration: none; 
+            font-family: 'Chakra Petch'; 
+            font-size: 0.9rem; 
+            text-transform: uppercase;
+            transition: 0.3s; 
+            font-weight: bold;
+            display: block;
         }
         .abort-link:hover { 
-            border-color: var(--live-red); color: var(--live-red); 
-            background: rgba(255, 65, 65, 0.15); box-shadow: 0 0 10px rgba(255, 65, 65, 0.2);
+            background: var(--live-red); 
+            color: #000; 
+            box-shadow: 0 0 20px rgba(255, 65, 65, 0.4);
         }
 
         /* Navigation */
@@ -127,7 +136,7 @@
 <div id="login-overlay">
     <div class="login-box">
         <h1 style="letter-spacing: 3px;">STRENG GEHEIM</h1>
-        <p style="font-size: 0.8rem; margin: 10px 0; color: var(--text-primary);">ZUGRIFF NUR FÜR AUTORISIERTES PERSONNEL</p>
+        <p style="font-size: 0.8rem; margin: 10px 0; color: var(--text-primary);">ZUGRIFF NUR FÜR AUTORISIERTES PERSONAL</p>
         
         <input type="password" id="password" placeholder="CODE EINGEBEN">
         
