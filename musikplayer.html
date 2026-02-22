@@ -18,7 +18,7 @@
             --text-primary: #d1ffd1;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
 
         body {
             font-family: 'JetBrains Mono', monospace;
@@ -46,7 +46,6 @@
         }
         .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Container für die Buttons oben rechts */
         .nav-controls { display: flex; gap: 10px; }
 
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
@@ -100,22 +99,9 @@
         #visualizerOverlay.active { display: flex; }
         #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
         
-        .vis-player-ui {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid var(--mgs-green);
-            background: rgba(0, 255, 65, 0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 90%;
-            max-width: 800px;
-        }
-
+        .vis-player-ui { margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green); background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px; }
         .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
-
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
-
         @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -146,40 +132,40 @@
         <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
         <div class="control-grid">
-            <select id="songSelect" onchange="selectSong()">
-      <option value="0">Snake Eater VenomSnake_Twitch Mix</option>
-      <option value="1">Ghost Town by VenomSnake_Twitch</option>
-      <option value="2">Wreckfest</option>
-      <option value="3">In The Air Tonight(VenomSnake_Twitch)</option>
-      <option value="4">Paradies City</option>
-      <option value="5">Parasitäres Bewustsein</option>
-      <option value="6">Still Alive (Voiced)</option>
-      <option value="7">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
-      <option value="8">Bye Bye Beautiful</option>
-      <option value="9">Kettenreaktion (Cover)</option>
-      <option value="10">Strasse der Verdammnis</option>
-      <option value="11">Syphon Filter Synth Mix</option>
-      <option value="12">VenomSnake Mode Intro song</option>
-      <option value="13">Hell March [Retaliation Cover]</option>
-      <option value="14">Dance hall Dance(Cover)</option>
-      <option value="15">Resident Evil 5 Desperate Escape Main Theme Music(Remix)</option>
-      <option value="16">Bleed out My Friend</option>
-      <option value="17">Revenge</option>
-      <option value="18">Revenge 2</option>
-      <option value="19">Survival Of Death</option>
-      <option value="20">Pile of Total Wreck</option>
-      <option value="21">Desert Storm Ahead</option>
-      <option value="22">Industrial Breakdown</option>
-      <option value="23">Mental Breakdown</option>
-      <option value="24">Metal Gear 2 Solid Snake Chasing the Green Beret Remix</option>
-      <option value="25">Metal Gear 2 Solid Snake Frequency 140.85 Remix Version 2026</option>
-      <option value="26">Metal Gear 2 Solid Snake Level1 Warning Remix</option>
-      <option value="27">Metal Gear 2 Solid Snake Level3 Warning Remix</option>
-      <option value="28">Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</option>
-      <option value="29">Operation Stealth Destruction</option>
-      <option value="30">Takin' On The Shagohod Remake</option>
-      <option value="31">Metal Gear 2 Solid Snake Frequency 140.85</option>
-    </select>
+            <select id="songSelect" onchange="selectSong(this.value)">
+                <option value="0">Bleed out My Frend</option>
+                <option value="1">ByeByeBeautiful</option>
+                <option value="2">Dance hall Dance(Cover)</option>
+                <option value="3">Dessert Storm Ahead</option>
+                <option value="4">Ghost Town by VenomSnake_Twitch</option>
+                <option value="5">Hell March [Retaliation Cover]</option>
+                <option value="6">In The Air Tonight(VenomSnake_Twitch)</option>
+                <option value="7">Industrial Breakdown</option>
+                <option value="8">Kettenreaktion (Cover)</option>
+                <option value="9">Mental Breakdown</option>
+                <option value="10">Metal Gear 2 Solid Snake Chasing the Green Beret Remix</option>
+                <option value="11">Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026</option>
+                <option value="12">Metal Gear 2 Solid Snake Freqency 140.85</option>
+                <option value="13">Metal Gear 2 Solid Snake Level1 Warning Remix</option>
+                <option value="14">Metal Gear 2 Solid Snake Level3 Warning Remix</option>
+                <option value="15">Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</option>
+                <option value="16">Operation Stealth Destruction</option>
+                <option value="17">Paradies City</option>
+                <option value="18">Parasitäres Bewustsein</option>
+                <option value="19">Pile of Total Wreck</option>
+                <option value="20">Resident Evil 5 Desperate Escape Main Theme Music(Remix)</option>
+                <option value="21">Revange 2</option>
+                <option value="22">Revange</option>
+                <option value="23">Snake Eater VenomSnake_Twitch Mix</option>
+                <option value="24">Still Alive (Voiced)</option>
+                <option value="25">Strasse der Verdammnis</option>
+                <option value="26">Survival Of Death</option>
+                <option value="27">Syphon Filter Synth Mix</option>
+                <option value="28">Takin' On The Shagohod Remake</option>
+                <option value="29">VenomSnake Mode Intro song</option>
+                <option value="30">Wreckfest</option>
+                <option value="31">Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix</option>
+            </select>
             <button onclick="openVisualizer()">[ VISUALIZER ]</button>
             <a id="downloadBtn" href="#" download class="download-btn">DOWNLOAD</a>
         </div>
@@ -213,7 +199,7 @@
                 <p>Metal Gear 2 Solid Snake Level3 Warning Remix</p>
                 <p>Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</p>
                 <p>Takin' On The Shagohod Remake</p>
-                <p>Metal Gear 2 Solid Snake Frequency 140.85</p>
+                <p>Metal Gear 2 Solid Snake Freqency 140.85</p>
             </div>
             <div class="infoColumn">
                 <h3>Bald Erscheinende Songs</h3>
@@ -225,20 +211,16 @@
 
 <div id="visualizerOverlay">
     <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
-    
     <canvas id="visualizerCanvas"></canvas>
-
     <div class="vis-player-ui">
         <div class="slider-row" style="margin:0; background:none; border:none;">
             <span class="slider-label" id="visTimeLabel">0:00</span>
             <input type="range" id="visProgress" min="0" max="100" value="0" oninput="seekAudio(this.value)">
             <span class="slider-label" id="visDurationLabel">0:00</span>
         </div>
-
         <div class="vis-row">
             <select id="visSongSelect" onchange="selectSong(this.value)" style="flex-grow:1;"></select>
         </div>
-
         <div class="vis-row">
             <button onclick="prevSong()">⏮</button>
             <button id="visPlayPauseBtn" onclick="togglePlay()" style="min-width:100px;">▶ PLAY</button>
@@ -264,39 +246,21 @@
 
 <script>
 const songs = [
-  "Bleed out My Frend.mp3",
-  "ByeByeBeautiful.mp3",
-  "Dance hall Dance(Cover).mp3",
-  "Dessert Storm Ahead.mp3",
-  "Ghost Town by VenomSnake_Twitch.mp3",
-  "Hell March [Retaliation Cover].mp3",
-  "In The Air Tonight(VenomSnake_Twitch).mp3",
-  "Industrial Breakdown.mp3",
-  "Kettenreaktion (Cover).mp3",
-  "Mental Breakdown.mp3",
-  "Metal Gear 2 Solid Snake Chasing the Green Beret Remix.mp3",
+  "Bleed out My Frend.mp3", "ByeByeBeautiful.mp3", "Dance hall Dance(Cover).mp3",
+  "Dessert Storm Ahead.mp3", "Ghost Town by VenomSnake_Twitch.mp3", "Hell March [Retaliation Cover].mp3",
+  "In The Air Tonight(VenomSnake_Twitch).mp3", "Industrial Breakdown.mp3", "Kettenreaktion (Cover).mp3",
+  "Mental Breakdown.mp3", "Metal Gear 2 Solid Snake Chasing the Green Beret Remix.mp3",
   "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026.mp3",
-  "Metal Gear 2 Solid Snake Freqency 140.85.mp3",
-  "Metal Gear 2 Solid Snake Level1 Warning Remix.mp3",
-  "Metal Gear 2 Solid Snake Level3 Warning Remix.mp3",
-  "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix.mp3",
-  "Operation Stealth Destruction.mp3",
-  "Paradies City.mp3",
-  "Parasitäres Bewustsein.mp3",
-  "Pile of Total Wreck.mp3",
-  "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
-  "Revange 2.mp3",
-  "Revange.mp3",
-  "Snake Eater VenomSnake_Twitch Mix.mp3",
-  "Still Alive (Voiced).mp3",
-  "Strasse der Verdammnis.mp3",
-  "Survival Of Death.mp3",
-  "Syphon Filter Synth Mix.mp3",
-  "Takin' On The Shagohod Remake.mp3",
-  "VenomSnake Mode Intro song.mp3",
-  "Wreckfest.mp3",
-  "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3"
+  "Metal Gear 2 Solid Snake Freqency 140.85.mp3", "Metal Gear 2 Solid Snake Level1 Warning Remix.mp3",
+  "Metal Gear 2 Solid Snake Level3 Warning Remix.mp3", "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix.mp3",
+  "Operation Stealth Destruction.mp3", "Paradies City.mp3", "Parasitäres Bewustsein.mp3",
+  "Pile of Total Wreck.mp3", "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
+  "Revange 2.mp3", "Revange.mp3", "Snake Eater VenomSnake_Twitch Mix.mp3",
+  "Still Alive (Voiced).mp3", "Strasse der Verdammnis.mp3", "Survival Of Death.mp3",
+  "Syphon Filter Synth Mix.mp3", "Takin' On The Shagohod Remake.mp3",
+  "VenomSnake Mode Intro song.mp3", "Wreckfest.mp3", "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3"
 ];
+
 const BASE_URL = "./";
 let currentIndex = 0;
 let audioCtx, analyser, dataArray, animationId;
@@ -308,7 +272,6 @@ let isLoopMode = false;
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
-
 const bgInput = document.getElementById('bgFileInput');
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -319,10 +282,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function handleBackgroundOption(val) {
     if(val === 'change') bgInput.click();
-    if(val === 'reset') {
-        localStorage.removeItem('codec_canvas_bg');
-        customCanvasBg = null;
-    }
+    if(val === 'reset') { localStorage.removeItem('codec_canvas_bg'); customCanvasBg = null; }
 }
 
 bgInput.addEventListener('change', function(e) {
@@ -350,7 +310,7 @@ if(localStorage.getItem('codec_canvas_bg')) {
 
 function loadSong(index) {
     currentIndex = parseInt(index);
-    audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
+    audio.src = BASE_URL + songs[currentIndex];
     document.getElementById("songSelect").value = currentIndex;
     document.getElementById("visSongSelect").value = currentIndex;
     document.getElementById("downloadBtn").href = audio.src;
@@ -360,13 +320,8 @@ function loadSong(index) {
 
 function togglePlay() {
     if(!audioCtx) initAudioSystem();
-    if (audio.paused) { 
-        audio.play(); 
-        updatePlayButtons("⏸ PAUSE");
-    } else { 
-        audio.pause(); 
-        updatePlayButtons("▶ PLAY");
-    }
+    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
+    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
 }
 
 function updatePlayButtons(text) {
@@ -375,45 +330,26 @@ function updatePlayButtons(text) {
 }
 
 audio.onended = () => {
-    if (isLoopMode) {
-        audio.currentTime = 0;
-        audio.play();
-    } else if (isRadioMode) {
+    if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
+    else if (isRadioMode) {
         let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * songs.length);
-        } while (randomIndex === currentIndex && songs.length > 1);
-        selectSong(randomIndex);
-    } else {
-        nextSong();
-    }
+        do { randomIndex = Math.floor(Math.random() * songs.length); } while (randomIndex === currentIndex && songs.length > 1);
+        loadSong(randomIndex); audio.play();
+    } else { nextSong(); }
 };
 
-function toggleRadioMode() {
-    isRadioMode = !isRadioMode;
-    if (isRadioMode) isLoopMode = false;
-    updateModeUI();
-}
-
-function toggleLoopMode() {
-    isLoopMode = !isLoopMode;
-    if (isLoopMode) isRadioMode = false;
-    updateModeUI();
-}
+function toggleRadioMode() { isRadioMode = !isRadioMode; if (isRadioMode) isLoopMode = false; updateModeUI(); }
+function toggleLoopMode() { isLoopMode = !isLoopMode; if (isLoopMode) isRadioMode = false; updateModeUI(); }
 
 function updateModeUI() {
     const radioBtn = document.getElementById("radioModeBtn");
     const loopBtn = document.getElementById("loopModeBtn");
-    const visRadioBtn = document.getElementById("visRadioBtn");
-    const visLoopBtn = document.getElementById("visLoopBtn");
-
     radioBtn.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
     loopBtn.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
-    
     radioBtn.classList.toggle("active-mode", isRadioMode);
     loopBtn.classList.toggle("active-mode", isLoopMode);
-    visRadioBtn.classList.toggle("active-mode", isRadioMode);
-    visLoopBtn.classList.toggle("active-mode", isLoopMode);
+    document.getElementById("visRadioBtn").classList.toggle("active-mode", isRadioMode);
+    document.getElementById("visLoopBtn").classList.toggle("active-mode", isLoopMode);
 }
 
 function initAudioSystem() {
@@ -433,129 +369,55 @@ function draw() {
     analyser.getByteFrequencyData(dataArray);
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
-    
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
-
     if (customCanvasBg) {
-        let hRatio = canvas.width / customCanvasBg.width;
-        let vRatio = canvas.height / customCanvasBg.height;
-        let ratio  = Math.max(hRatio, vRatio);
-        let centerShiftX = (canvas.width - customCanvasBg.width * ratio) / 2;
-        let centerShiftY = (canvas.height - customCanvasBg.height * ratio) / 2;
-        
         ctx.globalAlpha = 0.7; 
-        ctx.drawImage(customCanvasBg, 0, 0, customCanvasBg.width, customCanvasBg.height,
-                      centerShiftX, centerShiftY, customCanvasBg.width * ratio, customCanvasBg.height * ratio);
+        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1.0;
     }
-
-    if (visMode === 'ring') {
-        drawRing(ctx, canvas);
-    } else {
-        drawBars(ctx, canvas);
-    }
+    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
 }
 
 function drawRing(ctx, canvas) {
     ctx.save();
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const bufferLength = dataArray.length;
-    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    
-    let sum = 0;
-    for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
-    let avgAmp = sum / bufferLength;
-    let pulse = avgAmp * 0.4;
-    
-    const logoSize = logoBase + pulse;
-
-    if (logoImg.complete) {
-        ctx.shadowBlur = 20 + pulse;
-        ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
-        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
-    }
-
-    const ringRadius = (logoBase * 0.6) + (pulse * 0.2);
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = `rgba(0, 255, 65, 0.4)`;
-    ctx.stroke();
-
-    const rayCount = 80;
-    for (let i = 0; i < rayCount; i++) {
-        const angle = (i / rayCount) * Math.PI * 2;
-        const mirroredIndex = Math.floor(Math.abs((i % (rayCount / 2)) - (rayCount / 4)) * (bufferLength / (rayCount / 4)));
-        const amp = dataArray[mirroredIndex] / 255;
-        const rayLength = amp * (ringRadius * 0.8);
-
-        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`;
-        ctx.lineWidth = 2 + amp * 5;
-        ctx.beginPath();
-        ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
-        ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
-        ctx.stroke();
-    }
+    const centerX = canvas.width / 2, centerY = canvas.height / 2;
+    let sum = 0; for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+    let pulse = (sum / dataArray.length) * 0.4;
+    if (logoImg.complete) ctx.drawImage(logoImg, centerX - 50 - pulse/4, centerY - 50 - pulse/4, 100 + pulse/2, 100 + pulse/2);
+    ctx.strokeStyle = "rgba(0, 255, 65, 0.4)";
+    ctx.beginPath(); ctx.arc(centerX, centerY, 60 + pulse/2, 0, Math.PI * 2); ctx.stroke();
     ctx.restore();
 }
 
 function drawBars(ctx, canvas) {
     const barWidth = (canvas.width / dataArray.length) * 2.5;
-    let x = 0;
     for (let i = 0; i < dataArray.length; i++) {
         let barHeight = dataArray[i] * 1.5;
         ctx.fillStyle = "#00ff41";
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
-        x += barWidth;
+        ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
     }
 }
 
-function openVisualizer() { 
-    if(!audioCtx) initAudioSystem();
-    document.getElementById("visualizerOverlay").classList.add("active");
-    const canvas = document.getElementById("visualizerCanvas");
-    canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.6;
-    draw();
-}
-
-function closeVisualizer() { 
-    document.getElementById("visualizerOverlay").classList.remove("active");
-    cancelAnimationFrame(animationId);
-}
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
-}
-
+function openVisualizer() { if(!audioCtx) initAudioSystem(); document.getElementById("visualizerOverlay").classList.add("active"); draw(); }
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
+function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
-function nextSong() { let next = (currentIndex + 1) % songs.length; loadSong(next); audio.play(); updatePlayButtons("⏸ PAUSE"); }
-function prevSong() { let prev = (currentIndex - 1 + songs.length) % songs.length; loadSong(prev); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function nextSong() { loadSong((currentIndex + 1) % songs.length); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function prevSong() { loadSong((currentIndex - 1 + songs.length) % songs.length); audio.play(); updatePlayButtons("⏸ PAUSE"); }
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
 
 audio.ontimeupdate = () => {
     if(!isNaN(audio.duration)) {
         const prog = (audio.currentTime / audio.duration) * 100;
         document.getElementById("progress").value = prog;
+        document.getElementById("visProgress").value = prog;
         document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
         document.getElementById("durationLabel").textContent = formatTime(audio.duration);
-        document.getElementById("visProgress").value = prog;
-        document.getElementById("visTimeLabel").textContent = formatTime(audio.currentTime);
-        document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
     }
 };
 
-document.getElementById("volumeSlider").oninput = function() {
-    audio.volume = this.value;
-    document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
-};
-
-document.getElementById("progress").oninput = function() { seekAudio(this.value); };
-
 function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
-window.onload = () => { loadSong(0); audio.volume = 0.5; };
+window.onload = () => { loadSong(0); };
 </script>
 </body>
 </html>
