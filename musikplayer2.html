@@ -76,7 +76,6 @@
 
         input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none; }
 
-        /* INFO BOX DESIGN */
         #infoBox {
             margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
             border-top: 2px solid var(--mgs-border); padding-top: 20px;
@@ -84,7 +83,6 @@
         .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 12px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
         .infoColumn p { font-size: 0.75rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
 
-        /* VISUALIZER OVERLAY */
         #visualizerOverlay {
             position: fixed; inset: 0; background: #000; z-index: 2000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -281,31 +279,40 @@ function draw() {
     const centerY = canvas.height / 2;
 
     if (visMode === 'ring') {
-        const radius = 100;
-        // Logo in der Mitte
-        if(logoImg.complete) ctx.drawImage(logoImg, centerX - 70, centerY - 70, 140, 140);
+        const radius = 110;
+        if(logoImg.complete) ctx.drawImage(logoImg, centerX - 80, centerY - 80, 160, 160);
         
         ctx.strokeStyle = "#00ff41";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
 
-        // Symmetrische 360-Grad Spiegelung
-        // Wir nutzen die Hälfte der Daten und spiegeln sie auf die andere Kreishälfte
         for (let i = 0; i < dataArray.length; i++) {
-            let angle = (i / dataArray.length) * Math.PI * 2;
-            let len = dataArray[i] * 0.8; // Intensität der Strahlen
-            
-            let xStart = centerX + Math.cos(angle) * radius;
-            let yStart = centerY + Math.sin(angle) * radius;
-            let xEnd = centerX + Math.cos(angle) * (radius + len);
-            let yEnd = centerY + Math.sin(angle) * (radius + len);
-            
+            let angle = (i / dataArray.length) * Math.PI; 
+            let freqValue = dataArray[i];
+            let len = freqValue * 0.7;
+
+            // Rechte Seite (spiegelt zum Takt)
+            let xStartR = centerX + Math.cos(angle - Math.PI / 2) * radius;
+            let yStartR = centerY + Math.sin(angle - Math.PI / 2) * radius;
+            let xEndR = centerX + Math.cos(angle - Math.PI / 2) * (radius + len);
+            let yEndR = centerY + Math.sin(angle - Math.PI / 2) * (radius + len);
+
             ctx.beginPath();
-            ctx.moveTo(xStart, yStart);
-            ctx.lineTo(xEnd, yEnd);
+            ctx.moveTo(xStartR, yStartR);
+            ctx.lineTo(xEndR, yEndR);
+            ctx.stroke();
+
+            // Linke Seite (spiegelt zum Takt)
+            let xStartL = centerX + Math.cos(-angle - Math.PI / 2) * radius;
+            let yStartL = centerY + Math.sin(-angle - Math.PI / 2) * radius;
+            let xEndL = centerX + Math.cos(-angle - Math.PI / 2) * (radius + len);
+            let yEndL = centerY + Math.sin(-angle - Math.PI / 2) * (radius + len);
+
+            ctx.beginPath();
+            ctx.moveTo(xStartL, yStartL);
+            ctx.lineTo(xEndL, yEndL);
             ctx.stroke();
         }
     } else {
-        // Balken Modus (unten ausgerichtet)
         const barWidth = (canvas.width / dataArray.length) * 2.5;
         let x = 0;
         for (let i = 0; i < dataArray.length; i++) {
@@ -314,12 +321,12 @@ function draw() {
             ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
             x += barWidth;
         }
-        // Hintergrund-Logo dezent
         ctx.globalAlpha = 0.1;
         ctx.drawImage(logoImg, centerX - 100, centerY - 100, 200, 200);
         ctx.globalAlpha = 1.0;
     }
 }
+
 function openVisualizer() { 
     if(!audioCtx) initAudioSystem();
     document.getElementById("visualizerOverlay").classList.add("active");
