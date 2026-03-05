@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* Scanline Effekt */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
@@ -41,7 +40,7 @@
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
-        /* NEU: Boot-Overlay für Mobile Audio */
+        /* Boot-Overlay für Mobile & Opera GX Fix */
         #boot-overlay {
             position: fixed; inset: 0; background: var(--mgs-bg);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -49,7 +48,7 @@
         }
         .boot-loader {
             font-family: 'Chakra Petch'; color: var(--mgs-green);
-            text-transform: uppercase; letter-spacing: 5px; font-size: 1.5rem;
+            text-transform: uppercase; letter-spacing: 5px; font-size: 1.2rem;
             animation: blink 1.5s infinite; margin-bottom: 30px;
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -125,13 +124,11 @@
 <body>
 
 <div id="boot-overlay">
-    <div class="boot-loader">SYSTEM STANDBY...</div>
-    <button onclick="bootSystem()" style="width: auto; padding: 15px 40px; font-size: 1rem; border-width: 2px;">
-        [ INITIALISIERE CODEC ]
+    <div class="boot-loader">[ INITIALISIERE CODEC-LINK ]</div>
+    <button onclick="bootSystem()" style="width: auto; padding: 15px 40px; font-size: 1rem;">
+        [ ZUGRIFF BESTÄTIGEN ]
     </button>
-    <p style="font-size: 0.7rem; color: var(--mgs-green-dim); margin-top: 20px; max-width: 80%;">
-        HINWEIS: INTERAKTION ERFORDERLICH FÜR AUDIO-ÜBERTRAGUNG AUF MOBILGERÄTEN.
-    </p>
+    <p style="font-size: 0.6rem; color: var(--mgs-green-dim); margin-top: 15px;">REQUIRED FOR AUDIO STREAMING & VISUALIZER DATA</p>
 </div>
 
 <nav class="nav">
@@ -220,28 +217,12 @@
 
         <div id="infoBox">
             <div class="infoColumn">
-                <h3>Neue Songs Sind Da!</h3>
-                <p>Bleed out My Frend</p>
-                <p>Revange</p>
-                <p>Revange 2</p>
-                <p>Survival Of Death</p>
-                <p>Pile of Total Wreck</p>
-                <p>Industrial Breakdown</p>
-                <p>Mental Breakdown</p>
-                <p>Operation Stealth Destruction</p>
-                <p>Dessert Storm Ahead</p>
-                <p>Metal Gear 2 Solid Snake Chasing the Green Beret Remix</p>
-                <p>Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026</p>
-                <p>Metal Gear 2 Solid Snake Level1 Warning Remix</p>
-                <p>Metal Gear 2 Solid Snake Level3 Warning Remix</p>
-                <p>Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</p>
-                <p>Takin' On The Shagohod Remake</p>
-                <p>Metal Gear 2 Solid Snake Freqency 140.85</p>
-                <p>Ghostbusters 2 - Savin The Day Remix</p>
+                <h3>Song-Zentrale</h3>
+                <p>Status: Alle Datenpakete synchronisiert.</p>
             </div>
             <div class="infoColumn">
-                <h3>Bald Erscheinende Songs</h3>
-                <p>Weitere Projekte in Planung...</p>
+                <h3>Frequenz</h3>
+                <p>140.85 MHz - Aktiv</p>
             </div>
         </div>
     </div>
@@ -317,18 +298,36 @@ window.addEventListener('DOMContentLoaded', () => {
     visSelect.innerHTML = mainSelect.innerHTML;
 });
 
-// NEUE FUNKTION FÜR MOBILE FREISCHALTUNG
+// INITIALISIERUNG FÜR OPERA GX & ANDROID
 function bootSystem() {
-    if(!audioCtx) initAudioSystem();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    
-    // Song laden und anspielen
+    initAudioSystem();
     loadSong(0);
-    audio.play();
-    updatePlayButtons("⏸ PAUSE");
-    
-    // Overlay entfernen
-    document.getElementById('boot-overlay').style.display = 'none';
+    audio.play().then(() => {
+        updatePlayButtons("⏸ PAUSE");
+        document.getElementById('boot-overlay').style.display = 'none';
+    }).catch(e => {
+        console.log("Audio-Autoplay verhindert, warte auf Interaktion.");
+        document.getElementById('boot-overlay').style.display = 'none';
+    });
+}
+
+function initAudioSystem() {
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        if (!analyser) {
+            analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+    } catch (e) { console.error("Audio-System konnte nicht gestartet werden."); }
 }
 
 function handleBackgroundOption(val) {
@@ -364,6 +363,8 @@ if(localStorage.getItem('codec_canvas_bg')) {
 
 function loadSong(index) {
     currentIndex = parseInt(index);
+    // Sicherstellen, dass crossOrigin VOR dem src gesetzt ist (wichtig für Opera GX)
+    audio.crossOrigin = "anonymous";
     audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
     document.getElementById("songSelect").value = currentIndex;
     document.getElementById("visSongSelect").value = currentIndex;
@@ -374,7 +375,7 @@ function loadSong(index) {
 
 function togglePlay() {
     if(!audioCtx) initAudioSystem();
-    if (audioCtx.state === 'suspended') audioCtx.resume(); // Für Mobile
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     
     if (audio.paused) { 
         audio.play(); 
@@ -421,32 +422,24 @@ function updateModeUI() {
     [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
 }
 
-function initAudioSystem() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    const source = audioCtx.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 256;
-    dataArray = new Uint8Array(analyser.frequencyBinCount);
-}
-
 function setVisMode(mode) { visMode = mode; }
 
 function draw() {
     animationId = requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
-    const canvas = document.getElementById("visualizerCanvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+    if(analyser) {
+        analyser.getByteFrequencyData(dataArray);
+        const canvas = document.getElementById("visualizerCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-    if (customCanvasBg) {
-        ctx.globalAlpha = 0.7; 
-        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
-        ctx.globalAlpha = 1.0;
+        if (customCanvasBg) {
+            ctx.globalAlpha = 0.7; 
+            ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1.0;
+        }
+
+        if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
     }
-
-    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
 }
 
 function drawRing(ctx, canvas) {
