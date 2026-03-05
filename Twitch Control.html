@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>VENOM_SNAKE - Mission Control (AUTO-LOAD)</title>
+    <title>VENOM_SNAKE - Mission Control (FULL-ACCESS)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --mgs-green: #00ff41; --mgs-bg: #050805; --mgs-red: #ff0000; }
@@ -26,6 +26,7 @@
             border: 2px solid var(--mgs-green); padding: 2rem; width: 90%; max-width: 500px;
             background: rgba(10, 15, 10, 0.95); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
             display: none;
+            position: relative; /* Wichtig für die Positionierung des Buttons */
         }
 
         h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
@@ -52,6 +53,26 @@
             border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px;
         }
         button:hover { background: #fff; box-shadow: 0 0 15px var(--mgs-green); }
+
+        /* NEU: Zurück-Button oben rechts im Panel */
+        .btn-back {
+            position: absolute;
+            top: -45px; /* Positioniert ihn leicht über den Rahmen */
+            right: 0;
+            width: auto;
+            padding: 8px 15px;
+            background: transparent;
+            border: 1px solid var(--mgs-green);
+            color: var(--mgs-green);
+            font-size: 0.65rem;
+            margin-top: 0;
+        }
+        .btn-back:hover {
+            background: var(--mgs-green-dim, #003b00);
+            color: #fff;
+            box-shadow: 0 0 10px var(--mgs-green);
+        }
+
         #status, #lock-status { margin-top: 20px; font-size: 0.75rem; text-align: center; min-height: 1.2em; }
     </style>
 </head>
@@ -67,10 +88,12 @@
 </div>
 
 <div class="panel" id="main-panel">
+    <button class="btn-back" onclick="window.location.href='index.html'">[ ZURÜCK_ZUR_BASIS ]</button>
+
     <h2>[ COMMAND_CENTER ]</h2>
     
     <div id="auth-section">
-        <p style="font-size: 0.8rem; margin-bottom: 20px; color: #888;">Schritt 1: Verbindung zum HQ herstellen.</p>
+        <p style="font-size: 0.8rem; margin-bottom: 20px; color: #888;">Verbindung zum HQ herstellen...</p>
         <button onclick="login()">LOGIN BEI TWITCH</button>
     </div>
 
@@ -81,7 +104,7 @@
         </div>
         
         <div class="input-group">
-            <label>NEUE_KATEGORIE (VORSCHLÄGE BEIM TIPPEN)</label>
+            <label>NEUE_KATEGORIE (VORSCHLÄGE AKTIV)</label>
             <input type="text" id="stream-game" placeholder="Tippe Spielnamen..." autocomplete="off">
             <div id="game-suggestions"></div>
         </div>
@@ -124,14 +147,13 @@
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('control-section').style.display = 'block';
         window.history.replaceState({}, document.title, window.location.pathname);
-        loadCurrentStreamData(); // <--- NEU: Daten sofort beim Start laden
+        loadCurrentStreamData();
     }
 
     function login() {
         window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${SCOPES}`;
     }
 
-    // --- NEU: Funktion zum Laden des aktuellen Titels ---
     async function loadCurrentStreamData() {
         try {
             const userResp = await fetch('https://api.twitch.tv/helix/users', {
@@ -147,12 +169,9 @@
             
             if (channelData.data && channelData.data.length > 0) {
                 document.getElementById('stream-title').value = channelData.data[0].title;
-                // Optional: Zeige auch das aktuelle Spiel im Platzhalter an
                 document.getElementById('stream-game').placeholder = "Aktuell: " + channelData.data[0].game_name;
             }
-        } catch (e) {
-            console.error("Fehler beim Laden der aktuellen Daten.");
-        }
+        } catch (e) { console.error("Fehler beim Laden."); }
     }
 
     const gameInput = document.getElementById('stream-game');
@@ -189,7 +208,7 @@
     async function updateTwitch() {
         const title = document.getElementById('stream-title').value;
         const statusEl = document.getElementById('status');
-        statusEl.textContent = "SENDE DATEN...";
+        statusEl.textContent = "ÜBERTRAGE...";
         try {
             const userResp = await fetch('https://api.twitch.tv/helix/users', {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
@@ -208,11 +227,11 @@
             });
 
             if (response.ok) {
-                statusEl.textContent = "ERFOLG: KANAL AKTUALISIERT.";
+                statusEl.textContent = "MISSION ERFOLGREICH!";
                 statusEl.style.color = "#00ff41";
                 selectedGameId = null;
             }
-        } catch (e) { statusEl.textContent = "VERBINDUNGSFEHLER."; }
+        } catch (e) { statusEl.textContent = "FEHLER."; }
     }
 </script>
 </body>
