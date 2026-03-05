@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>VENOM_SNAKE - Mission Control (SECURE)</title>
+    <title>VENOM_SNAKE - Mission Control (AUTO-SUCHE)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --mgs-green: #00ff41; --mgs-bg: #050805; --mgs-red: #ff0000; }
@@ -15,46 +15,45 @@
             background-size: 30px 30px;
         }
 
-        /* Passwort Overlay */
         #lock-overlay {
             position: fixed; inset: 0; background: var(--mgs-bg);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
 
-        .lock-box {
-            border: 2px solid var(--mgs-green); padding: 3rem; background: rgba(0, 20, 0, 0.9);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); text-align: center;
-        }
+        .lock-box { border: 2px solid var(--mgs-green); padding: 3rem; background: rgba(0, 20, 0, 0.9); text-align: center; }
 
-        /* Haupt-Panel */
         .panel {
             border: 2px solid var(--mgs-green); padding: 2rem; width: 90%; max-width: 500px;
             background: rgba(10, 15, 10, 0.95); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-            display: none; /* Erst nach Passwort sichtbar */
+            display: none;
         }
 
         h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
-        .input-group { margin: 20px 0; }
+        .input-group { margin: 20px 0; position: relative; }
         label { display: block; font-size: 0.7rem; margin-bottom: 5px; color: #008f11; font-weight: bold; }
         
         input {
             width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
             color: #fff; padding: 12px; font-family: inherit; outline: none; box-sizing: border-box;
-            text-align: center;
         }
+
+        /* Suchvorschläge Liste */
+        #game-suggestions {
+            position: absolute; top: 100%; left: 0; width: 100%;
+            background: #0a0f0a; border: 1px solid var(--mgs-green);
+            z-index: 100; max-height: 200px; overflow-y: auto; display: none;
+        }
+        .suggestion-item {
+            padding: 10px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.8rem;
+        }
+        .suggestion-item:hover { background: var(--mgs-green); color: #000; }
 
         button {
             width: 100%; padding: 12px; background: var(--mgs-green); color: #000;
             border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase;
-            margin-top: 10px;
         }
-
-        button:hover { background: #fff; box-shadow: 0 0 15px var(--mgs-green); }
-        
+        button:hover { background: #fff; }
         #status, #lock-status { margin-top: 20px; font-size: 0.75rem; text-align: center; min-height: 1em; }
-        #lock-status { color: var(--mgs-red); }
-
         .hidden { display: none; }
     </style>
 </head>
@@ -63,34 +62,32 @@
 <div id="lock-overlay">
     <div class="lock-box">
         <h2 style="color: var(--mgs-red); margin-bottom: 20px;">[ ZUGRIFF_GESPERRT ]</h2>
-        <p style="font-size: 0.8rem; margin-bottom: 20px;">IDENTITÄTS-CODE EINGEBEN:</p>
-        <input type="password" id="pass-input" placeholder="********" onkeydown="if(event.key==='Enter') checkPass()">
-        <button onclick="checkPass()">VERIFIZIEREN</button>
+        <input type="password" id="pass-input" placeholder="CODE EINGEBEN" onkeydown="if(event.key==='Enter') checkPass()">
+        <button onclick="checkPass()" style="margin-top:10px;">VERIFIZIEREN</button>
         <div id="lock-status"></div>
     </div>
 </div>
 
 <div class="panel" id="main-panel">
-    <h2>[ COMMAND_CENTER_AUTH ]</h2>
-    
+    <h2>[ COMMAND_CENTER ]</h2>
     <div id="auth-section">
-        <p style="font-size: 0.8rem; margin-bottom: 20px;">Autorisierung mit Twitch-API erforderlich.</p>
-        <button onclick="login()">LOGIN BEI TWITCH</button>
+        <button onclick="login()">1. LOGIN BEI TWITCH</button>
     </div>
 
     <div id="control-section" class="hidden">
         <div class="input-group">
-            <label>NEUER_STREAM_TITEL</label>
+            <label>STREAM_TITEL</label>
             <input type="text" id="stream-title" placeholder="Titel eingeben...">
         </div>
         
         <div class="input-group">
-            <label>NEUE_KATEGORIE (SPIEL)</label>
-            <input type="text" id="stream-game" placeholder="z.B. Metal Gear Solid V">
+            <label>MISSIONS_KATEGORIE (SUCHE...)</label>
+            <input type="text" id="stream-game" placeholder="Tippe Spielnamen..." autocomplete="off">
+            <div id="game-suggestions"></div>
         </div>
 
         <button onclick="updateTwitch()">UPDATE SENDEN</button>
-        <div id="status">SYSTEM BEREIT.</div>
+        <div id="status">BEREIT FÜR ÜBERTRAGUNG.</div>
     </div>
 </div>
 
@@ -100,29 +97,24 @@
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast';
 
-    // 1. Passwort Check Funktion
+    let selectedGameId = null;
+    let accessToken = null;
+
     function checkPass() {
-        const input = document.getElementById('pass-input').value;
-        const status = document.getElementById('lock-status');
-        
-        if(input === CORRECT_PASS) {
+        if(document.getElementById('pass-input').value === CORRECT_PASS) {
             document.getElementById('lock-overlay').style.display = 'none';
             document.getElementById('main-panel').style.display = 'block';
             sessionStorage.setItem('mission_auth', 'true');
         } else {
-            status.textContent = "FEHLER: CODE UNGÜLTIG. ZUGRIFF VERWEIGERT.";
-            document.getElementById('pass-input').value = "";
+            document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT.";
         }
     }
 
-    // Prüfen ob man in dieser Session schon eingeloggt war
     if(sessionStorage.getItem('mission_auth') === 'true') {
         document.getElementById('lock-overlay').style.display = 'none';
         document.getElementById('main-panel').style.display = 'block';
     }
 
-    // --- Twitch Logik ---
-    let accessToken = null;
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     accessToken = params.get('access_token');
@@ -134,61 +126,74 @@
     }
 
     function login() {
-        const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${SCOPES}`;
-        window.location.href = authUrl;
+        window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${SCOPES}`;
     }
 
-    async function getGameId(gameName) {
-        const resp = await fetch(`https://api.twitch.tv/helix/games?name=${encodeURIComponent(gameName)}`, {
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        });
-        const data = await resp.json();
-        return data.data.length > 0 ? data.data[0].id : null;
-    }
+    // --- LIVE SUCHE LOGIK ---
+    const gameInput = document.getElementById('stream-game');
+    const suggestionBox = document.getElementById('game-suggestions');
+
+    gameInput.addEventListener('input', async () => {
+        const query = gameInput.value;
+        if (query.length < 3) { suggestionBox.style.display = 'none'; return; }
+
+        try {
+            const resp = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(query)}`, {
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            });
+            const data = await resp.json();
+            
+            suggestionBox.innerHTML = '';
+            if (data.data && data.data.length > 0) {
+                suggestionBox.style.display = 'block';
+                data.data.forEach(game => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = game.name;
+                    div.onclick = () => {
+                        gameInput.value = game.name;
+                        selectedGameId = game.id;
+                        suggestionBox.style.display = 'none';
+                    };
+                    suggestionBox.appendChild(div);
+                });
+            }
+        } catch (e) { console.error("Suche fehlgeschlagen", e); }
+    });
+
+    // Klick außerhalb schließt Vorschläge
+    document.addEventListener('click', (e) => {
+        if (e.target !== gameInput) suggestionBox.style.display = 'none';
+    });
 
     async function updateTwitch() {
         const title = document.getElementById('stream-title').value;
-        const gameName = document.getElementById('stream-game').value;
         const statusEl = document.getElementById('status');
-        
-        statusEl.textContent = "ÜBERTRAGE DATEN...";
-        statusEl.style.color = "#fff";
+        statusEl.textContent = "SENDE...";
 
         try {
             const userResp = await fetch('https://api.twitch.tv/helix/users', {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
             });
             const userData = await userResp.json();
-            const broadcasterId = userData.data[0].id;
+            const bId = userData.data[0].id;
 
-            let updateBody = {};
-            if (title) updateBody.title = title;
-            if (gameName) {
-                const gameId = await getGameId(gameName);
-                if (gameId) updateBody.game_id = gameId;
-                else throw new Error("Spiel nicht gefunden.");
-            }
+            let body = {};
+            if (title) body.title = title;
+            if (selectedGameId) body.game_id = selectedGameId;
 
-            const response = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`, {
+            const response = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
                 method: 'PATCH',
-                headers: {
-                    'Client-ID': CLIENT_ID,
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updateBody)
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
             });
 
             if (response.ok) {
-                statusEl.textContent = "ERFOLG: MISSION_LOG AKTUALISIERT.";
+                statusEl.textContent = "MISSION ERFOLGREICH AKTUALISIERT!";
                 statusEl.style.color = "#00ff41";
-            } else {
-                throw new Error("Twitch API Fehler.");
+                selectedGameId = null; // Reset für nächsten Einsatz
             }
-        } catch (e) {
-            statusEl.textContent = "FEHLER: " + e.message;
-            statusEl.style.color = "red";
-        }
+        } catch (e) { statusEl.textContent = "FEHLER BEI DER ÜBERTRAGUNG."; }
     }
 </script>
 </body>
