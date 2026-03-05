@@ -2,115 +2,158 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>VENOM_SNAKE - Mission Control (FULL-ACCESS)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VENOM_SNAKE - Mission Control (FHD-ADAPTIVE)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --mgs-green: #00ff41; --mgs-bg: #050805; --mgs-red: #ff0000; }
+        :root { 
+            --mgs-green: #00ff41; 
+            --mgs-bg: #050805; 
+            --mgs-red: #ff0000; 
+            --panel-width: 100%;
+        }
         
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            background: var(--mgs-bg); color: var(--mgs-green); font-family: 'JetBrains Mono', monospace;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
+            background: var(--mgs-bg); 
+            color: var(--mgs-green); 
+            font-family: 'JetBrains Mono', monospace;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+            background-size: 40px 40px;
+            overflow-x: hidden;
         }
 
+        /* Passwort Overlay */
         #lock-overlay {
             position: fixed; inset: 0; background: var(--mgs-bg);
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
 
-        .lock-box { border: 2px solid var(--mgs-green); padding: 2rem; background: rgba(0, 20, 0, 0.9); text-align: center; width: 350px; }
-
-        .panel {
-            border: 2px solid var(--mgs-green); padding: 2rem; width: 90%; max-width: 500px;
-            background: rgba(10, 15, 10, 0.95); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-            display: none;
-            position: relative; /* Wichtig für die Positionierung des Buttons */
+        .lock-box { 
+            border: 2px solid var(--mgs-green); padding: 2.5rem; background: rgba(0, 20, 0, 0.95); 
+            text-align: center; width: 90%; max-width: 450px; 
         }
 
-        h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
-        .input-group { margin: 20px 0; position: relative; }
-        label { display: block; font-size: 0.7rem; margin-bottom: 5px; color: #008f11; font-weight: bold; }
+        /* Das Panel - Optimiert für FHD Desktop und Mobile Fullscreen */
+        .panel {
+            border: 3px solid var(--mgs-green); 
+            padding: 3rem; 
+            width: 100vw; 
+            height: 100vh;
+            max-width: 1920px; /* FHD Standard */
+            max-height: 1080px;
+            background: rgba(10, 15, 10, 0.98); 
+            box-shadow: inset 0 0 50px rgba(0, 255, 65, 0.1), 0 0 30px rgba(0, 255, 65, 0.2);
+            display: none; 
+            flex-direction: column;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        /* Mobile & Tablet Anpassung: Entfernt Rahmen und nutzt 100% Platz */
+        @media (max-width: 1024px) {
+            .panel { 
+                border: none; 
+                padding: 1.5rem; 
+                max-height: none; 
+                height: 100vh;
+                width: 100vw;
+                justify-content: flex-start;
+            }
+            h2 { margin-top: 40px; }
+            .btn-back { top: 10px !important; right: 10px !important; width: auto !important; }
+        }
+
+        /* Querformat Optimierung (Landscape auf Handy) */
+        @media (max-height: 500px) {
+            .panel { padding: 1rem; }
+            .input-group { margin: 10px 0; }
+            h2 { font-size: 1rem; margin-top: 30px; }
+        }
+
+        h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 15px; font-size: 1.5rem; text-transform: uppercase; margin-top: 0; letter-spacing: 2px; }
+        .input-group { margin: 30px 0; position: relative; }
+        label { display: block; font-size: 0.8rem; margin-bottom: 10px; color: #008f11; font-weight: bold; text-transform: uppercase; }
         
         input {
-            width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
-            color: #fff; padding: 12px; font-family: inherit; outline: none; box-sizing: border-box;
+            width: 100%; background: #001a00; border: 2px solid var(--mgs-green);
+            color: #fff; padding: 18px; font-family: inherit; outline: none; font-size: 1.1rem;
+            box-shadow: inset 0 0 10px rgba(0,255,65,0.1);
         }
 
         #game-suggestions {
             position: absolute; top: 100%; left: 0; width: 100%;
-            background: #0a0f0a; border: 1px solid var(--mgs-green);
-            z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            background: #0a0f0a; border: 2px solid var(--mgs-green);
+            z-index: 1000; max-height: 300px; overflow-y: auto; display: none;
         }
 
-        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.8rem; color: #fff; text-align: left; }
+        .suggestion-item { padding: 18px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 1rem; }
         .suggestion-item:hover { background: var(--mgs-green); color: #000; }
 
         button {
-            width: 100%; padding: 12px; background: var(--mgs-green); color: #000;
-            border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px;
+            width: 100%; padding: 20px; background: var(--mgs-green); color: #000;
+            border: none; font-weight: bold; cursor: pointer; transition: 0.3s; 
+            text-transform: uppercase; margin-top: 15px; font-size: 1.1rem;
+            letter-spacing: 1px;
         }
-        button:hover { background: #fff; box-shadow: 0 0 15px var(--mgs-green); }
+        button:hover { background: #fff; box-shadow: 0 0 20px var(--mgs-green); }
 
-        /* NEU: Zurück-Button oben rechts im Panel */
         .btn-back {
-            position: absolute;
-            top: -45px; /* Positioniert ihn leicht über den Rahmen */
-            right: 0;
-            width: auto;
-            padding: 8px 15px;
-            background: transparent;
-            border: 1px solid var(--mgs-green);
-            color: var(--mgs-green);
-            font-size: 0.65rem;
-            margin-top: 0;
+            position: absolute; top: 20px; right: 20px; width: auto; padding: 10px 20px;
+            background: transparent; border: 2px solid var(--mgs-green); color: var(--mgs-green);
+            font-size: 0.8rem; z-index: 10;
         }
-        .btn-back:hover {
-            background: var(--mgs-green-dim, #003b00);
-            color: #fff;
-            box-shadow: 0 0 10px var(--mgs-green);
-        }
+        .btn-back:hover { background: rgba(0, 255, 65, 0.1); }
 
-        #status, #lock-status { margin-top: 20px; font-size: 0.75rem; text-align: center; min-height: 1.2em; }
+        #status { 
+            margin-top: auto; padding: 20px; text-align: center; 
+            font-size: 1rem; border: 1px dashed var(--mgs-green); 
+            background: rgba(0,255,65,0.05);
+        }
     </style>
 </head>
 <body>
 
 <div id="lock-overlay">
     <div class="lock-box">
-        <h2 style="color: var(--mgs-red); margin-bottom: 10px;">[ ZUGRIFF_GESPERRT ]</h2>
+        <h2 style="color: var(--mgs-red); margin-bottom: 20px;">[ ZUGRIFF_GESPERRT ]</h2>
         <input type="password" id="pass-input" placeholder="CODE EINGEBEN" onkeydown="if(event.key==='Enter') checkPass()">
         <button onclick="checkPass()">VERIFIZIEREN</button>
-        <div id="lock-status"></div>
+        <div id="lock-status" style="margin-top:15px;"></div>
     </div>
 </div>
 
 <div class="panel" id="main-panel">
     <button class="btn-back" onclick="window.location.href='index.html'">[ ZURÜCK_ZUR_BASIS ]</button>
-
-    <h2>[ COMMAND_CENTER ]</h2>
+    
+    <h2>[ MISSION_CONTROL_CENTER ]</h2>
     
     <div id="auth-section">
-        <p style="font-size: 0.8rem; margin-bottom: 20px; color: #888;">Verbindung zum HQ herstellen...</p>
+        <p style="font-size: 1rem; margin: 40px 0; color: #888;">Initialisiere Verbindung zum HQ...</p>
         <button onclick="login()">LOGIN BEI TWITCH</button>
     </div>
 
-    <div id="control-section" style="display:none;">
+    <div id="control-section" style="display:none; flex-direction: column; flex-grow: 1;">
         <div class="input-group">
-            <label>AKTUELLER / NEUER_STREAM_TITEL</label>
-            <input type="text" id="stream-title" placeholder="Lade aktuellen Titel...">
+            <label>AKTUELLER_STREAM_TITEL</label>
+            <input type="text" id="stream-title" placeholder="Lade Daten...">
         </div>
         
         <div class="input-group">
-            <label>NEUE_KATEGORIE (VORSCHLÄGE AKTIV)</label>
-            <input type="text" id="stream-game" placeholder="Tippe Spielnamen..." autocomplete="off">
+            <label>KATEGORIE_UPDATE</label>
+            <input type="text" id="stream-game" placeholder="Nach Spiel suchen..." autocomplete="off">
             <div id="game-suggestions"></div>
         </div>
 
         <button onclick="updateTwitch()">UPDATE SENDEN</button>
-        <div id="status">SYSTEM BEREIT.</div>
+        <div id="status">STATUS: STANDBY</div>
     </div>
 </div>
 
@@ -126,17 +169,17 @@
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
             document.getElementById('lock-overlay').style.display = 'none';
-            document.getElementById('main-panel').style.display = 'block';
+            document.getElementById('main-panel').style.display = 'flex';
             sessionStorage.setItem('mission_auth', 'true');
         } else {
-            document.getElementById('lock-status').textContent = "CODE FALSCH.";
+            document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT.";
             document.getElementById('pass-input').value = "";
         }
     }
 
     if(sessionStorage.getItem('mission_auth') === 'true') {
         document.getElementById('lock-overlay').style.display = 'none';
-        document.getElementById('main-panel').style.display = 'block';
+        document.getElementById('main-panel').style.display = 'flex';
     }
 
     const hash = window.location.hash.substring(1);
@@ -145,7 +188,7 @@
 
     if (accessToken) {
         document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('control-section').style.display = 'block';
+        document.getElementById('control-section').style.display = 'flex';
         window.history.replaceState({}, document.title, window.location.pathname);
         loadCurrentStreamData();
     }
@@ -161,17 +204,15 @@
             });
             const userData = await userResp.json();
             const bId = userData.data[0].id;
-
             const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
             });
             const channelData = await channelResp.json();
-            
             if (channelData.data && channelData.data.length > 0) {
                 document.getElementById('stream-title').value = channelData.data[0].title;
                 document.getElementById('stream-game').placeholder = "Aktuell: " + channelData.data[0].game_name;
             }
-        } catch (e) { console.error("Fehler beim Laden."); }
+        } catch (e) { console.error("API Error"); }
     }
 
     const gameInput = document.getElementById('stream-game');
@@ -200,7 +241,7 @@
                     suggestionBox.appendChild(div);
                 });
             }
-        } catch (e) { console.error("Suche fehlgeschlagen"); }
+        } catch (e) { console.error("Search failed"); }
     });
 
     document.addEventListener('click', (e) => { if (e.target !== gameInput) suggestionBox.style.display = 'none'; });
@@ -208,30 +249,27 @@
     async function updateTwitch() {
         const title = document.getElementById('stream-title').value;
         const statusEl = document.getElementById('status');
-        statusEl.textContent = "ÜBERTRAGE...";
+        statusEl.textContent = "SENDE DATENPAKET...";
         try {
             const userResp = await fetch('https://api.twitch.tv/helix/users', {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
             });
             const userData = await userResp.json();
             const bId = userData.data[0].id;
-
             let body = {};
             if (title) body.title = title;
             if (selectedGameId) body.game_id = selectedGameId;
-
             const response = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
                 method: 'PATCH',
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-
             if (response.ok) {
-                statusEl.textContent = "MISSION ERFOLGREICH!";
+                statusEl.textContent = "MISSION ERFOLGREICH: KANAL AKTUALISIERT.";
                 statusEl.style.color = "#00ff41";
                 selectedGameId = null;
             }
-        } catch (e) { statusEl.textContent = "FEHLER."; }
+        } catch (e) { statusEl.textContent = "ÜBERTRAGUNGSFEHLER."; }
     }
 </script>
 </body>
