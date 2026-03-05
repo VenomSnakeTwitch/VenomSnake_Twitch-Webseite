@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>VENOM_SNAKE - Mission Control (SECURE)</title>
+    <title>VENOM_SNAKE - Mission Control (AUTO-LOAD)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --mgs-green: #00ff41; --mgs-bg: #050805; --mgs-red: #ff0000; }
@@ -15,19 +15,13 @@
             background-size: 30px 30px;
         }
 
-        /* Passwort Overlay */
         #lock-overlay {
             position: fixed; inset: 0; background: var(--mgs-bg);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
 
-        .lock-box {
-            border: 2px solid var(--mgs-green); padding: 2rem; background: rgba(0, 20, 0, 0.9);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); text-align: center; width: 350px;
-        }
+        .lock-box { border: 2px solid var(--mgs-green); padding: 2rem; background: rgba(0, 20, 0, 0.9); text-align: center; width: 350px; }
 
-        /* Haupt-Panel */
         .panel {
             border: 2px solid var(--mgs-green); padding: 2rem; width: 90%; max-width: 500px;
             background: rgba(10, 15, 10, 0.95); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
@@ -35,7 +29,7 @@
         }
 
         h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
-        .input-group { margin: 20px 0; position: relative; } /* Wichtig für die Position der Liste */
+        .input-group { margin: 20px 0; position: relative; }
         label { display: block; font-size: 0.7rem; margin-bottom: 5px; color: #008f11; font-weight: bold; }
         
         input {
@@ -43,43 +37,21 @@
             color: #fff; padding: 12px; font-family: inherit; outline: none; box-sizing: border-box;
         }
 
-        /* STYLING FÜR DIE VORSCHLÄGE */
         #game-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: #0a0f0a;
-            border: 1px solid var(--mgs-green);
-            z-index: 1000;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none; /* Initial versteckt */
+            position: absolute; top: 100%; left: 0; width: 100%;
+            background: #0a0f0a; border: 1px solid var(--mgs-green);
+            z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
             box-shadow: 0 5px 15px rgba(0,0,0,0.8);
         }
 
-        .suggestion-item {
-            padding: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #1a2e1a;
-            font-size: 0.8rem;
-            color: #fff;
-            text-align: left;
-        }
-
-        .suggestion-item:hover {
-            background: var(--mgs-green);
-            color: #000;
-        }
+        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.8rem; color: #fff; text-align: left; }
+        .suggestion-item:hover { background: var(--mgs-green); color: #000; }
 
         button {
             width: 100%; padding: 12px; background: var(--mgs-green); color: #000;
-            border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase;
-            margin-top: 10px;
+            border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px;
         }
-
         button:hover { background: #fff; box-shadow: 0 0 15px var(--mgs-green); }
-        
         #status, #lock-status { margin-top: 20px; font-size: 0.75rem; text-align: center; min-height: 1.2em; }
     </style>
 </head>
@@ -104,12 +76,12 @@
 
     <div id="control-section" style="display:none;">
         <div class="input-group">
-            <label>NEUER_STREAM_TITEL</label>
-            <input type="text" id="stream-title" placeholder="Titel eingeben...">
+            <label>AKTUELLER / NEUER_STREAM_TITEL</label>
+            <input type="text" id="stream-title" placeholder="Lade aktuellen Titel...">
         </div>
         
         <div class="input-group">
-            <label>NEUE_KATEGORIE (VORSCHLÄGE ERSCHEINEN BEIM TIPPEN)</label>
+            <label>NEUE_KATEGORIE (VORSCHLÄGE BEIM TIPPEN)</label>
             <input type="text" id="stream-game" placeholder="Tippe Spielnamen..." autocomplete="off">
             <div id="game-suggestions"></div>
         </div>
@@ -128,7 +100,6 @@
     let selectedGameId = null;
     let accessToken = null;
 
-    // --- Passwort Logik ---
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
             document.getElementById('lock-overlay').style.display = 'none';
@@ -145,7 +116,6 @@
         document.getElementById('main-panel').style.display = 'block';
     }
 
-    // --- Twitch Auth ---
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     accessToken = params.get('access_token');
@@ -154,29 +124,48 @@
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('control-section').style.display = 'block';
         window.history.replaceState({}, document.title, window.location.pathname);
+        loadCurrentStreamData(); // <--- NEU: Daten sofort beim Start laden
     }
 
     function login() {
         window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${SCOPES}`;
     }
 
-    // --- VORSCHLÄGE LOGIK ---
+    // --- NEU: Funktion zum Laden des aktuellen Titels ---
+    async function loadCurrentStreamData() {
+        try {
+            const userResp = await fetch('https://api.twitch.tv/helix/users', {
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            });
+            const userData = await userResp.json();
+            const bId = userData.data[0].id;
+
+            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            });
+            const channelData = await channelResp.json();
+            
+            if (channelData.data && channelData.data.length > 0) {
+                document.getElementById('stream-title').value = channelData.data[0].title;
+                // Optional: Zeige auch das aktuelle Spiel im Platzhalter an
+                document.getElementById('stream-game').placeholder = "Aktuell: " + channelData.data[0].game_name;
+            }
+        } catch (e) {
+            console.error("Fehler beim Laden der aktuellen Daten.");
+        }
+    }
+
     const gameInput = document.getElementById('stream-game');
     const suggestionBox = document.getElementById('game-suggestions');
 
     gameInput.addEventListener('input', async () => {
         const query = gameInput.value;
-        if (query.length < 3) {
-            suggestionBox.style.display = 'none';
-            return;
-        }
-
+        if (query.length < 3) { suggestionBox.style.display = 'none'; return; }
         try {
             const resp = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(query)}`, {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
             });
             const data = await resp.json();
-            
             suggestionBox.innerHTML = '';
             if (data.data && data.data.length > 0) {
                 suggestionBox.style.display = 'block';
@@ -192,22 +181,15 @@
                     suggestionBox.appendChild(div);
                 });
             }
-        } catch (e) {
-            console.error("Suche fehlgeschlagen");
-        }
+        } catch (e) { console.error("Suche fehlgeschlagen"); }
     });
 
-    // Klick außerhalb schließt Liste
-    document.addEventListener('click', (e) => {
-        if (e.target !== gameInput) suggestionBox.style.display = 'none';
-    });
+    document.addEventListener('click', (e) => { if (e.target !== gameInput) suggestionBox.style.display = 'none'; });
 
-    // --- Update Senden ---
     async function updateTwitch() {
         const title = document.getElementById('stream-title').value;
         const statusEl = document.getElementById('status');
-        statusEl.textContent = "SENDE DATEN AN TWITCH...";
-
+        statusEl.textContent = "SENDE DATEN...";
         try {
             const userResp = await fetch('https://api.twitch.tv/helix/users', {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
@@ -221,11 +203,7 @@
 
             const response = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
                 method: 'PATCH',
-                headers: { 
-                    'Client-ID': CLIENT_ID, 
-                    'Authorization': `Bearer ${accessToken}`, 
-                    'Content-Type': 'application/json' 
-                },
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
 
@@ -233,13 +211,8 @@
                 statusEl.textContent = "ERFOLG: KANAL AKTUALISIERT.";
                 statusEl.style.color = "#00ff41";
                 selectedGameId = null;
-            } else {
-                statusEl.textContent = "FEHLER BEIM UPDATE.";
-                statusEl.style.color = "red";
             }
-        } catch (e) {
-            statusEl.textContent = "VERBINDUNGSFEHLER.";
-        }
+        } catch (e) { statusEl.textContent = "VERBINDUNGSFEHLER."; }
     }
 </script>
 </body>
