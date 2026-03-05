@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VenomSnake_Twitch - Taktisches Operationszentrum</title>
-    
+
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -56,7 +56,7 @@
 
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
-        
+
         .nav-links { display: flex; gap: 0.8rem; align-items: center; }
 
         .nav-link { 
@@ -68,6 +68,10 @@
 
         .nav-link-discord { color: var(--discord-blurple); border: 1px solid var(--discord-blurple); }
         .nav-link-discord:hover { background: var(--discord-blurple); color: #fff; box-shadow: 0 0 10px var(--discord-blurple); }
+
+        /* Admin Button Style */
+        .nav-link-admin { color: var(--live-red); border: 1px solid var(--live-red); }
+        .nav-link-admin:hover { background: var(--live-red); color: #fff; box-shadow: 0 0 10px var(--live-red); }
 
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content {
@@ -118,14 +122,19 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span style="font-family:'Chakra Petch'; font-weight:bold;">VENOM_SNAKE_OPS</span>
         </a>
-        
+
         <div class="nav-links">
             <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ EINSATZ ]</a>
             <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ PERSONALAKTE ]</a>
+
+            <a href="Twitch%20Control.html" class="nav-link nav-link-admin">
+                <i data-lucide="lock" style="width:14px; vertical-align:middle; margin-right:5px;"></i> [ ADMIN ]
+            </a>
+
             <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="nav-link nav-link-discord">
                 <i data-lucide="message-square" style="width:14px; vertical-align:middle; margin-right:5px;"></i> DISCORD
             </a>
-            
+
             <div class="dropdown">
                 <a href="#" class="nav-link">[ UNTER-OPERATIONEN <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
                 <div class="dropdown-content">
@@ -143,7 +152,7 @@
     <section id="page-stream" class="page active">
         <div class="mgs-header">
             <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALISIERE MISSIONS-DATEN...</div>
-            
+
             <div id="live-data-container" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,255,65,0.1);">
                 <div style="margin-bottom: 4px;">
                     <span style="color: var(--mgs-green);">AKTUELLER_EINSATZ: </span>
@@ -178,14 +187,14 @@
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[IDENTITÄT]:</span> VenomSnake</p>
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[ALTER]:</span> <span id="age-val" style="color:#fff">..</span> JAHRE</p>
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[STATUS]:</span> AKTIV / VOR-SCHICHT OPERATIONEN</p>
-                        
+
                         <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
-                        
+
                         <p style="margin-bottom: 10px;">
                             <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
                             Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth liegen mir im Blut.
                         </p>
-                        
+
                         <p style="margin-bottom: 10px;">
                             Doch ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**. Ich passe mich jedem Schlachtfeld an.
                         </p>
@@ -243,7 +252,7 @@
             const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const userData = await userResp.json();
             if(!userData.data.length) return;
-            
+
             const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${userData.data[0].id}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const channelData = await channelResp.json();
             const info = channelData.data[0];
@@ -266,7 +275,7 @@
                 if(d > now) { next = d; break; }
             }
         }
-        
+
         const display = document.getElementById('countdown-display');
         const isStreamDay = schedule.some(s => s.d === now.getDay());
         const currentMinTotal = now.getHours() * 60 + now.getMinutes();
