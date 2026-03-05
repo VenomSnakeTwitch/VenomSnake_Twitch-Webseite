@@ -2,10 +2,11 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>VENOM_SNAKE - Mission Control</title>
+    <title>VENOM_SNAKE - Mission Control (SECURE)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --mgs-green: #00ff41; --mgs-bg: #050805; }
+        :root { --mgs-green: #00ff41; --mgs-bg: #050805; --mgs-red: #ff0000; }
+        
         body {
             background: var(--mgs-bg); color: var(--mgs-green); font-family: 'JetBrains Mono', monospace;
             display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
@@ -13,33 +14,67 @@
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
         }
+
+        /* Passwort Overlay */
+        #lock-overlay {
+            position: fixed; inset: 0; background: var(--mgs-bg);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+
+        .lock-box {
+            border: 2px solid var(--mgs-green); padding: 3rem; background: rgba(0, 20, 0, 0.9);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); text-align: center;
+        }
+
+        /* Haupt-Panel */
         .panel {
             border: 2px solid var(--mgs-green); padding: 2rem; width: 90%; max-width: 500px;
             background: rgba(10, 15, 10, 0.95); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            display: none; /* Erst nach Passwort sichtbar */
         }
+
         h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
         .input-group { margin: 20px 0; }
         label { display: block; font-size: 0.7rem; margin-bottom: 5px; color: #008f11; font-weight: bold; }
+        
         input {
             width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
             color: #fff; padding: 12px; font-family: inherit; outline: none; box-sizing: border-box;
+            text-align: center;
         }
+
         button {
             width: 100%; padding: 12px; background: var(--mgs-green); color: #000;
             border: none; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase;
+            margin-top: 10px;
         }
+
         button:hover { background: #fff; box-shadow: 0 0 15px var(--mgs-green); }
-        #status { margin-top: 20px; font-size: 0.75rem; text-align: center; border: 1px dashed #444; padding: 10px; min-height: 1em; }
+        
+        #status, #lock-status { margin-top: 20px; font-size: 0.75rem; text-align: center; min-height: 1em; }
+        #lock-status { color: var(--mgs-red); }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="panel">
+<div id="lock-overlay">
+    <div class="lock-box">
+        <h2 style="color: var(--mgs-red); margin-bottom: 20px;">[ ZUGRIFF_GESPERRT ]</h2>
+        <p style="font-size: 0.8rem; margin-bottom: 20px;">IDENTITÄTS-CODE EINGEBEN:</p>
+        <input type="password" id="pass-input" placeholder="********" onkeydown="if(event.key==='Enter') checkPass()">
+        <button onclick="checkPass()">VERIFIZIEREN</button>
+        <div id="lock-status"></div>
+    </div>
+</div>
+
+<div class="panel" id="main-panel">
     <h2>[ COMMAND_CENTER_AUTH ]</h2>
     
     <div id="auth-section">
-        <p style="font-size: 0.8rem; margin-bottom: 20px;">Autorisierung mit Client-ID: 67qdo... erforderlich.</p>
+        <p style="font-size: 0.8rem; margin-bottom: 20px;">Autorisierung mit Twitch-API erforderlich.</p>
         <button onclick="login()">LOGIN BEI TWITCH</button>
     </div>
 
@@ -60,13 +95,34 @@
 </div>
 
 <script>
+    const CORRECT_PASS = "VenomSnake94";
     const CLIENT_ID = '67qdowganroqrazq3yt4g1bwj9bp8r';
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast';
 
-    let accessToken = null;
+    // 1. Passwort Check Funktion
+    function checkPass() {
+        const input = document.getElementById('pass-input').value;
+        const status = document.getElementById('lock-status');
+        
+        if(input === CORRECT_PASS) {
+            document.getElementById('lock-overlay').style.display = 'none';
+            document.getElementById('main-panel').style.display = 'block';
+            sessionStorage.setItem('mission_auth', 'true');
+        } else {
+            status.textContent = "FEHLER: CODE UNGÜLTIG. ZUGRIFF VERWEIGERT.";
+            document.getElementById('pass-input').value = "";
+        }
+    }
 
-    // Token aus URL extrahieren
+    // Prüfen ob man in dieser Session schon eingeloggt war
+    if(sessionStorage.getItem('mission_auth') === 'true') {
+        document.getElementById('lock-overlay').style.display = 'none';
+        document.getElementById('main-panel').style.display = 'block';
+    }
+
+    // --- Twitch Logik ---
+    let accessToken = null;
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     accessToken = params.get('access_token');
