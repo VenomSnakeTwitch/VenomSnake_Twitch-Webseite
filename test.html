@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CODEC // VenomSnake_Twitch</title>
 
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
@@ -44,51 +44,50 @@
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
-        .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .nav-controls { display: flex; gap: 10px; }
-        .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
-        .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-controls { display: flex; gap: 8px; }
+        .logo { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
+        .logo img { height: 40px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
-        .main-container { max-width: 1000px; margin: 100px auto 50px; padding: 0 20px; text-align: center; }
+        .main-container { max-width: 1000px; margin: 90px auto 50px; padding: 0 15px; text-align: center; }
 
         .player-box {
-            background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem;
+            background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 1.5rem;
             position: relative; box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1); width: 100%;
             backdrop-filter: blur(5px);
         }
 
-        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2rem; }
+        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 3px; color: var(--mgs-green); margin-bottom: 10px; font-size: 1.5rem; }
 
         .suno-notice {
-            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 12px;
-            margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase;
-            line-height: 1.4;
+            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 10px;
+            margin-bottom: 20px; font-size: 0.75rem; color: var(--mgs-green); text-transform: uppercase;
         }
 
-        #currentSong { color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; }
+        #currentSong { color: #fff; font-size: 0.85rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; }
 
-        .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
 
         select, button, .download-btn, .home-btn {
             background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
-            padding: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; cursor: pointer;
-            font-size: 0.75rem; transition: 0.2s; text-decoration: none; text-align: center;
+            padding: 12px 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; cursor: pointer;
+            font-size: 0.7rem; transition: 0.2s; text-decoration: none; text-align: center;
         }
-        button:hover, select:hover, .download-btn:hover, .home-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
+        button:hover, .download-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
 
         .active-mode { background: var(--mgs-green) !important; color: #000 !important; }
 
-        .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
-        .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
+        .slider-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
+        .slider-label { font-size: 0.65rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
 
-        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none; }
+        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 10px; }
 
         #infoBox {
             margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
             border-top: 2px solid var(--mgs-border); padding-top: 20px;
         }
-        .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 12px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
-        .infoColumn p { font-size: 0.75rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
+        .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.85rem; margin-bottom: 10px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
+        .infoColumn p { font-size: 0.7rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
 
         #visualizerOverlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
@@ -99,7 +98,7 @@
 
         .vis-player-ui {
             margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green);
-            background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
+            background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
         }
         .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
 
@@ -127,12 +126,12 @@
     <div class="player-box">
         <h1>CODEC INTERFACE</h1>
         <div class="suno-notice">
-            [ STATUS: TRANSMISSION ACTIVE ]<br>
-            Hier werden alle Songs hochgeladen, die ich auf <strong>Suno.com</strong> erstelle.
+            [ STATUS: MOBILE SECURE ]<br>
+            Tippe auf Play, um die Übertragung zu starten.
         </div>
 
-        <h2 id="currentSong">SYSTEM BEREIT - BITTE PLAY DRÜCKEN</h2>
-        <audio id="audioPlayer" crossOrigin="anonymous" playsinline webkit-playsinline preload="none"></audio>
+        <h2 id="currentSong">INITIALISIERE...</h2>
+        <audio id="audioPlayer" crossOrigin="anonymous" playsinline webkit-playsinline></audio>
 
         <div class="control-grid">
             <select id="songSelect" onchange="selectSong(this.value)">
@@ -199,21 +198,9 @@
                 <h3>Neue Songs Sind Da!</h3>
                 <p>Bleed out My Frend</p>
                 <p>Revange</p>
-                <p>Revange 2</p>
                 <p>Survival Of Death</p>
-                <p>Pile of Total Wreck</p>
                 <p>Industrial Breakdown</p>
-                <p>Mental Breakdown</p>
-                <p>Operation Stealth Destruction</p>
-                <p>Dessert Storm Ahead</p>
-                <p>Metal Gear 2 Solid Snake Chasing the Green Beret Remix</p>
-                <p>Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026</p>
-                <p>Metal Gear 2 Solid Snake Level1 Warning Remix</p>
-                <p>Metal Gear 2 Solid Snake Level3 Warning Remix</p>
-                <p>Metal Gear 2 Solid Snake Reprieve of The Doctor Remix</p>
-                <p>Takin' On The Shagohod Remake</p>
-                <p>Metal Gear 2 Solid Snake Freqency 140.85</p>
-                <p>Ghostbusters 2 - Savin The Day Remix</p>
+                <p>Metal Gear 2 Remixe</p>
             </div>
             <div class="infoColumn">
                 <h3>Bald Erscheinende Songs</h3>
@@ -224,7 +211,7 @@
 </main>
 
 <div id="visualizerOverlay">
-    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
+    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER</div>
     <canvas id="visualizerCanvas"></canvas>
     <div class="vis-player-ui">
         <div class="slider-row" style="margin:0; background:none; border:none;">
@@ -239,8 +226,6 @@
             <button onclick="prevSong()">⏮</button>
             <button id="visPlayPauseBtn" onclick="togglePlay()" style="min-width:100px;">▶ PLAY</button>
             <button onclick="nextSong()">⏭</button>
-            <button id="visRadioBtn" onclick="toggleRadioMode()">📻</button>
-            <button id="visLoopBtn" onclick="toggleLoopMode()">🔂</button>
             <button onclick="setVisMode('ring')">RING</button>
             <button onclick="setVisMode('bars')">BARS</button>
             <select onchange="handleBackgroundOption(this.value); this.value='';" style="width:auto;">
@@ -248,7 +233,7 @@
                 <option value="change">EDIT</option>
                 <option value="reset">X</option>
             </select>
-            <button onclick="closeVisualizer()" style="color:#ff4141; border-color:#ff4141;">EXIT</button>
+            <button onclick="closeVisualizer()" style="color:#ff4141;">EXIT</button>
         </div>
     </div>
     <input type="file" id="bgFileInput" accept="image/*" style="display:none;">
@@ -263,53 +248,165 @@ const songs = ["Snake Eater VenomSnake_Twitch Mix.mp3", "Ghost Town by VenomSnak
 
 const BASE_URL = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/";
 let currentIndex = 0;
-let audioCtx = null;
-let analyser, dataArray, source, animationId;
-let visMode = 'ring';
-let customCanvasBg = null;
-let isRadioMode = false;
-let isLoopMode = false;
-let isInitialized = false;
-let systemUnlocked = false; // Neuer Status für Mobile
+let audioCtx = null, analyser, dataArray, source, animationId;
+let visMode = 'ring', customCanvasBg = null;
+let isRadioMode = false, isLoopMode = false, systemUnlocked = false, isInitialized = false;
 
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 const bgInput = document.getElementById('bgFileInput');
 
-// --- 1. MOBILE UNLOCK HACK ---
-// Zwingt iOS/Android beim allerersten Tippen aufs Display, die Audiokanäle zu öffnen
-function unlockMobileAudio() {
-    if (systemUnlocked) return;
-    
-    // Initialisiere AudioContext sofort beim Tap
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioCtx = new AudioContext();
-    
-    // Spiele einen stummen, leeren Puffer ab, um das System aufzuwecken
-    const buffer = audioCtx.createBuffer(1, 1, 22050);
-    const unlockSource = audioCtx.createBufferSource();
-    unlockSource.buffer = buffer;
-    unlockSource.connect(audioCtx.destination);
-    unlockSource.start(0);
-
-    systemUnlocked = true;
-    
-    // Entferne die EventListener, wir brauchen sie nur einmal
-    document.removeEventListener('touchstart', unlockMobileAudio);
-    document.removeEventListener('click', unlockMobileAudio);
-}
-
-document.addEventListener('touchstart', unlockMobileAudio, { once: true });
-document.addEventListener('click', unlockMobileAudio, { once: true });
-// -----------------------------
-
 window.addEventListener('DOMContentLoaded', () => {
     const mainSelect = document.getElementById("songSelect");
     const visSelect = document.getElementById("visSongSelect");
     visSelect.innerHTML = mainSelect.innerHTML;
     if(localStorage.getItem('codec_canvas_bg')) loadCanvasBackground(localStorage.getItem('codec_canvas_bg'));
+    loadSong(0);
 });
+
+// Mobile Unlock Logic
+async function unlockMobileAudio() {
+    if (systemUnlocked) return;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!audioCtx) audioCtx = new AudioContext();
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
+    
+    // Silent Buffer Hack
+    const buffer = audioCtx.createBuffer(1, 1, 22050);
+    const unlockSource = audioCtx.createBufferSource();
+    unlockSource.buffer = buffer;
+    unlockSource.connect(audioCtx.destination);
+    unlockSource.start(0);
+    systemUnlocked = true;
+}
+
+document.addEventListener('touchstart', unlockMobileAudio, { once: true });
+
+function loadSong(index) {
+    currentIndex = parseInt(index);
+    audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
+    audio.load();
+    document.getElementById("songSelect").value = currentIndex;
+    document.getElementById("visSongSelect").value = currentIndex;
+    document.getElementById("downloadBtn").href = audio.src;
+    const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
+    document.getElementById("currentSong").textContent = "▶ " + songTitle;
+}
+
+async function togglePlay() {
+    if(!isInitialized) isInitialized = true;
+    await unlockMobileAudio();
+
+    if (audio.paused) {
+        try {
+            if(!analyser) initVisualizerNodes();
+            await audio.play();
+            updatePlayButtons("⏸ PAUSE");
+        } catch (err) {
+            console.error("Play failed", err);
+            // Retry for iOS
+            audio.play();
+        }
+    } else {
+        audio.pause();
+        updatePlayButtons("▶ PLAY");
+    }
+}
+
+function initVisualizerNodes() {
+    if (audioCtx && !analyser) {
+        analyser = audioCtx.createAnalyser();
+        source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 256;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+}
+
+function updatePlayButtons(text) {
+    document.getElementById("playPauseBtn").textContent = text;
+    document.getElementById("visPlayPauseBtn").textContent = text;
+}
+
+audio.onended = () => {
+    if (isLoopMode) { audio.play(); } 
+    else if (isRadioMode) { selectSong(Math.floor(Math.random() * songs.length)); } 
+    else { nextSong(); }
+};
+
+function selectSong(val) { loadSong(val); setTimeout(togglePlay, 100); }
+function nextSong() { selectSong((currentIndex + 1) % songs.length); }
+function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
+
+function toggleRadioMode() { isRadioMode = !isRadioMode; if (isRadioMode) isLoopMode = false; updateModeUI(); }
+function toggleLoopMode() { isLoopMode = !isLoopMode; if (isLoopMode) isRadioMode = false; updateModeUI(); }
+
+function updateModeUI() {
+    const rb = document.getElementById("radioModeBtn"), lb = document.getElementById("loopModeBtn");
+    rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
+    lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
+    rb.classList.toggle("active-mode", isRadioMode);
+    lb.classList.toggle("active-mode", isLoopMode);
+}
+
+function draw() {
+    animationId = requestAnimationFrame(draw);
+    if(!analyser) return;
+    analyser.getByteFrequencyData(dataArray);
+    const canvas = document.getElementById("visualizerCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+    if (customCanvasBg) {
+        ctx.globalAlpha = 0.7; ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height); ctx.globalAlpha = 1.0;
+    }
+    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
+}
+
+function drawRing(ctx, canvas) {
+    const centerX = canvas.width / 2, centerY = canvas.height / 2;
+    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
+    let sum = 0; for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+    let pulse = (sum / dataArray.length) * 0.4;
+    const logoSize = logoBase + pulse;
+    if (logoImg.complete) ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
+    const ringRadius = (logoBase * 0.6) + (pulse * 0.2);
+    for (let i = 0; i < 80; i++) {
+        const angle = (i / 80) * Math.PI * 2;
+        const amp = dataArray[i % dataArray.length] / 255;
+        const rayLength = amp * (ringRadius * 0.8);
+        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
+        ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
+        ctx.stroke();
+    }
+}
+
+function drawBars(ctx, canvas) {
+    const barWidth = (canvas.width / dataArray.length) * 2.5;
+    let x = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+        let barHeight = dataArray[i] * 1.5;
+        ctx.fillStyle = "#00ff41";
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+        x += barWidth;
+    }
+}
+
+function openVisualizer() { 
+    unlockMobileAudio();
+    document.getElementById("visualizerOverlay").classList.add("active");
+    const canvas = document.getElementById("visualizerCanvas");
+    canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
+    draw();
+}
+
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
+function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
+function setVisMode(m) { visMode = m; }
 
 function handleBackgroundOption(val) {
     if(val === 'change') bgInput.click();
@@ -334,155 +431,6 @@ function loadCanvasBackground(data) {
     img.onload = () => { customCanvasBg = img; };
     img.src = data;
 }
-
-function loadSong(index) {
-    currentIndex = parseInt(index);
-    audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
-    audio.load(); // Wichtig für Mobile: Explizites Laden nach src-Änderung
-    document.getElementById("songSelect").value = currentIndex;
-    document.getElementById("visSongSelect").value = currentIndex;
-    document.getElementById("downloadBtn").href = audio.src;
-    const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
-    document.getElementById("currentSong").textContent = "▶ " + songTitle;
-}
-
-function initVisualizerNodes() {
-    // Verbindet den Visualizer erst, wenn wirklich Audio gebraucht wird
-    if (!analyser && audioCtx) {
-        analyser = audioCtx.createAnalyser();
-        source = audioCtx.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        analyser.fftSize = 256;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-    }
-}
-
-function togglePlay() {
-    // Falls noch nicht initialisiert (erster Klick auf Play)
-    if(!isInitialized) { 
-        loadSong(currentIndex); 
-        isInitialized = true; 
-    }
-
-    // AudioContext sicherstellen und aufwecken
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-
-    if (audio.paused) {
-        // Mobile-sicheres Play mit Catch-Block
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                updatePlayButtons("⏸ PAUSE");
-                // Visualizer erst verknüpfen, wenn die Musik sicher läuft (verhindert iOS Mute-Bug)
-                initVisualizerNodes(); 
-            }).catch(error => {
-                console.error("Wiedergabe durch Browser blockiert:", error);
-                document.getElementById("currentSong").textContent = "⚠️ WIEDERGABE BLOCKIERT (TIPPEN ZUM ENTSPERREN)";
-            });
-        }
-    } else {
-        audio.pause();
-        updatePlayButtons("▶ PLAY");
-    }
-}
-
-function updatePlayButtons(text) {
-    document.getElementById("playPauseBtn").textContent = text;
-    document.getElementById("visPlayPauseBtn").textContent = text;
-}
-
-audio.onended = () => {
-    if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
-    else if (isRadioMode) { selectSong(Math.floor(Math.random() * songs.length)); } 
-    else { nextSong(); }
-};
-
-function toggleRadioMode() { isRadioMode = !isRadioMode; if (isRadioMode) isLoopMode = false; updateModeUI(); }
-function toggleLoopMode() { isLoopMode = !isLoopMode; if (isLoopMode) isRadioMode = false; updateModeUI(); }
-
-function updateModeUI() {
-    const rb = document.getElementById("radioModeBtn"), lb = document.getElementById("loopModeBtn");
-    const vrb = document.getElementById("visRadioBtn"), vlb = document.getElementById("visLoopBtn");
-    rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
-    lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
-    [rb, vrb].forEach(b => b.classList.toggle("active-mode", isRadioMode));
-    [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
-}
-
-function setVisMode(mode) { visMode = mode; }
-
-function draw() {
-    animationId = requestAnimationFrame(draw);
-    if(!analyser) return;
-    analyser.getByteFrequencyData(dataArray);
-    const canvas = document.getElementById("visualizerCanvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    if (customCanvasBg) {
-        ctx.globalAlpha = 0.7; ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height); ctx.globalAlpha = 1.0;
-    }
-    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
-}
-
-function drawRing(ctx, canvas) {
-    const centerX = canvas.width / 2, centerY = canvas.height / 2;
-    const bufferLength = dataArray.length;
-    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    let sum = 0; for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
-    let pulse = (sum / bufferLength) * 0.4;
-    const logoSize = logoBase + pulse;
-    if (logoImg.complete) ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
-    const ringRadius = (logoBase * 0.6) + (pulse * 0.2);
-    for (let i = 0; i < 80; i++) {
-        const angle = (i / 80) * Math.PI * 2;
-        const amp = dataArray[Math.floor(Math.abs((i % 40) - 20) * (bufferLength / 20))] / 255;
-        const rayLength = amp * (ringRadius * 0.8);
-        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`; ctx.lineWidth = 2 + amp * 5;
-        ctx.beginPath();
-        ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
-        ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
-        ctx.stroke();
-    }
-}
-
-function drawBars(ctx, canvas) {
-    const barWidth = (canvas.width / dataArray.length) * 2.5;
-    let x = 0;
-    for (let i = 0; i < dataArray.length; i++) {
-        let barHeight = dataArray[i] * 1.5;
-        ctx.fillStyle = "#00ff41";
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
-        x += barWidth;
-    }
-}
-
-function openVisualizer() { 
-    if(!systemUnlocked) unlockMobileAudio(); // Sicherheitshalber entsperren
-    if(isInitialized && audioCtx && !analyser) initVisualizerNodes();
-    
-    document.getElementById("visualizerOverlay").classList.add("active");
-    const canvas = document.getElementById("visualizerCanvas");
-    canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
-    draw();
-}
-
-function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
-function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-function selectSong(val) { 
-    isInitialized = true; 
-    loadSong(val); 
-    
-    // Kurze Pause einfügen für Mobile, damit die neue src sicher verarbeitet wird
-    setTimeout(() => {
-        if(audio.paused) togglePlay();
-    }, 50);
-}
-function nextSong() { selectSong((currentIndex + 1) % songs.length); }
-function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
-function seekAudio(val) { if(isInitialized) audio.currentTime = (val / 100) * audio.duration; }
 
 audio.ontimeupdate = () => {
     if(!isNaN(audio.duration)) {
