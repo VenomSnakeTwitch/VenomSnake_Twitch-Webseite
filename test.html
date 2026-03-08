@@ -89,13 +89,6 @@
         .reset-btn { border-color: var(--mgs-orange); color: var(--mgs-orange); padding: 2px 8px; font-size: 0.6rem; }
         .reset-btn:hover { background: var(--mgs-orange); color: #000; }
 
-        #infoBox {
-            margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
-            border-top: 2px solid var(--mgs-border); padding-top: 20px;
-        }
-        .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 12px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
-        .infoColumn p { font-size: 0.75rem; margin-bottom: 6px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 2px; }
-
         #visualizerOverlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -103,15 +96,13 @@
         #visualizerOverlay.active { display: flex; }
         #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
 
-        .vis-player-ui {
-            margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green);
-            background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
-        }
-        .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
-
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
 
-        @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
+        #loadingOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center;
+            z-index: 10; color: var(--mgs-green); font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -123,21 +114,21 @@
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
         <div class="nav-controls">
-            <a href="index.html" class="home-btn" style="padding: 5px 15px;">[ HOME ]</a>
-            <button onclick="toggleFullscreen()" style="padding: 5px 15px;">[ VOLLBILD ]</button>
+            <button onclick="toggleFullscreen()">[ VOLLBILD ]</button>
         </div>
     </div>
 </nav>
 
 <main class="main-container">
     <div class="player-box">
+        <div id="loadingOverlay">DATENÜBERTRAGUNG...</div>
         <h1>CODEC INTERFACE</h1>
         <div class="suno-notice">
-            [ STATUS: TRANSMISSION ACTIVE ]<br>
-            Hier werden alle Songs hochgeladen. <span style="color:var(--mgs-orange)">PITCH & TEMPO AKTIVIERT.</span>
+            [ FREQUENCY: 140.85 ]<br>
+            <span style="color:var(--mgs-orange)">PITCH & TEMPO PROCESSING AKTIV</span>
         </div>
 
-        <h2 id="currentSong">INITIALISIERE...</h2>
+        <h2 id="currentSong">BEREIT FÜR ÜBERTRAGUNG</h2>
 
         <div class="control-grid">
             <select id="songSelect" onchange="selectSong(this.value)">
@@ -181,7 +172,7 @@
 
         <div class="slider-row">
             <span class="slider-label" id="timeLabel">0:00</span>
-            <input type="range" id="progress" min="0" max="100" value="0" step="0.1">
+            <input type="range" id="progress" min="0" max="100" value="0" step="0.1" oninput="seekAudio(this.value)">
             <span class="slider-label" id="durationLabel">0:00</span>
         </div>
 
@@ -208,42 +199,21 @@
         <div class="control-grid">
             <button id="radioModeBtn" onclick="toggleRadioMode()">📻 RADIO: AUS</button>
             <button id="loopModeBtn" onclick="toggleLoopMode()">🔂 LOOP: AUS</button>
-            <button onclick="prevSong()">⏮ ZURÜCK</button>
+            <button onclick="prevSong()">⏮</button>
             <button id="playPauseBtn" onclick="togglePlay()">▶ PLAY</button>
-            <button onclick="nextSong()">WEITER ⏭</button>
-        </div>
-
-        <div id="infoBox">
-            <div class="infoColumn">
-                <h3>System Info</h3>
-                <p>Engine: Tone.js Real-time DSP</p>
-                <p>Mode: Frequency 140.85 MHz</p>
-            </div>
-            <div class="infoColumn">
-                <h3>Neuheiten</h3>
-                <p>Pitch-Shifting ohne Tempoänderung aktiviert.</p>
-            </div>
+            <button onclick="nextSong()">⏭</button>
         </div>
     </div>
 </main>
 
 <div id="visualizerOverlay">
-    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
     <canvas id="visualizerCanvas"></canvas>
-    <div class="vis-player-ui">
-        <div class="slider-row" style="margin:0; background:none; border:none;">
-            <span class="slider-label" id="visTimeLabel">0:00</span>
-            <input type="range" id="visProgress" min="0" max="100" value="0" step="0.1" oninput="seekAudio(this.value)">
-            <span class="slider-label" id="visDurationLabel">0:00</span>
-        </div>
-        <div class="vis-row">
-            <button onclick="prevSong()">⏮</button>
-            <button id="visPlayPauseBtn" onclick="togglePlay()" style="min-width:100px;">▶ PLAY</button>
-            <button onclick="nextSong()">⏭</button>
-            <button onclick="closeVisualizer()" style="color:#ff4141; border-color:#ff4141;">EXIT</button>
-        </div>
-    </div>
+    <button onclick="closeVisualizer()" style="margin-top:20px; color:var(--mgs-green); border: 1px solid var(--mgs-green); padding: 10px;">[ CLOSE ]</button>
 </div>
+
+<footer>
+    <p>EST. 2026 // OPERATOR: VENOMSNAKE_TWITCH</p>
+</footer>
 
 <script>
 const songs = [
@@ -264,43 +234,59 @@ const BASE_URL = "./";
 let currentIndex = 0;
 let isRadioMode = false;
 let isLoopMode = false;
+let player, pitchShift, fft, noise, noiseGain;
+let isInitialized = false;
 
-// Tone.js Components
-let player, pitchShift, fft, animationId;
-let isLoaded = false;
-
-async function initTone() {
-    if (isLoaded) return;
+// Audio System Initialisieren
+async function initAudio() {
+    if (isInitialized) return;
     await Tone.start();
     
+    // Rauschen (CODEC Static)
+    noise = new Tone.Noise("white");
+    noiseGain = new Tone.Gain(0).toDestination();
+    noise.connect(noiseGain);
+    noise.start();
+
+    // Effekte
     pitchShift = new Tone.PitchShift(0).toDestination();
-    fft = new Tone.FFT(256);
+    fft = new Tone.FFT(128);
     pitchShift.connect(fft);
     
     player = new Tone.Player().connect(pitchShift);
-    player.autostart = false;
-    
-    isLoaded = true;
+    isInitialized = true;
+}
+
+// CODEC Static Effekt
+function playStatic() {
+    if (!noiseGain) return;
+    noiseGain.gain.rampTo(0.05, 0.01);
+    setTimeout(() => noiseGain.gain.rampTo(0, 0.2), 150);
 }
 
 async function loadSong(index) {
-    await initTone();
-    currentIndex = parseInt(index);
-    const url = BASE_URL + encodeURIComponent(songs[currentIndex]);
-    
-    document.getElementById("songSelect").value = currentIndex;
-    document.getElementById("downloadBtn").href = url;
-    document.getElementById("currentSong").textContent = "LADE DATEN...";
-
-    await player.load(url);
-    
-    document.getElementById("currentSong").textContent = "▶ " + songs[currentIndex].toUpperCase();
-    document.getElementById("durationLabel").textContent = formatTime(player.buffer.duration);
-    document.getElementById("visDurationLabel").textContent = formatTime(player.buffer.duration);
+    try {
+        await initAudio();
+        document.getElementById("loadingOverlay").style.display = "flex";
+        currentIndex = parseInt(index);
+        const url = BASE_URL + encodeURIComponent(songs[currentIndex]);
+        
+        await player.load(url);
+        
+        document.getElementById("currentSong").textContent = "▶ " + songs[currentIndex].toUpperCase();
+        document.getElementById("durationLabel").textContent = formatTime(player.buffer.duration);
+        document.getElementById("loadingOverlay").style.display = "none";
+        document.getElementById("downloadBtn").href = url;
+        playStatic();
+    } catch (e) {
+        console.error("Load error", e);
+        document.getElementById("currentSong").textContent = "❌ FEHLER BEIM LADEN";
+        document.getElementById("loadingOverlay").style.display = "none";
+    }
 }
 
 async function togglePlay() {
-    await initTone();
+    await initAudio();
     if (player.state === "started") {
         player.stop();
         updatePlayButtons("▶ PLAY");
@@ -311,140 +297,88 @@ async function togglePlay() {
     }
 }
 
-function updatePlayButtons(text) {
-    document.getElementById("playPauseBtn").textContent = text;
-    document.getElementById("visPlayPauseBtn").textContent = text;
-}
-
 function updateProgress() {
-    if (player.state === "started") {
-        const current = player.buffer.duration > 0 ? player.seek / player.buffer.duration : 0;
-        const time = player.seek;
+    if (player && player.state === "started") {
+        const elapsed = player.buffer.duration > 0 ? (player.now() - player.started) * player.playbackRate : 0;
+        const current = Math.min(elapsed, player.buffer.duration);
         
-        document.getElementById("progress").value = (time / player.buffer.duration) * 100;
-        document.getElementById("visProgress").value = (time / player.buffer.duration) * 100;
-        document.getElementById("timeLabel").textContent = formatTime(time);
-        document.getElementById("visTimeLabel").textContent = formatTime(time);
+        document.getElementById("progress").value = (current / player.buffer.duration) * 100;
+        document.getElementById("timeLabel").textContent = formatTime(current);
         
-        if (time >= player.buffer.duration) {
-            handleEnded();
-            return;
+        if (current >= player.buffer.duration) {
+            if (isLoopMode) player.start(0);
+            else if (isRadioMode) selectSong(Math.floor(Math.random() * songs.length));
+            else nextSong();
+        } else {
+            requestAnimationFrame(updateProgress);
         }
-        requestAnimationFrame(updateProgress);
     }
 }
 
-function handleEnded() {
-    if (isLoopMode) {
-        player.start(0);
-    } else if (isRadioMode) {
-        selectSong(Math.floor(Math.random() * songs.length));
-    } else {
-        nextSong();
-    }
-}
-
-// PITCH CONTROL
+// Controls
 document.getElementById("pitchSlider").oninput = function() {
-    const val = parseInt(this.value);
-    pitchShift.pitch = val;
-    document.getElementById("pitchLabel").textContent = (val >= 0 ? "+" : "") + val + " st";
+    pitchShift.pitch = parseInt(this.value);
+    document.getElementById("pitchLabel").textContent = (this.value >= 0 ? "+" : "") + this.value + " st";
 };
-
-function resetPitch() {
-    document.getElementById("pitchSlider").value = 0;
-    pitchShift.pitch = 0;
-    document.getElementById("pitchLabel").textContent = "0 st";
-}
-
-// TEMPO CONTROL
 document.getElementById("tempoSlider").oninput = function() {
-    const val = parseFloat(this.value);
-    player.playbackRate = val;
-    document.getElementById("tempoLabel").textContent = Math.round(val * 100) + "%";
+    player.playbackRate = parseFloat(this.value);
+    document.getElementById("tempoLabel").textContent = Math.round(this.value * 100) + "%";
 };
-
-function resetTempo() {
-    document.getElementById("tempoSlider").value = 1.0;
-    player.playbackRate = 1.0;
-    document.getElementById("tempoLabel").textContent = "100%";
-}
-
-// VOLUME
 document.getElementById("volumeSlider").oninput = function() {
-    const val = parseFloat(this.value);
-    player.volume.value = Tone.gainToDb(val);
-    document.getElementById("volumeLabel").textContent = Math.round(val * 100) + "%";
+    player.volume.value = Tone.gainToDb(parseFloat(this.value));
+    document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
 };
 
 function seekAudio(val) {
-    const target = (val / 100) * player.buffer.duration;
+    const time = (val / 100) * player.buffer.duration;
     player.stop();
-    player.start(0, target);
+    player.start(0, time);
 }
 
-document.getElementById("progress").oninput = function() { seekAudio(this.value); };
+function resetPitch() { document.getElementById("pitchSlider").value = 0; pitchShift.pitch = 0; document.getElementById("pitchLabel").textContent = "0 st"; }
+function resetTempo() { document.getElementById("tempoSlider").value = 1.0; player.playbackRate = 1.0; document.getElementById("tempoLabel").textContent = "100%"; }
 
-async function selectSong(val) {
-    await loadSong(val);
-    player.start();
-    updatePlayButtons("⏸ PAUSE");
-    updateProgress();
-}
-
+async function selectSong(val) { await loadSong(val); togglePlay(); }
 function nextSong() { selectSong((currentIndex + 1) % songs.length); }
 function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 
-function toggleRadioMode() { isRadioMode = !isRadioMode; if (isRadioMode) isLoopMode = false; updateModeUI(); }
-function toggleLoopMode() { isLoopMode = !isLoopMode; if (isLoopMode) isRadioMode = false; updateModeUI(); }
-
+function toggleRadioMode() { isRadioMode = !isRadioMode; isLoopMode = false; updateModeUI(); }
+function toggleLoopMode() { isLoopMode = !isLoopMode; isRadioMode = false; updateModeUI(); }
 function updateModeUI() {
-    document.getElementById("radioModeBtn").textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
-    document.getElementById("loopModeBtn").textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
     document.getElementById("radioModeBtn").classList.toggle("active-mode", isRadioMode);
     document.getElementById("loopModeBtn").classList.toggle("active-mode", isLoopMode);
 }
 
-// VISUALIZER
+function formatTime(s) {
+    let m = Math.floor(s / 60), sec = Math.floor(s % 60).toString().padStart(2, '0');
+    return m + ":" + sec;
+}
+
+function updatePlayButtons(t) { document.getElementById("playPauseBtn").textContent = t; }
+
+// Visualizer
 function draw() {
-    animationId = requestAnimationFrame(draw);
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
     const values = fft.getValue();
-    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#00ff41";
-    
     const barWidth = canvas.width / values.length;
     for (let i = 0; i < values.length; i++) {
         const barHeight = (values[i] + 140) * 2;
         ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
     }
+    animationId = requestAnimationFrame(draw);
 }
 
 function openVisualizer() {
     document.getElementById("visualizerOverlay").classList.add("active");
-    const canvas = document.getElementById("visualizerCanvas");
-    canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.6;
+    const cv = document.getElementById("visualizerCanvas");
+    cv.width = window.innerWidth * 0.8; cv.height = 400;
     draw();
 }
-
-function closeVisualizer() {
-    document.getElementById("visualizerOverlay").classList.remove("active");
-    cancelAnimationFrame(animationId);
-}
-
-function formatTime(s) {
-    if (!s || isNaN(s)) return "0:00";
-    let m = Math.floor(s / 60), sec = Math.floor(s % 60).toString().padStart(2, '0');
-    return m + ":" + sec;
-}
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
-}
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
+function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
 window.onload = () => { loadSong(0); };
 </script>
