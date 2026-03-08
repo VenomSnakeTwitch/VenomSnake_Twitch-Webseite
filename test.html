@@ -132,7 +132,7 @@
         </div>
 
         <h2 id="currentSong">INITIALISIERE...</h2>
-        <audio id="audioPlayer" crossorigin="anonymous"></audio>
+        <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
         <div class="control-grid">
             <select id="songSelect" onchange="selectSong(this.value)">
@@ -259,66 +259,40 @@
 </footer>
 
 <script>
-// ──────────────────────────────────────────────────────────────
-//  KONFIGURATION
-// ──────────────────────────────────────────────────────────────
 const songs = [
-    "Snake Eater VenomSnake_Twitch Mix.mp3",
-    "Ghost Town by VenomSnake_Twitch.mp3",
-    "Wreckfest.mp3",
-    "In The Air Tonight(VenomSnake_Twitch).mp3",
-    "Paradies City.mp3",
-    "Parasitäres Bewustsein.mp3",
-    "Still Alive (Voiced).mp3",
-    "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3",
-    "ByeByeBeautiful.mp3",
-    "Kettenreaktion (Cover).mp3",
-    "Strasse der Verdammnis.mp3",
-    "Syphon Filter Synth Mix.mp3",
-    "VenomSnake Mode Intro song.mp3",
-    "Hell March [Retaliation Cover].mp3",
-    "Dance hall Dance(Cover).mp3",
-    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3",
-    "Bleed out My Frend.mp3",
-    "Revange.mp3",
-    "Revange 2.mp3",
-    "Survival Of Death.mp3",
-    "Pile of Total Wreck.mp3",
-    "Dessert Storm Ahead.mp3",
-    "Industrial Breakdown.mp3",
-    "Mental Breakdown.mp3",
-    "Metal Gear 2 Solid Snake Chasing the Green Beret Remix.mp3",
-    "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026.mp3",
-    "Metal Gear 2 Solid Snake Level1 Warning Remix.mp3",
-    "Metal Gear 2 Solid Snake Level3 Warning Remix.mp3",
-    "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix.mp3",
-    "Operation Stealth Destruction.mp3",
-    "Takin' On The Shagohod Remake.mp3",
-    "Metal Gear 2 Solid Snake Freqency 140.85.mp3",
-    "Ghostbusters 2 - Savin The Day Remix.mp3"
+    "Snake Eater VenomSnake_Twitch Mix.mp3", "Ghost Town by VenomSnake_Twitch.mp3", "Wreckfest.mp3", 
+    "In The Air Tonight(VenomSnake_Twitch).mp3", "Paradies City.mp3", "Parasitäres Bewustsein.mp3", 
+    "Still Alive (Voiced).mp3", "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3", "ByeByeBeautiful.mp3", 
+    "Kettenreaktion (Cover).mp3", "Strasse der Verdammnis.mp3", "Syphon Filter Synth Mix.mp3", 
+    "VenomSnake Mode Intro song.mp3", "Hell March [Retaliation Cover].mp3", "Dance hall Dance(Cover).mp3", 
+    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3", "Bleed out My Frend.mp3", "Revange.mp3", 
+    "Revange 2.mp3", "Survival Of Death.mp3", "Pile of Total Wreck.mp3", "Dessert Storm Ahead.mp3", 
+    "Industrial Breakdown.mp3", "Mental Breakdown.mp3", "Metal Gear 2 Solid Snake Chasing the Green Beret Remix.mp3", 
+    "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026.mp3", "Metal Gear 2 Solid Snake Level1 Warning Remix.mp3", 
+    "Metal Gear 2 Solid Snake Level3 Warning Remix.mp3", "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix.mp3", 
+    "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3", "Metal Gear 2 Solid Snake Freqency 140.85.mp3", "Ghostbusters 2 - Savin The Day Remix.mp3"
 ];
 
-const BASE_URL = "./";   // ← relativ → funktioniert auf GitHub Pages im selben Ordner
+const BASE_URL = "./";
+let currentIndex = 0;
+let audioCtx, analyser, dataArray, animationId;
+let visMode = 'ring';
+let customCanvasBg = null;
+let isRadioMode = false;
+let isLoopMode = false;
 
-let currentIndex     = 0;
-let audioCtx         = null;
-let analyser         = null;
-let dataArray        = null;
-let animationId      = null;
-let visMode          = 'ring';
-let customCanvasBg   = null;
-let isRadioMode      = false;
-let isLoopMode       = false;
+const audio = document.getElementById("audioPlayer");
+const logoImg = new Image();
+logoImg.src = BASE_URL + "DogVenomsnakeLogo.png";
 
-const audio      = document.getElementById("audioPlayer");
-const logoImg    = new Image();
-logoImg.src      = BASE_URL + "DogVenomsnakeLogo.png";
+const bgInput = document.getElementById('bgFileInput');
 
-const bgInput    = document.getElementById('bgFileInput');
+window.addEventListener('DOMContentLoaded', () => {
+    const mainSelect = document.getElementById("songSelect");
+    const visSelect = document.getElementById("visSongSelect");
+    visSelect.innerHTML = mainSelect.innerHTML;
+});
 
-// ──────────────────────────────────────────────────────────────
-//  AUDIO CONTEXT + MOBILE UNLOCK
-// ──────────────────────────────────────────────────────────────
 function unlockAudioContext() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -329,40 +303,60 @@ function unlockAudioContext() {
         analyser.fftSize = 256;
         dataArray = new Uint8Array(analyser.frequencyBinCount);
     }
-
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(e => console.warn("resume failed", e));
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(err => console.warn("AudioContext resume failed:", err));
     }
 }
 
-// ──────────────────────────────────────────────────────────────
-//  SONG LADEN (relativer Pfad)
-// ──────────────────────────────────────────────────────────────
-function loadSong(index) {
-    currentIndex = parseInt(index);
-    const filename = songs[currentIndex];
-    audio.src = BASE_URL + encodeURIComponent(filename);
-
-    document.getElementById("songSelect").value     = currentIndex;
-    document.getElementById("visSongSelect").value  = currentIndex;
-    document.getElementById("downloadBtn").href     = audio.src;
-
-    const title = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
-    document.getElementById("currentSong").textContent = "▶ " + title;
+function handleBackgroundOption(val) {
+    if(val === 'change') bgInput.click();
+    if(val === 'reset') {
+        localStorage.removeItem('codec_canvas_bg');
+        customCanvasBg = null;
+    }
 }
 
-// ──────────────────────────────────────────────────────────────
-//  PLAY / PAUSE
-// ──────────────────────────────────────────────────────────────
+bgInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgData = event.target.result;
+            localStorage.setItem('codec_canvas_bg', imgData);
+            loadCanvasBackground(imgData);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function loadCanvasBackground(data) {
+    const img = new Image();
+    img.onload = () => { customCanvasBg = img; };
+    img.src = data;
+}
+
+if(localStorage.getItem('codec_canvas_bg')) {
+    loadCanvasBackground(localStorage.getItem('codec_canvas_bg'));
+}
+
+function loadSong(index) {
+    currentIndex = parseInt(index);
+    audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
+    document.getElementById("songSelect").value = currentIndex;
+    document.getElementById("visSongSelect").value = currentIndex;
+    document.getElementById("downloadBtn").href = audio.src;
+    const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
+    document.getElementById("currentSong").textContent = "▶ " + songTitle;
+}
+
 function togglePlay() {
     unlockAudioContext();
-
     if (audio.paused) {
         audio.play()
             .then(() => updatePlayButtons("⏸ PAUSE"))
-            .catch(e => {
-                console.warn("play() fehlgeschlagen:", e);
-                document.getElementById("currentSong").textContent += "  (Play blockiert – nochmal tippen)";
+            .catch(err => {
+                console.warn("Playback failed:", err);
+                document.getElementById("currentSong").textContent += " (Playback blockiert – nochmal tippen)";
             });
     } else {
         audio.pause();
@@ -371,25 +365,18 @@ function togglePlay() {
 }
 
 function updatePlayButtons(text) {
-    document.getElementById("playPauseBtn").textContent   = text;
+    document.getElementById("playPauseBtn").textContent = text;
     document.getElementById("visPlayPauseBtn").textContent = text;
 }
 
-// ──────────────────────────────────────────────────────────────
-//  Rest der Logik (onended, radio, loop, visualizer, etc.)
-// ──────────────────────────────────────────────────────────────
 audio.onended = () => {
-    if (isLoopMode) {
-        audio.currentTime = 0;
-        audio.play();
-    } else if (isRadioMode) {
-        let rnd;
-        do { rnd = Math.floor(Math.random() * songs.length); }
-        while (rnd === currentIndex && songs.length > 1);
-        selectSong(rnd);
-    } else {
-        nextSong();
-    }
+    if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
+    else if (isRadioMode) {
+        let randomIndex;
+        do { randomIndex = Math.floor(Math.random() * songs.length); } 
+        while (randomIndex === currentIndex && songs.length > 1);
+        selectSong(randomIndex);
+    } else { nextSong(); }
 };
 
 function toggleRadioMode() {
@@ -405,14 +392,10 @@ function toggleLoopMode() {
 }
 
 function updateModeUI() {
-    const rb  = document.getElementById("radioModeBtn");
-    const lb  = document.getElementById("loopModeBtn");
-    const vrb = document.getElementById("visRadioBtn");
-    const vlb = document.getElementById("visLoopBtn");
-
+    const rb = document.getElementById("radioModeBtn"), lb = document.getElementById("loopModeBtn");
+    const vrb = document.getElementById("visRadioBtn"), vlb = document.getElementById("visLoopBtn");
     rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
-    lb.textContent = isLoopMode ? "🔂 LOOP: AN"  : "🔂 LOOP: AUS";
-
+    lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
     [rb, vrb].forEach(b => b.classList.toggle("active-mode", isRadioMode));
     [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
 }
@@ -421,24 +404,26 @@ function setVisMode(mode) { visMode = mode; }
 
 function draw() {
     animationId = requestAnimationFrame(draw);
-    if (!analyser) return;
-
     analyser.getByteFrequencyData(dataArray);
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
     if (customCanvasBg) {
-        ctx.globalAlpha = 0.7;
-        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 0.7; 
+        ctx.drawImage(
+            customCanvasBg, 
+            0, 0, 
+            canvas.width, 
+            canvas.height
+        );
         ctx.globalAlpha = 1.0;
     }
 
-    if (visMode === 'ring') drawRing(ctx, canvas);
-    else                    drawBars(ctx, canvas);
+    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
 }
 
-function drawRing(ctx, canvas) { /* ... dein bisheriger Ring-Code unverändert ... */ 
+function drawRing(ctx, canvas) {
     ctx.save();
     const centerX = canvas.width / 2, centerY = canvas.height / 2;
     const bufferLength = dataArray.length;
@@ -455,8 +440,7 @@ function drawRing(ctx, canvas) { /* ... dein bisheriger Ring-Code unverändert .
         const angle = (i / 80) * Math.PI * 2;
         const amp = dataArray[Math.floor(Math.abs((i % 40) - 20) * (bufferLength / 20))] / 255;
         const rayLength = amp * (ringRadius * 0.8);
-        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`;
-        ctx.lineWidth = 2 + amp * 5;
+        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`; ctx.lineWidth = 2 + amp * 5;
         ctx.beginPath();
         ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
         ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
@@ -465,7 +449,7 @@ function drawRing(ctx, canvas) { /* ... dein bisheriger Ring-Code unverändert .
     ctx.restore();
 }
 
-function drawBars(ctx, canvas) { /* ... dein bisheriger Bars-Code unverändert ... */ 
+function drawBars(ctx, canvas) {
     const barWidth = (canvas.width / dataArray.length) * 2.5;
     let x = 0;
     for (let i = 0; i < dataArray.length; i++) {
@@ -476,30 +460,30 @@ function drawBars(ctx, canvas) { /* ... dein bisheriger Bars-Code unverändert .
     }
 }
 
-function openVisualizer() {
+function openVisualizer() { 
     unlockAudioContext();
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
-    canvas.width  = window.innerWidth  * 0.9;
-    canvas.height = window.innerHeight * 0.6;
+    canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
     draw();
 }
 
-function closeVisualizer() {
-    document.getElementById("visualizerOverlay").classList.remove("active");
-    cancelAnimationFrame(animationId);
+function closeVisualizer() { 
+    document.getElementById("visualizerOverlay").classList.remove("active"); 
+    cancelAnimationFrame(animationId); 
 }
 
-function toggleFullscreen() {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
+function toggleFullscreen() { 
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen(); 
+    else document.exitFullscreen(); 
 }
 
 function selectSong(val) {
     loadSong(val);
     unlockAudioContext();
-    audio.play().catch(e => console.log("autoplay blocked:", e));
-    updatePlayButtons("⏸ PAUSE");
+    audio.play()
+        .then(() => updatePlayButtons("⏸ PAUSE"))
+        .catch(err => console.warn("autoplay failed:", err));
 }
 
 function nextSong() { selectSong((currentIndex + 1) % songs.length); }
@@ -507,36 +491,23 @@ function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.lengt
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
 
 audio.ontimeupdate = () => {
-    if (isNaN(audio.duration)) return;
-    const prog = (audio.currentTime / audio.duration) * 100;
-    document.getElementById("progress").value     = prog;
-    document.getElementById("visProgress").value  = prog;
-    document.getElementById("timeLabel").textContent     =
-    document.getElementById("visTimeLabel").textContent  = formatTime(audio.currentTime);
-    document.getElementById("durationLabel").textContent =
-    document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
+    if(!isNaN(audio.duration)) {
+        const prog = (audio.currentTime / audio.duration) * 100;
+        document.getElementById("progress").value = prog;
+        document.getElementById("visProgress").value = prog;
+        document.getElementById("timeLabel").textContent = document.getElementById("visTimeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("durationLabel").textContent = document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
+    }
 };
 
 document.getElementById("volumeSlider").oninput = function() {
     audio.volume = this.value;
     document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
 };
+document.getElementById("progress").oninput = function() { seekAudio(this.value); };
 
-document.getElementById("progress").oninput = function() {
-    seekAudio(this.value);
-};
-
-function formatTime(s) {
-    let m = Math.floor(s / 60);
-    let sec = Math.floor(s % 60).toString().padStart(2, '0');
-    return m + ":" + sec;
-}
-
-window.onload = () => {
-    loadSong(0);
-    audio.volume = 0.5;
-};
+function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
+window.onload = () => { loadSong(0); audio.volume = 0.5; };
 </script>
-
 </body>
 </html>
