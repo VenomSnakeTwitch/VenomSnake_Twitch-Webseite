@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CODEC // VenomSnake_Twitch</title>
-    
-    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
+
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -50,7 +50,7 @@
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
         .main-container { max-width: 1000px; margin: 100px auto 50px; padding: 0 20px; text-align: center; }
-        
+
         .player-box {
             background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem;
             position: relative; box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1); width: 100%;
@@ -58,7 +58,7 @@
         }
 
         h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2rem; }
-        
+
         .suno-notice {
             background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 12px;
             margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase;
@@ -68,14 +68,14 @@
         #currentSong { color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; }
 
         .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        
+
         select, button, .download-btn, .home-btn {
             background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
             padding: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; cursor: pointer;
             font-size: 0.75rem; transition: 0.2s; text-decoration: none; text-align: center;
         }
         button:hover, select:hover, .download-btn:hover, .home-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
-        
+
         .active-mode { background: var(--mgs-green) !important; color: #000 !important; }
 
         .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
@@ -96,7 +96,7 @@
         }
         #visualizerOverlay.active { display: flex; }
         #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
-        
+
         .vis-player-ui {
             margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green);
             background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
@@ -113,7 +113,7 @@
 <nav class="nav">
     <div class="nav-container">
         <a href="index.html" class="logo">
-            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
+            <img src="./DogVenomsnakeLogo.png" alt="Logo">
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
         <div class="nav-controls">
@@ -273,7 +273,7 @@ const songs = [
     "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3", "Metal Gear 2 Solid Snake Freqency 140.85.mp3", "Ghostbusters 2 - Savin The Day Remix.mp3"
 ];
 
-const BASE_URL = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/";
+const BASE_URL = "./";
 let currentIndex = 0;
 let audioCtx, analyser, dataArray, animationId;
 let visMode = 'ring';
@@ -283,7 +283,7 @@ let isLoopMode = false;
 
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
-logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
+logoImg.src = BASE_URL + "DogVenomsnakeLogo.png";
 
 const bgInput = document.getElementById('bgFileInput');
 
@@ -394,7 +394,7 @@ function draw() {
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    
+
     // BILD WIRD JETZT ÜBER DEN GESAMTEN CANVAS GESTRECKT
     if (customCanvasBg) {
         ctx.globalAlpha = 0.7; 
@@ -406,7 +406,7 @@ function draw() {
         );
         ctx.globalAlpha = 1.0;
     }
-    
+
     if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
 }
 
