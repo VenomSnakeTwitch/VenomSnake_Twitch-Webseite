@@ -107,9 +107,12 @@
 
         @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
 
-        /* ────────────── Pitch Slider ────────────── */
+        /* ────────────── Pitch & Tempo Slider ────────────── */
         #pitchSlider {
-            accent-color: #ffcc00; /* gelb-orange, damit er sich abhebt */
+            accent-color: #ffcc00; /* gelb-orange */
+        }
+        #tempoSlider {
+            accent-color: #ff6600; /* orangerot, damit er sich abhebt */
         }
     </style>
 </head>
@@ -191,11 +194,17 @@
             <span class="slider-label" id="volumeLabel">50%</span>
         </div>
 
-        <!-- ────────────── NEUER PITCH-SLIDER ────────────── -->
         <div class="slider-row">
             <span class="slider-label">PITCH</span>
             <input type="range" id="pitchSlider" min="-12" max="12" step="1" value="0">
             <span class="slider-label" id="pitchLabel">0</span>
+        </div>
+
+        <!-- ────────────── NEUER TEMPO-SLIDER ────────────── -->
+        <div class="slider-row">
+            <span class="slider-label">TEMPO</span>
+            <input type="range" id="tempoSlider" min="50" max="200" step="10" value="100">
+            <span class="slider-label" id="tempoLabel">100%</span>
         </div>
 
         <div class="control-grid">
@@ -495,18 +504,28 @@ document.getElementById("pitchSlider").oninput = function() {
     const semitones = parseInt(this.value);
     document.getElementById("pitchLabel").textContent = semitones >= 0 ? "+" + semitones : semitones;
 
-    // Einfacher Pitch über playbackRate (ändert auch Tempo leicht mit)
     const rate = Math.pow(2, semitones / 12);
     audio.playbackRate = rate;
+};
+
+// ────────────── TEMPO-REGELER (Speed) ──────────────
+document.getElementById("tempoSlider").oninput = function() {
+    const percent = parseInt(this.value);
+    document.getElementById("tempoLabel").textContent = percent + "%";
+
+    // Tempo = Playback-Rate in Prozent (100% = normal)
+    audio.playbackRate = percent / 100;
 };
 
 function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
 window.onload = () => { 
     loadSong(0); 
     audio.volume = 0.5; 
-    // Pitch beim Laden auf 0 setzen (falls nötig)
+    // Pitch & Tempo beim Laden zurücksetzen
     document.getElementById("pitchSlider").value = 0;
     document.getElementById("pitchLabel").textContent = "0";
+    document.getElementById("tempoSlider").value = 100;
+    document.getElementById("tempoLabel").textContent = "100%";
 };
 </script>
 </body>
