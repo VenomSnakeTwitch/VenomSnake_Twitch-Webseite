@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CODEC // VenomSnake_Twitch</title>
 
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Tone.js für unabhängiges Pitch-Shifting und Tempo -->
+    <!-- Tone.js für unabhängiges Pitch & Tempo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
@@ -82,9 +82,12 @@
         .active-mode { background: var(--mgs-green) !important; color: #000 !important; }
 
         .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
-        .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 50px; font-weight: bold; }
+        .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
 
         input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none; }
+
+        #pitchSlider { accent-color: #ffcc00; }
+        #tempoSlider  { accent-color: #ff6600; }
 
         #infoBox {
             margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
@@ -110,29 +113,6 @@
 
         @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
 
-        #pitchSlider   { accent-color: #ffcc00; }
-        #tempoSlider   { accent-color: #ff6600; }
-
-        .loading-indicator {
-            display: none;
-            color: var(--mgs-green);
-            font-size: 0.8rem;
-            padding: 10px;
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px dashed var(--mgs-green);
-            margin-bottom: 10px;
-            animation: pulse 1s infinite;
-        }
-
-        .loading-indicator.active {
-            display: block;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
         .reset-btn {
             background: transparent;
             border: 1px solid #ff6600;
@@ -141,7 +121,6 @@
             font-size: 0.65rem;
             cursor: pointer;
         }
-
         .reset-btn:hover {
             background: #ff6600;
             color: #000;
@@ -153,7 +132,7 @@
 <nav class="nav">
     <div class="nav-container">
         <a href="index.html" class="logo">
-            <img src="./DogVenomsnakeLogo.png" alt="Logo">
+            <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span>VENOM_SNAKE_AUDIO</span>
         </a>
         <div class="nav-controls">
@@ -170,10 +149,6 @@
             [ STATUS: TRANSMISSION ACTIVE ]<br>
             Hier werden alle Songs hochgeladen, die ich auf <strong>Suno.com</strong> erstelle.<br>
             <small style="color: #ffcc00;">⚡ PITCH & TEMPO sind jetzt UNABHÄNGIG steuerbar!</small>
-        </div>
-
-        <div id="loadingIndicator" class="loading-indicator">
-            ⏳ LADE AUDIO... BITTE WARTEN...
         </div>
 
         <h2 id="currentSong">INITIALISIERE...</h2>
@@ -332,22 +307,22 @@ const songs = [
     "Ghostbusters 2 - Savin The Day Remix.mp3"
 ];
 
-const BASE_URL = "./";
+const BASE_URL = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/";
+
 let currentIndex = 0;
-let animationId = null;
+let audioCtx, analyser, dataArray, animationId;
 let visMode = 'ring';
 let customCanvasBg = null;
 let isRadioMode = false;
 let isLoopMode = false;
 
-// TONE.JS VARIABLEN
+// Tone.js Variablen
 let player = null;
 let pitchShift = null;
 let isPlaying = false;
 let currentPitch = 0;
 let currentTempo = 1.0;
 let songDuration = 0;
-let updateInterval = null;
 
 const logoImg = new Image();
 logoImg.src = BASE_URL + "DogVenomsnakeLogo.png";
@@ -367,8 +342,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initTonePlayer(songUrl) {
-    showLoading(true);
-
     if (player) {
         player.stop();
         player.dispose();
@@ -377,58 +350,26 @@ async function initTonePlayer(songUrl) {
         pitchShift.dispose();
     }
 
-    try {
-        pitchShift = new Tone.PitchShift({
-            pitch: currentPitch,
-            windowSize: 0.1,
-            delayTime: 0,
-            feedback: 0
-        }).toDestination();
+    pitchShift = new Tone.PitchShift({ pitch: currentPitch }).toDestination();
 
-        player = new Tone.Player({
-            url: songUrl,
-            onload: () => {
-                songDuration = player.buffer.duration;
-                document.getElementById("durationLabel").textContent = formatTime(songDuration);
-                document.getElementById("visDurationLabel").textContent = formatTime(songDuration);
-                showLoading(false);
-                console.log(`[SUCCESS] Audio geladen: \( {songUrl} ( \){songDuration.toFixed(1)}s)`);
-            },
-            onerror: (err) => {
-                showLoading(false);
-                const fileName = songs[currentIndex];
-                const errorText = `FEHLER BEIM LADEN\n\n` +
-                                  `Datei: ${fileName}\n` +
-                                  `Gesuchte URL: ${songUrl}\n\n` +
-                                  `→ Meistens 404 → Datei fehlt im Ordner oder Name stimmt nicht 100% überein\n` +
-                                  `→ Prüfe Groß-/Kleinschreibung, Leerzeichen, Tippfehler (z.B. Freqency statt Frequency)\n` +
-                                  `→ Öffne F12 → Network-Tab und lade neu → suche nach ${fileName}`;
-                document.getElementById("currentSong").textContent = errorText;
-                console.error("Audio-Ladefehler:", {
-                    requestedUrl: songUrl,
-                    fileName: fileName,
-                    error: err
-                });
-            }
-        });
+    player = new Tone.Player({
+        url: songUrl,
+        onload: () => {
+            songDuration = player.buffer.duration;
+            document.getElementById("durationLabel").textContent = formatTime(songDuration);
+            document.getElementById("visDurationLabel").textContent = formatTime(songDuration);
+        },
+        onerror: () => {
+            document.getElementById("currentSong").textContent = "❌ FEHLER BEIM LADEN\n" + songs[currentIndex] + "\n(Datei existiert nicht oder falscher Pfad)";
+        }
+    });
 
-        player.connect(pitchShift);
-        player.playbackRate = currentTempo;
-        pitchShift.pitch = currentPitch;
-        player.loop = isLoopMode;
-
-    } catch (err) {
-        console.error("Tone.js Initialisierungsfehler:", err);
-        showLoading(false);
-        document.getElementById("currentSong").textContent = "❌ Tone.js konnte nicht initialisiert werden – siehe Konsole (F12)";
-    }
+    player.connect(pitchShift);
+    player.playbackRate = currentTempo;
+    player.loop = isLoopMode;
 }
 
-function showLoading(show) {
-    document.getElementById("loadingIndicator").classList.toggle("active", show);
-}
-
-async function loadSong(index) {
+function loadSong(index) {
     currentIndex = parseInt(index);
     const songUrl = BASE_URL + encodeURIComponent(songs[currentIndex]);
 
@@ -437,104 +378,24 @@ async function loadSong(index) {
     document.getElementById("downloadBtn").href = songUrl;
 
     const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
-    document.getElementById("currentSong").textContent = "Lade: " + songTitle + "\n(bitte warten ...)";
+    document.getElementById("currentSong").textContent = "Lade: " + songTitle;
 
-    if (isPlaying) {
-        stopPlayback();
-    }
-
-    document.getElementById("progress").value = 0;
-    document.getElementById("visProgress").value = 0;
-    document.getElementById("timeLabel").textContent = "0:00";
-    document.getElementById("visTimeLabel").textContent = "0:00";
-
-    console.log(`[LOAD] Versuche zu laden: ${songUrl}`);
-
-    await initTonePlayer(songUrl);
+    initTonePlayer(songUrl);
 }
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Der Rest des Codes bleibt **exakt gleich** wie in deiner Originalversion
-// (togglePlay, startPlayback, stopPlayback, startTimeUpdate, seekAudio usw.)
-// Kopiere einfach den restlichen <script>-Inhalt ab hier aus deinem Original
-// ──────────────────────────────────────────────────────────────────────────────
 
 async function togglePlay() {
     await Tone.start();
 
-    if (!player || !player.loaded) {
-        console.warn("Player nicht bereit – warte auf Laden oder versuche erneut");
-        return;
-    }
-
-    if (isPlaying) {
-        stopPlayback();
-    } else {
-        startPlayback();
-    }
-}
-
-function startPlayback() {
     if (!player || !player.loaded) return;
 
-    player.start();
-    isPlaying = true;
-    updatePlayButtons("⏸ PAUSE");
-    startTimeUpdate();
-}
-
-function stopPlayback() {
-    if (player) {
+    if (isPlaying) {
         player.stop();
-    }
-    isPlaying = false;
-    updatePlayButtons("▶ PLAY");
-    stopTimeUpdate();
-}
-
-function startTimeUpdate() {
-    stopTimeUpdate();
-
-    const startTime = Tone.now();
-
-    updateInterval = setInterval(() => {
-        if (player && player.state === "started" && songDuration > 0) {
-            const elapsed = (Tone.now() - startTime) * currentTempo;
-            const currentTime = Math.min(elapsed, songDuration);
-            const progress = (currentTime / songDuration) * 100;
-
-            document.getElementById("progress").value = progress;
-            document.getElementById("visProgress").value = progress;
-            document.getElementById("timeLabel").textContent = formatTime(currentTime);
-            document.getElementById("visTimeLabel").textContent = formatTime(currentTime);
-
-            if (currentTime >= songDuration - 0.1) {
-                handleSongEnd();
-            }
-        }
-    }, 100);
-}
-
-function stopTimeUpdate() {
-    if (updateInterval) {
-        clearInterval(updateInterval);
-        updateInterval = null;
-    }
-}
-
-function handleSongEnd() {
-    stopPlayback();
-
-    if (isLoopMode) {
-        startPlayback();
-    } else if (isRadioMode) {
-        let randomIndex;
-        do { 
-            randomIndex = Math.floor(Math.random() * songs.length); 
-        } while (randomIndex === currentIndex && songs.length > 1);
-        selectSong(randomIndex);
+        isPlaying = false;
+        updatePlayButtons("▶ PLAY");
     } else {
-        nextSong();
+        player.start();
+        isPlaying = true;
+        updatePlayButtons("⏸ PAUSE");
     }
 }
 
@@ -543,98 +404,57 @@ function updatePlayButtons(text) {
     document.getElementById("visPlayPauseBtn").textContent = text;
 }
 
-// PITCH STEUERUNG
+// Pitch
 document.getElementById("pitchSlider").oninput = function() {
     currentPitch = parseInt(this.value);
-    const label = currentPitch >= 0 ? "+" + currentPitch + " st" : currentPitch + " st";
-    document.getElementById("pitchLabel").textContent = label;
-
-    if (pitchShift) {
-        pitchShift.pitch = currentPitch;
-    }
+    document.getElementById("pitchLabel").textContent = (currentPitch >= 0 ? "+" : "") + currentPitch + " st";
+    if (pitchShift) pitchShift.pitch = currentPitch;
 };
 
 function resetPitch() {
     currentPitch = 0;
     document.getElementById("pitchSlider").value = 0;
     document.getElementById("pitchLabel").textContent = "0 st";
-    if (pitchShift) {
-        pitchShift.pitch = 0;
-    }
+    if (pitchShift) pitchShift.pitch = 0;
 }
 
-// TEMPO STEUERUNG
+// Tempo
 document.getElementById("tempoSlider").oninput = function() {
     const percent = parseInt(this.value);
     currentTempo = percent / 100;
     document.getElementById("tempoLabel").textContent = percent + "%";
-
-    if (player) {
-        player.playbackRate = currentTempo;
-    }
+    if (player) player.playbackRate = currentTempo;
 };
 
 function resetTempo() {
     currentTempo = 1.0;
     document.getElementById("tempoSlider").value = 100;
     document.getElementById("tempoLabel").textContent = "100%";
-    if (player) {
-        player.playbackRate = 1.0;
-    }
+    if (player) player.playbackRate = 1.0;
 }
 
-// LAUTSTÄRKE
+// Volume (bleibt bei normalem Audio-Element-Style, aber wir nutzen Tone)
 document.getElementById("volumeSlider").oninput = function() {
-    const volume = parseFloat(this.value);
-    document.getElementById("volumeLabel").textContent = Math.round(volume * 100) + "%";
-
-    if (player) {
-        const db = volume > 0 ? 20 * Math.log10(volume) : -Infinity;
-        player.volume.value = db;
-    }
-};
-
-// SEEK / PROGRESS
-document.getElementById("progress").oninput = function() {
-    seekAudio(this.value);
+    const vol = parseFloat(this.value);
+    document.getElementById("volumeLabel").textContent = Math.round(vol * 100) + "%";
+    if (player) player.volume.value = vol > 0 ? 20 * Math.log10(vol) : -Infinity;
 };
 
 function seekAudio(val) {
-    if (!player || !player.loaded || songDuration <= 0) return;
-
-    const seekTime = (val / 100) * songDuration;
-    const wasPlaying = isPlaying;
-
-    if (wasPlaying) {
-        player.stop();
-    }
-
-    if (wasPlaying) {
-        player.start(undefined, seekTime);
-    }
-
-    document.getElementById("timeLabel").textContent = formatTime(seekTime);
-    document.getElementById("visTimeLabel").textContent = formatTime(seekTime);
+    if (!player || !songDuration) return;
+    const time = (val / 100) * songDuration;
+    player.seek(time);
 }
 
-async function selectSong(val) {
-    await loadSong(val);
-
-    setTimeout(async () => {
-        await Tone.start();
-        if (player && player.loaded) {
-            startPlayback();
-        }
-    }, 500);
+function selectSong(val) {
+    loadSong(val);
+    setTimeout(() => {
+        if (player && player.loaded) togglePlay();
+    }, 800);
 }
 
-function nextSong() { 
-    selectSong((currentIndex + 1) % songs.length); 
-}
-
-function prevSong() { 
-    selectSong((currentIndex - 1 + songs.length) % songs.length); 
-}
+function nextSong() { selectSong((currentIndex + 1) % songs.length); }
+function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 
 function toggleRadioMode() {
     isRadioMode = !isRadioMode;
@@ -645,11 +465,7 @@ function toggleRadioMode() {
 function toggleLoopMode() {
     isLoopMode = !isLoopMode;
     if (isLoopMode) isRadioMode = false;
-
-    if (player) {
-        player.loop = isLoopMode;
-    }
-
+    if (player) player.loop = isLoopMode;
     updateModeUI();
 }
 
@@ -666,14 +482,21 @@ function updateModeUI() {
     [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
 }
 
-// VISUALIZER (unverändert)
-function setVisMode(mode) { 
-    visMode = mode; 
+// Der restliche Visualizer-Code bleibt identisch (initAudioSystem, draw, drawRing, drawBars, openVisualizer usw.)
+// --------------------------------------------------------------------------------------
+
+function initAudioSystem() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    // Hinweis: Da wir jetzt Tone nutzen, verbinden wir den Analyser nicht mehr direkt – Visualizer bleibt simuliert
 }
+
+function setVisMode(mode) { visMode = mode; }
 
 function draw() {
     animationId = requestAnimationFrame(draw);
-
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -684,25 +507,17 @@ function draw() {
         ctx.globalAlpha = 1.0;
     }
 
-    if (isPlaying) {
-        if (visMode === 'ring') {
-            drawRingSimulated(ctx, canvas);
-        } else {
-            drawBarsSimulated(ctx, canvas);
-        }
+    if (visMode === 'ring') {
+        drawRing(ctx, canvas);
     } else {
-        drawStaticLogo(ctx, canvas);
+        drawBars(ctx, canvas);
     }
 }
 
-// … (die restlichen Visualizer-Funktionen drawRingSimulated, drawBarsSimulated, drawStaticLogo, openVisualizer, closeVisualizer, handleBackgroundOption, loadCanvasBackground, toggleFullscreen, formatTime bleiben exakt wie im Original)
-
-function drawRingSimulated(ctx, canvas) {
+function drawRing(ctx, canvas) {
     ctx.save();
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    const centerX = canvas.width / 2, centerY = canvas.height / 2;
     const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-
     const time = Date.now() / 1000;
     const pulse = Math.sin(time * 4) * 20 + Math.sin(time * 7) * 10;
     const logoSize = logoBase + pulse;
@@ -726,11 +541,10 @@ function drawRingSimulated(ctx, canvas) {
         ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
         ctx.stroke();
     }
-
     ctx.restore();
 }
 
-function drawBarsSimulated(ctx, canvas) {
+function drawBars(ctx, canvas) {
     const barCount = 64;
     const barWidth = canvas.width / barCount;
     const time = Date.now() / 1000;
@@ -748,18 +562,6 @@ function drawBarsSimulated(ctx, canvas) {
     }
 }
 
-function drawStaticLogo(ctx, canvas) {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const logoSize = Math.min(canvas.width, canvas.height) * 0.35;
-
-    if (logoImg.complete) {
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = 'rgba(0, 255, 65, 0.3)';
-        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
-    }
-}
-
 function openVisualizer() {
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
@@ -770,10 +572,7 @@ function openVisualizer() {
 
 function closeVisualizer() {
     document.getElementById("visualizerOverlay").classList.remove("active");
-    if (animationId) {
-        cancelAnimationFrame(animationId);
-        animationId = null;
-    }
+    if (animationId) cancelAnimationFrame(animationId);
 }
 
 function handleBackgroundOption(val) {
