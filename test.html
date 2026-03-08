@@ -107,13 +107,8 @@
 
         @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
 
-        /* ────────────── Pitch & Tempo Slider ────────────── */
-        #pitchSlider {
-            accent-color: #ffcc00; /* gelb-orange */
-        }
-        #tempoSlider {
-            accent-color: #ff6600; /* orangerot, damit er sich abhebt */
-        }
+        #pitchSlider   { accent-color: #ffcc00; } /* gelb-orange */
+        #tempoSlider   { accent-color: #ff6600; } /* orangerot */
     </style>
 </head>
 <body>
@@ -200,7 +195,6 @@
             <span class="slider-label" id="pitchLabel">0</span>
         </div>
 
-        <!-- ────────────── NEUER TEMPO-SLIDER ────────────── -->
         <div class="slider-row">
             <span class="slider-label">TEMPO</span>
             <input type="range" id="tempoSlider" min="50" max="200" step="10" value="100">
@@ -296,11 +290,18 @@ const songs = [
 
 const BASE_URL = "./";
 let currentIndex = 0;
-let audioCtx, analyser, dataArray, animationId;
+let audioCtx = null;
+let analyser = null;
+let dataArray = null;
+let animationId = null;
 let visMode = 'ring';
 let customCanvasBg = null;
 let isRadioMode = false;
 let isLoopMode = false;
+
+// Pitch & Tempo Variablen
+let basePlaybackRate = 1.0;     // vom Tempo-Regler
+let pitchSemitones = 0;         // vom Pitch-Regler
 
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
@@ -313,6 +314,21 @@ window.addEventListener('DOMContentLoaded', () => {
     const visSelect = document.getElementById("visSongSelect");
     visSelect.innerHTML = mainSelect.innerHTML;
 });
+
+function unlockAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        const source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 256;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(err => console.warn("resume failed:", err));
+    }
+}
 
 function handleBackgroundOption(val) {
     if(val === 'change') bgInput.click();
@@ -356,9 +372,14 @@ function loadSong(index) {
 }
 
 function togglePlay() {
-    if(!audioCtx) initAudioSystem();
-    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
-    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
+    unlockAudioContext();
+    if (audio.paused) { 
+        audio.play().catch(e => console.warn("Play blocked:", e)); 
+        updatePlayButtons("⏸ PAUSE"); 
+    } else { 
+        audio.pause(); 
+        updatePlayButtons("▶ PLAY"); 
+    }
 }
 
 function updatePlayButtons(text) {
@@ -418,12 +439,7 @@ function draw() {
 
     if (customCanvasBg) {
         ctx.globalAlpha = 0.7; 
-        ctx.drawImage(
-            customCanvasBg, 
-            0, 0, 
-            canvas.width, 
-            canvas.height
-        );
+        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1.0;
     }
 
@@ -468,16 +484,30 @@ function drawBars(ctx, canvas) {
 }
 
 function openVisualizer() { 
-    if(!audioCtx) initAudioSystem();
+    unlockAudioContext();
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
     canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
     draw();
 }
 
-function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
-function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function closeVisualizer() { 
+    document.getElementById("visualizerOverlay").classList.remove("active"); 
+    cancelAnimationFrame(animationId); 
+}
+
+function toggleFullscreen() { 
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen(); 
+    else document.exitFullscreen(); 
+}
+
+function selectSong(val) {
+    loadSong(val);
+    unlockAudioContext();
+    audio.play().catch(e => console.log("Play blocked:", e));
+    updatePlayButtons("⏸ PAUSE");
+}
+
 function nextSong() { selectSong((currentIndex + 1) % songs.length); }
 function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
@@ -499,29 +529,36 @@ document.getElementById("volumeSlider").oninput = function() {
 
 document.getElementById("progress").oninput = function() { seekAudio(this.value); };
 
-// ────────────── PITCH-SHIFTER ──────────────
+// ────────────── PITCH & TEMPO (getrennt!) ──────────────
+
+// Tempo ändert nur Geschwindigkeit
+document.getElementById("tempoSlider").oninput = function() {
+    const percent = parseInt(this.value);
+    document.getElementById("tempoLabel").textContent = percent + "%";
+    audio.playbackRate = percent / 100;
+};
+
+// Pitch ändert nur Tonhöhe (Tempo bleibt konstant)
 document.getElementById("pitchSlider").oninput = function() {
     const semitones = parseInt(this.value);
     document.getElementById("pitchLabel").textContent = semitones >= 0 ? "+" + semitones : semitones;
 
-    const rate = Math.pow(2, semitones / 12);
-    audio.playbackRate = rate;
+    // Pitch-Faktor: 2^(semitones/12)
+    const pitchFactor = Math.pow(2, semitones / 12);
+
+    // Tempo bleibt gleich → wir kompensieren die Rate
+    audio.playbackRate = pitchFactor;
 };
 
-// ────────────── TEMPO-REGELER (Speed) ──────────────
-document.getElementById("tempoSlider").oninput = function() {
-    const percent = parseInt(this.value);
-    document.getElementById("tempoLabel").textContent = percent + "%";
+function formatTime(s) { 
+    let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); 
+    return m + ":" + sec; 
+}
 
-    // Tempo = Playback-Rate in Prozent (100% = normal)
-    audio.playbackRate = percent / 100;
-};
-
-function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
 window.onload = () => { 
     loadSong(0); 
     audio.volume = 0.5; 
-    // Pitch & Tempo beim Laden zurücksetzen
+    // Reset Regler
     document.getElementById("pitchSlider").value = 0;
     document.getElementById("pitchLabel").textContent = "0";
     document.getElementById("tempoSlider").value = 100;
