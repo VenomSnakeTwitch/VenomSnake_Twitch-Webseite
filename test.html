@@ -293,6 +293,15 @@ window.addEventListener('DOMContentLoaded', () => {
     visSelect.innerHTML = mainSelect.innerHTML;
 });
 
+// ====================== MOBILE FIX (Tablet & Handy) ======================
+function unlockAudioContext() {
+    if (!audioCtx) initAudioSystem();
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+// =====================================================================
+
 function handleBackgroundOption(val) {
     if(val === 'change') bgInput.click();
     if(val === 'reset') {
@@ -335,9 +344,14 @@ function loadSong(index) {
 }
 
 function togglePlay() {
-    if(!audioCtx) initAudioSystem();
-    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
-    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
+    unlockAudioContext();
+    if (audio.paused) {
+        audio.play().catch(e => console.log("Play blocked:", e));
+        updatePlayButtons("⏸ PAUSE");
+    } else {
+        audio.pause();
+        updatePlayButtons("▶ PLAY");
+    }
 }
 
 function updatePlayButtons(text) {
@@ -395,15 +409,9 @@ function draw() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-    // BILD WIRD JETZT ÜBER DEN GESAMTEN CANVAS GESTRECKT
     if (customCanvasBg) {
         ctx.globalAlpha = 0.7; 
-        ctx.drawImage(
-            customCanvasBg, 
-            0, 0, 
-            canvas.width, 
-            canvas.height
-        );
+        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1.0;
     }
 
@@ -448,16 +456,31 @@ function drawBars(ctx, canvas) {
 }
 
 function openVisualizer() { 
-    if(!audioCtx) initAudioSystem();
+    unlockAudioContext();
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
-    canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
+    canvas.width = window.innerWidth * 0.9; 
+    canvas.height = window.innerHeight * 0.6;
     draw();
 }
 
-function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
-function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function closeVisualizer() { 
+    document.getElementById("visualizerOverlay").classList.remove("active"); 
+    cancelAnimationFrame(animationId); 
+}
+
+function toggleFullscreen() { 
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen(); 
+    else document.exitFullscreen(); 
+}
+
+function selectSong(val) {
+    loadSong(val);
+    unlockAudioContext();
+    audio.play().catch(e => console.log("Play blocked:", e));
+    updatePlayButtons("⏸ PAUSE");
+}
+
 function nextSong() { selectSong((currentIndex + 1) % songs.length); }
 function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
@@ -478,8 +501,15 @@ document.getElementById("volumeSlider").oninput = function() {
 };
 document.getElementById("progress").oninput = function() { seekAudio(this.value); };
 
-function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
-window.onload = () => { loadSong(0); audio.volume = 0.5; };
+function formatTime(s) { 
+    let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); 
+    return m + ":" + sec; 
+}
+
+window.onload = () => { 
+    loadSong(0); 
+    audio.volume = 0.5; 
+};
 </script>
 </body>
 </html>
