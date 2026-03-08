@@ -293,21 +293,6 @@ window.addEventListener('DOMContentLoaded', () => {
     visSelect.innerHTML = mainSelect.innerHTML;
 });
 
-function unlockAudioContext() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        const source = audioCtx.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        analyser.fftSize = 256;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-    }
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(err => console.warn("AudioContext resume failed:", err));
-    }
-}
-
 function handleBackgroundOption(val) {
     if(val === 'change') bgInput.click();
     if(val === 'reset') {
@@ -350,18 +335,9 @@ function loadSong(index) {
 }
 
 function togglePlay() {
-    unlockAudioContext();
-    if (audio.paused) {
-        audio.play()
-            .then(() => updatePlayButtons("⏸ PAUSE"))
-            .catch(err => {
-                console.warn("Playback failed:", err);
-                document.getElementById("currentSong").textContent += " (Playback blockiert – nochmal tippen)";
-            });
-    } else {
-        audio.pause();
-        updatePlayButtons("▶ PLAY");
-    }
+    if(!audioCtx) initAudioSystem();
+    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
+    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
 }
 
 function updatePlayButtons(text) {
@@ -400,6 +376,16 @@ function updateModeUI() {
     [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
 }
 
+function initAudioSystem() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    const source = audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+}
+
 function setVisMode(mode) { visMode = mode; }
 
 function draw() {
@@ -409,6 +395,7 @@ function draw() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
+    // BILD WIRD JETZT ÜBER DEN GESAMTEN CANVAS GESTRECKT
     if (customCanvasBg) {
         ctx.globalAlpha = 0.7; 
         ctx.drawImage(
@@ -461,31 +448,16 @@ function drawBars(ctx, canvas) {
 }
 
 function openVisualizer() { 
-    unlockAudioContext();
+    if(!audioCtx) initAudioSystem();
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
     canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
     draw();
 }
 
-function closeVisualizer() { 
-    document.getElementById("visualizerOverlay").classList.remove("active"); 
-    cancelAnimationFrame(animationId); 
-}
-
-function toggleFullscreen() { 
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen(); 
-    else document.exitFullscreen(); 
-}
-
-function selectSong(val) {
-    loadSong(val);
-    unlockAudioContext();
-    audio.play()
-        .then(() => updatePlayButtons("⏸ PAUSE"))
-        .catch(err => console.warn("autoplay failed:", err));
-}
-
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
+function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
 function nextSong() { selectSong((currentIndex + 1) % songs.length); }
 function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
