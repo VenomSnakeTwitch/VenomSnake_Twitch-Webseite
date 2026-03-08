@@ -317,7 +317,6 @@
 </footer>
 
 <script>
-// ... (der komplette JavaScript-Code bleibt unverändert, nur ohne Zeilennummern)
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3", "Ghost Town by VenomSnake_Twitch.mp3", "Wreckfest.mp3", 
     "In The Air Tonight(VenomSnake_Twitch).mp3", "Paradies City.mp3", "Parasitäres Bewustsein.mp3", 
@@ -341,15 +340,12 @@ let customCanvasBg = null;
 let isRadioMode = false;
 let isLoopMode = false;
 
-// ═══════════════════════════════════════════════════════════
 // TONE.JS VARIABLEN für unabhängiges Pitch & Tempo
-// ═══════════════════════════════════════════════════════════
-let player = null;           // Tone.Player für Audio-Wiedergabe
-let pitchShift = null;       // Tone.PitchShift Effekt
-let analyserNode = null;     // Für Visualizer
+let player = null;
+let pitchShift = null;
 let isPlaying = false;
-let currentPitch = 0;        // Semitones (-12 bis +12)
-let currentTempo = 1.0;      // Playback Rate (0.5 bis 2.0)
+let currentPitch = 0;
+let currentTempo = 1.0;
 let songDuration = 0;
 let updateInterval = null;
 
@@ -358,8 +354,446 @@ logoImg.src = BASE_URL + "DogVenomsnakeLogo.png";
 
 const bgInput = document.getElementById('bgFileInput');
 
-// ... (Rest des Scripts unverändert)
+window.addEventListener('DOMContentLoaded', () => {
+    const mainSelect = document.getElementById("songSelect");
+    const visSelect = document.getElementById("visSongSelect");
+    visSelect.innerHTML = mainSelect.innerHTML;
+    
+    if(localStorage.getItem('codec_canvas_bg')) {
+        loadCanvasBackground(localStorage.getItem('codec_canvas_bg'));
+    }
+    
+    loadSong(0);
+});
 
+async function initTonePlayer(songUrl) {
+    showLoading(true);
+    
+    if (player) {
+        player.stop();
+        player.dispose();
+    }
+    if (pitchShift) {
+        pitchShift.dispose();
+    }
+    
+    try {
+        pitchShift = new Tone.PitchShift({
+            pitch: currentPitch,
+            windowSize: 0.1,
+            delayTime: 0,
+            feedback: 0
+        }).toDestination();
+        
+        player = new Tone.Player({
+            url: songUrl,
+            onload: () => {
+                songDuration = player.buffer.duration;
+                document.getElementById("durationLabel").textContent = formatTime(songDuration);
+                document.getElementById("visDurationLabel").textContent = formatTime(songDuration);
+                showLoading(false);
+            },
+            onerror: (err) => {
+                console.error("Fehler beim Laden:", err);
+                showLoading(false);
+                document.getElementById("currentSong").textContent = "❌ FEHLER BEIM LADEN";
+            }
+        });
+        
+        player.connect(pitchShift);
+        player.playbackRate = currentTempo;
+        pitchShift.pitch = currentPitch;
+        player.loop = isLoopMode;
+        
+    } catch (err) {
+        console.error("Tone.js Initialisierungsfehler:", err);
+        showLoading(false);
+    }
+}
+
+function showLoading(show) {
+    document.getElementById("loadingIndicator").classList.toggle("active", show);
+}
+
+async function loadSong(index) {
+    currentIndex = parseInt(index);
+    const songUrl = BASE_URL + encodeURIComponent(songs[currentIndex]);
+    
+    document.getElementById("songSelect").value = currentIndex;
+    document.getElementById("visSongSelect").value = currentIndex;
+    document.getElementById("downloadBtn").href = songUrl;
+    
+    const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
+    document.getElementById("currentSong").textContent = "▶ " + songTitle;
+    
+    if (isPlaying) {
+        stopPlayback();
+    }
+    
+    document.getElementById("progress").value = 0;
+    document.getElementById("visProgress").value = 0;
+    document.getElementById("timeLabel").textContent = "0:00";
+    document.getElementById("visTimeLabel").textContent = "0:00";
+    
+    await initTonePlayer(songUrl);
+}
+
+async function togglePlay() {
+    await Tone.start();
+    
+    if (!player || !player.loaded) {
+        console.warn("Player nicht bereit");
+        return;
+    }
+    
+    if (isPlaying) {
+        stopPlayback();
+    } else {
+        startPlayback();
+    }
+}
+
+function startPlayback() {
+    if (!player || !player.loaded) return;
+    
+    player.start();
+    isPlaying = true;
+    updatePlayButtons("⏸ PAUSE");
+    startTimeUpdate();
+}
+
+function stopPlayback() {
+    if (player) {
+        player.stop();
+    }
+    isPlaying = false;
+    updatePlayButtons("▶ PLAY");
+    stopTimeUpdate();
+}
+
+function startTimeUpdate() {
+    stopTimeUpdate();
+    
+    const startTime = Tone.now();
+    
+    updateInterval = setInterval(() => {
+        if (player && player.state === "started" && songDuration > 0) {
+            const elapsed = (Tone.now() - startTime) * currentTempo;
+            const currentTime = Math.min(elapsed, songDuration);
+            const progress = (currentTime / songDuration) * 100;
+            
+            document.getElementById("progress").value = progress;
+            document.getElementById("visProgress").value = progress;
+            document.getElementById("timeLabel").textContent = formatTime(currentTime);
+            document.getElementById("visTimeLabel").textContent = formatTime(currentTime);
+            
+            if (currentTime >= songDuration - 0.1) {
+                handleSongEnd();
+            }
+        }
+    }, 100);
+}
+
+function stopTimeUpdate() {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+    }
+}
+
+function handleSongEnd() {
+    stopPlayback();
+    
+    if (isLoopMode) {
+        startPlayback();
+    } else if (isRadioMode) {
+        let randomIndex;
+        do { 
+            randomIndex = Math.floor(Math.random() * songs.length); 
+        } while (randomIndex === currentIndex && songs.length > 1);
+        selectSong(randomIndex);
+    } else {
+        nextSong();
+    }
+}
+
+function updatePlayButtons(text) {
+    document.getElementById("playPauseBtn").textContent = text;
+    document.getElementById("visPlayPauseBtn").textContent = text;
+}
+
+// PITCH STEUERUNG (UNABHÄNGIG VON TEMPO!)
+document.getElementById("pitchSlider").oninput = function() {
+    currentPitch = parseInt(this.value);
+    const label = currentPitch >= 0 ? "+" + currentPitch + " st" : currentPitch + " st";
+    document.getElementById("pitchLabel").textContent = label;
+    
+    if (pitchShift) {
+        pitchShift.pitch = currentPitch;
+    }
+};
+
+function resetPitch() {
+    currentPitch = 0;
+    document.getElementById("pitchSlider").value = 0;
+    document.getElementById("pitchLabel").textContent = "0 st";
+    if (pitchShift) {
+        pitchShift.pitch = 0;
+    }
+}
+
+// TEMPO STEUERUNG (UNABHÄNGIG VON PITCH!)
+document.getElementById("tempoSlider").oninput = function() {
+    const percent = parseInt(this.value);
+    currentTempo = percent / 100;
+    document.getElementById("tempoLabel").textContent = percent + "%";
+    
+    if (player) {
+        player.playbackRate = currentTempo;
+    }
+};
+
+function resetTempo() {
+    currentTempo = 1.0;
+    document.getElementById("tempoSlider").value = 100;
+    document.getElementById("tempoLabel").textContent = "100%";
+    if (player) {
+        player.playbackRate = 1.0;
+    }
+}
+
+// LAUTSTÄRKE
+document.getElementById("volumeSlider").oninput = function() {
+    const volume = parseFloat(this.value);
+    document.getElementById("volumeLabel").textContent = Math.round(volume * 100) + "%";
+    
+    if (player) {
+        const db = volume > 0 ? 20 * Math.log10(volume) : -Infinity;
+        player.volume.value = db;
+    }
+};
+
+// SEEK / PROGRESS
+document.getElementById("progress").oninput = function() {
+    seekAudio(this.value);
+};
+
+function seekAudio(val) {
+    if (!player || !player.loaded || songDuration <= 0) return;
+    
+    const seekTime = (val / 100) * songDuration;
+    const wasPlaying = isPlaying;
+    
+    if (wasPlaying) {
+        player.stop();
+    }
+    
+    if (wasPlaying) {
+        player.start(undefined, seekTime);
+    }
+    
+    document.getElementById("timeLabel").textContent = formatTime(seekTime);
+    document.getElementById("visTimeLabel").textContent = formatTime(seekTime);
+}
+
+async function selectSong(val) {
+    await loadSong(val);
+    
+    setTimeout(async () => {
+        await Tone.start();
+        if (player && player.loaded) {
+            startPlayback();
+        }
+    }, 500);
+}
+
+function nextSong() { 
+    selectSong((currentIndex + 1) % songs.length); 
+}
+
+function prevSong() { 
+    selectSong((currentIndex - 1 + songs.length) % songs.length); 
+}
+
+function toggleRadioMode() {
+    isRadioMode = !isRadioMode;
+    if (isRadioMode) isLoopMode = false;
+    updateModeUI();
+}
+
+function toggleLoopMode() {
+    isLoopMode = !isLoopMode;
+    if (isLoopMode) isRadioMode = false;
+    
+    if (player) {
+        player.loop = isLoopMode;
+    }
+    
+    updateModeUI();
+}
+
+function updateModeUI() {
+    const rb = document.getElementById("radioModeBtn");
+    const lb = document.getElementById("loopModeBtn");
+    const vrb = document.getElementById("visRadioBtn");
+    const vlb = document.getElementById("visLoopBtn");
+    
+    rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
+    lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
+    
+    [rb, vrb].forEach(b => b.classList.toggle("active-mode", isRadioMode));
+    [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
+}
+
+// VISUALIZER
+function setVisMode(mode) { 
+    visMode = mode; 
+}
+
+function draw() {
+    animationId = requestAnimationFrame(draw);
+    
+    const canvas = document.getElementById("visualizerCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (customCanvasBg) {
+        ctx.globalAlpha = 0.7;
+        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1.0;
+    }
+    
+    if (isPlaying) {
+        if (visMode === 'ring') {
+            drawRingSimulated(ctx, canvas);
+        } else {
+            drawBarsSimulated(ctx, canvas);
+        }
+    } else {
+        drawStaticLogo(ctx, canvas);
+    }
+}
+
+function drawRingSimulated(ctx, canvas) {
+    ctx.save();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
+    
+    const time = Date.now() / 1000;
+    const pulse = Math.sin(time * 4) * 20 + Math.sin(time * 7) * 10;
+    const logoSize = logoBase + pulse;
+    
+    if (logoImg.complete) {
+        ctx.shadowBlur = 20 + Math.abs(pulse);
+        ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
+        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
+    }
+    
+    const ringRadius = logoBase * 0.6;
+    for (let i = 0; i < 80; i++) {
+        const angle = (i / 80) * Math.PI * 2 + time;
+        const amp = (Math.sin(time * 5 + i * 0.2) + 1) / 2;
+        const rayLength = amp * (ringRadius * 0.8);
+        
+        ctx.strokeStyle = `rgba(0, 255, 65, ${0.5 + amp * 0.5})`;
+        ctx.lineWidth = 2 + amp * 4;
+        ctx.beginPath();
+        ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
+        ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
+        ctx.stroke();
+    }
+    
+    ctx.restore();
+}
+
+function drawBarsSimulated(ctx, canvas) {
+    const barCount = 64;
+    const barWidth = canvas.width / barCount;
+    const time = Date.now() / 1000;
+    
+    for (let i = 0; i < barCount; i++) {
+        const amp = (Math.sin(time * 3 + i * 0.3) + Math.sin(time * 5 + i * 0.1) + 2) / 4;
+        const barHeight = amp * canvas.height * 0.8;
+        
+        const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
+        gradient.addColorStop(0, '#00ff41');
+        gradient.addColorStop(1, '#003b00');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
+    }
+}
+
+function drawStaticLogo(ctx, canvas) {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const logoSize = Math.min(canvas.width, canvas.height) * 0.35;
+    
+    if (logoImg.complete) {
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'rgba(0, 255, 65, 0.3)';
+        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
+    }
+}
+
+function openVisualizer() {
+    document.getElementById("visualizerOverlay").classList.add("active");
+    const canvas = document.getElementById("visualizerCanvas");
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.6;
+    draw();
+}
+
+function closeVisualizer() {
+    document.getElementById("visualizerOverlay").classList.remove("active");
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+}
+
+function handleBackgroundOption(val) {
+    if (val === 'change') bgInput.click();
+    if (val === 'reset') {
+        localStorage.removeItem('codec_canvas_bg');
+        customCanvasBg = null;
+    }
+}
+
+bgInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgData = event.target.result;
+            localStorage.setItem('codec_canvas_bg', imgData);
+            loadCanvasBackground(imgData);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function loadCanvasBackground(data) {
+    const img = new Image();
+    img.onload = () => { customCanvasBg = img; };
+    img.src = data;
+}
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+function formatTime(s) {
+    if (isNaN(s) || s < 0) return "0:00";
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60).toString().padStart(2, '0');
+    return m + ":" + sec;
+}
 </script>
 </body>
 </html>
