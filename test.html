@@ -131,8 +131,8 @@
             Hier werden alle Songs hochgeladen, die ich auf <strong>Suno.com</strong> erstelle.
         </div>
 
-        <h2 id="currentSong">BITTE PLAY DRÜCKEN</h2>
-        <audio id="audioPlayer" crossOrigin="anonymous" playsinline preload="auto"></audio>
+        <h2 id="currentSong">SYSTEM BEREIT - BITTE PLAY DRÜCKEN</h2>
+        <audio id="audioPlayer" crossOrigin="anonymous" playsinline webkit-playsinline preload="none"></audio>
 
         <div class="control-grid">
             <select id="songSelect" onchange="selectSong(this.value)">
@@ -270,11 +270,39 @@ let customCanvasBg = null;
 let isRadioMode = false;
 let isLoopMode = false;
 let isInitialized = false;
+let systemUnlocked = false; // Neuer Status für Mobile
 
 const audio = document.getElementById("audioPlayer");
 const logoImg = new Image();
 logoImg.src = "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png";
 const bgInput = document.getElementById('bgFileInput');
+
+// --- 1. MOBILE UNLOCK HACK ---
+// Zwingt iOS/Android beim allerersten Tippen aufs Display, die Audiokanäle zu öffnen
+function unlockMobileAudio() {
+    if (systemUnlocked) return;
+    
+    // Initialisiere AudioContext sofort beim Tap
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+    
+    // Spiele einen stummen, leeren Puffer ab, um das System aufzuwecken
+    const buffer = audioCtx.createBuffer(1, 1, 22050);
+    const unlockSource = audioCtx.createBufferSource();
+    unlockSource.buffer = buffer;
+    unlockSource.connect(audioCtx.destination);
+    unlockSource.start(0);
+
+    systemUnlocked = true;
+    
+    // Entferne die EventListener, wir brauchen sie nur einmal
+    document.removeEventListener('touchstart', unlockMobileAudio);
+    document.removeEventListener('click', unlockMobileAudio);
+}
+
+document.addEventListener('touchstart', unlockMobileAudio, { once: true });
+document.addEventListener('click', unlockMobileAudio, { once: true });
+// -----------------------------
 
 window.addEventListener('DOMContentLoaded', () => {
     const mainSelect = document.getElementById("songSelect");
@@ -307,11 +335,10 @@ function loadCanvasBackground(data) {
     img.src = data;
 }
 
-// DER TABLET-FIX: Lade Audio erst bei Interaktion
 function loadSong(index) {
     currentIndex = parseInt(index);
     audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
-    audio.load();
+    audio.load(); // Wichtig für Mobile: Explizites Laden nach src-Änderung
     document.getElementById("songSelect").value = currentIndex;
     document.getElementById("visSongSelect").value = currentIndex;
     document.getElementById("downloadBtn").href = audio.src;
@@ -319,25 +346,43 @@ function loadSong(index) {
     document.getElementById("currentSong").textContent = "▶ " + songTitle;
 }
 
-function initAudioSystem() {
-    if (audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    source = audioCtx.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 256;
-    dataArray = new Uint8Array(analyser.frequencyBinCount);
+function initVisualizerNodes() {
+    // Verbindet den Visualizer erst, wenn wirklich Audio gebraucht wird
+    if (!analyser && audioCtx) {
+        analyser = audioCtx.createAnalyser();
+        source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 256;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
 }
 
 function togglePlay() {
-    if(!isInitialized) { loadSong(currentIndex); isInitialized = true; }
-    initAudioSystem();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // Falls noch nicht initialisiert (erster Klick auf Play)
+    if(!isInitialized) { 
+        loadSong(currentIndex); 
+        isInitialized = true; 
+    }
+
+    // AudioContext sicherstellen und aufwecken
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
 
     if (audio.paused) {
-        audio.play().then(() => updatePlayButtons("⏸ PAUSE"))
-        .catch(err => console.log("Abspielen blockiert:", err));
+        // Mobile-sicheres Play mit Catch-Block
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                updatePlayButtons("⏸ PAUSE");
+                // Visualizer erst verknüpfen, wenn die Musik sicher läuft (verhindert iOS Mute-Bug)
+                initVisualizerNodes(); 
+            }).catch(error => {
+                console.error("Wiedergabe durch Browser blockiert:", error);
+                document.getElementById("currentSong").textContent = "⚠️ WIEDERGABE BLOCKIERT (TIPPEN ZUM ENTSPERREN)";
+            });
+        }
     } else {
         audio.pause();
         updatePlayButtons("▶ PLAY");
@@ -415,7 +460,9 @@ function drawBars(ctx, canvas) {
 }
 
 function openVisualizer() { 
-    initAudioSystem();
+    if(!systemUnlocked) unlockMobileAudio(); // Sicherheitshalber entsperren
+    if(isInitialized && audioCtx && !analyser) initVisualizerNodes();
+    
     document.getElementById("visualizerOverlay").classList.add("active");
     const canvas = document.getElementById("visualizerCanvas");
     canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
@@ -424,7 +471,15 @@ function openVisualizer() {
 
 function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
 function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-function selectSong(val) { isInitialized = true; loadSong(val); togglePlay(); }
+function selectSong(val) { 
+    isInitialized = true; 
+    loadSong(val); 
+    
+    // Kurze Pause einfügen für Mobile, damit die neue src sicher verarbeitet wird
+    setTimeout(() => {
+        if(audio.paused) togglePlay();
+    }, 50);
+}
 function nextSong() { selectSong((currentIndex + 1) % songs.length); }
 function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
 function seekAudio(val) { if(isInitialized) audio.currentTime = (val / 100) * audio.duration; }
@@ -443,11 +498,6 @@ document.getElementById("volumeSlider").oninput = function() { audio.volume = th
 document.getElementById("progress").oninput = function() { seekAudio(this.value); };
 
 function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
-window.onload = () => { 
-    // Wir setzen nur den Namen, laden aber noch keine Datei (Tablet-Fix)
-    const songTitle = document.getElementById("songSelect").options[0].text.toUpperCase();
-    document.getElementById("currentSong").textContent = "BEREIT - PLAY DRÜCKEN";
-};
 </script>
 </body>
 </html>
