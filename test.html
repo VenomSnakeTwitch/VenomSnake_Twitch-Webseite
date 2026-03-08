@@ -7,7 +7,7 @@
 
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+
     <!-- Tone.js für unabhängiges Pitch-Shifting und Tempo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
@@ -68,7 +68,7 @@
             line-height: 1.4;
         }
 
-        #currentSong { color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; }
+        #currentSong { color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; white-space: pre-wrap; }
 
         .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
 
@@ -112,7 +112,7 @@
 
         #pitchSlider   { accent-color: #ffcc00; }
         #tempoSlider   { accent-color: #ff6600; }
-        
+
         .loading-indicator {
             display: none;
             color: var(--mgs-green);
@@ -123,16 +123,16 @@
             margin-bottom: 10px;
             animation: pulse 1s infinite;
         }
-        
+
         .loading-indicator.active {
             display: block;
         }
-        
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        
+
         .reset-btn {
             background: transparent;
             border: 1px solid #ff6600;
@@ -141,7 +141,7 @@
             font-size: 0.65rem;
             cursor: pointer;
         }
-        
+
         .reset-btn:hover {
             background: #ff6600;
             color: #000;
@@ -340,7 +340,7 @@ let customCanvasBg = null;
 let isRadioMode = false;
 let isLoopMode = false;
 
-// TONE.JS VARIABLEN für unabhängiges Pitch & Tempo
+// TONE.JS VARIABLEN
 let player = null;
 let pitchShift = null;
 let isPlaying = false;
@@ -358,17 +358,17 @@ window.addEventListener('DOMContentLoaded', () => {
     const mainSelect = document.getElementById("songSelect");
     const visSelect = document.getElementById("visSongSelect");
     visSelect.innerHTML = mainSelect.innerHTML;
-    
+
     if(localStorage.getItem('codec_canvas_bg')) {
         loadCanvasBackground(localStorage.getItem('codec_canvas_bg'));
     }
-    
+
     loadSong(0);
 });
 
 async function initTonePlayer(songUrl) {
     showLoading(true);
-    
+
     if (player) {
         player.stop();
         player.dispose();
@@ -376,7 +376,7 @@ async function initTonePlayer(songUrl) {
     if (pitchShift) {
         pitchShift.dispose();
     }
-    
+
     try {
         pitchShift = new Tone.PitchShift({
             pitch: currentPitch,
@@ -384,7 +384,7 @@ async function initTonePlayer(songUrl) {
             delayTime: 0,
             feedback: 0
         }).toDestination();
-        
+
         player = new Tone.Player({
             url: songUrl,
             onload: () => {
@@ -392,22 +392,35 @@ async function initTonePlayer(songUrl) {
                 document.getElementById("durationLabel").textContent = formatTime(songDuration);
                 document.getElementById("visDurationLabel").textContent = formatTime(songDuration);
                 showLoading(false);
+                console.log(`[SUCCESS] Audio geladen: \( {songUrl} ( \){songDuration.toFixed(1)}s)`);
             },
             onerror: (err) => {
-                console.error("Fehler beim Laden:", err);
                 showLoading(false);
-                document.getElementById("currentSong").textContent = "❌ FEHLER BEIM LADEN";
+                const fileName = songs[currentIndex];
+                const errorText = `FEHLER BEIM LADEN\n\n` +
+                                  `Datei: ${fileName}\n` +
+                                  `Gesuchte URL: ${songUrl}\n\n` +
+                                  `→ Meistens 404 → Datei fehlt im Ordner oder Name stimmt nicht 100% überein\n` +
+                                  `→ Prüfe Groß-/Kleinschreibung, Leerzeichen, Tippfehler (z.B. Freqency statt Frequency)\n` +
+                                  `→ Öffne F12 → Network-Tab und lade neu → suche nach ${fileName}`;
+                document.getElementById("currentSong").textContent = errorText;
+                console.error("Audio-Ladefehler:", {
+                    requestedUrl: songUrl,
+                    fileName: fileName,
+                    error: err
+                });
             }
         });
-        
+
         player.connect(pitchShift);
         player.playbackRate = currentTempo;
         pitchShift.pitch = currentPitch;
         player.loop = isLoopMode;
-        
+
     } catch (err) {
         console.error("Tone.js Initialisierungsfehler:", err);
         showLoading(false);
+        document.getElementById("currentSong").textContent = "❌ Tone.js konnte nicht initialisiert werden – siehe Konsole (F12)";
     }
 }
 
@@ -418,34 +431,42 @@ function showLoading(show) {
 async function loadSong(index) {
     currentIndex = parseInt(index);
     const songUrl = BASE_URL + encodeURIComponent(songs[currentIndex]);
-    
+
     document.getElementById("songSelect").value = currentIndex;
     document.getElementById("visSongSelect").value = currentIndex;
     document.getElementById("downloadBtn").href = songUrl;
-    
+
     const songTitle = document.getElementById("songSelect").options[currentIndex].text.toUpperCase();
-    document.getElementById("currentSong").textContent = "▶ " + songTitle;
-    
+    document.getElementById("currentSong").textContent = "Lade: " + songTitle + "\n(bitte warten ...)";
+
     if (isPlaying) {
         stopPlayback();
     }
-    
+
     document.getElementById("progress").value = 0;
     document.getElementById("visProgress").value = 0;
     document.getElementById("timeLabel").textContent = "0:00";
     document.getElementById("visTimeLabel").textContent = "0:00";
-    
+
+    console.log(`[LOAD] Versuche zu laden: ${songUrl}`);
+
     await initTonePlayer(songUrl);
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
+// Der Rest des Codes bleibt **exakt gleich** wie in deiner Originalversion
+// (togglePlay, startPlayback, stopPlayback, startTimeUpdate, seekAudio usw.)
+// Kopiere einfach den restlichen <script>-Inhalt ab hier aus deinem Original
+// ──────────────────────────────────────────────────────────────────────────────
+
 async function togglePlay() {
     await Tone.start();
-    
+
     if (!player || !player.loaded) {
-        console.warn("Player nicht bereit");
+        console.warn("Player nicht bereit – warte auf Laden oder versuche erneut");
         return;
     }
-    
+
     if (isPlaying) {
         stopPlayback();
     } else {
@@ -455,7 +476,7 @@ async function togglePlay() {
 
 function startPlayback() {
     if (!player || !player.loaded) return;
-    
+
     player.start();
     isPlaying = true;
     updatePlayButtons("⏸ PAUSE");
@@ -473,20 +494,20 @@ function stopPlayback() {
 
 function startTimeUpdate() {
     stopTimeUpdate();
-    
+
     const startTime = Tone.now();
-    
+
     updateInterval = setInterval(() => {
         if (player && player.state === "started" && songDuration > 0) {
             const elapsed = (Tone.now() - startTime) * currentTempo;
             const currentTime = Math.min(elapsed, songDuration);
             const progress = (currentTime / songDuration) * 100;
-            
+
             document.getElementById("progress").value = progress;
             document.getElementById("visProgress").value = progress;
             document.getElementById("timeLabel").textContent = formatTime(currentTime);
             document.getElementById("visTimeLabel").textContent = formatTime(currentTime);
-            
+
             if (currentTime >= songDuration - 0.1) {
                 handleSongEnd();
             }
@@ -503,7 +524,7 @@ function stopTimeUpdate() {
 
 function handleSongEnd() {
     stopPlayback();
-    
+
     if (isLoopMode) {
         startPlayback();
     } else if (isRadioMode) {
@@ -522,12 +543,12 @@ function updatePlayButtons(text) {
     document.getElementById("visPlayPauseBtn").textContent = text;
 }
 
-// PITCH STEUERUNG (UNABHÄNGIG VON TEMPO!)
+// PITCH STEUERUNG
 document.getElementById("pitchSlider").oninput = function() {
     currentPitch = parseInt(this.value);
     const label = currentPitch >= 0 ? "+" + currentPitch + " st" : currentPitch + " st";
     document.getElementById("pitchLabel").textContent = label;
-    
+
     if (pitchShift) {
         pitchShift.pitch = currentPitch;
     }
@@ -542,12 +563,12 @@ function resetPitch() {
     }
 }
 
-// TEMPO STEUERUNG (UNABHÄNGIG VON PITCH!)
+// TEMPO STEUERUNG
 document.getElementById("tempoSlider").oninput = function() {
     const percent = parseInt(this.value);
     currentTempo = percent / 100;
     document.getElementById("tempoLabel").textContent = percent + "%";
-    
+
     if (player) {
         player.playbackRate = currentTempo;
     }
@@ -566,7 +587,7 @@ function resetTempo() {
 document.getElementById("volumeSlider").oninput = function() {
     const volume = parseFloat(this.value);
     document.getElementById("volumeLabel").textContent = Math.round(volume * 100) + "%";
-    
+
     if (player) {
         const db = volume > 0 ? 20 * Math.log10(volume) : -Infinity;
         player.volume.value = db;
@@ -580,25 +601,25 @@ document.getElementById("progress").oninput = function() {
 
 function seekAudio(val) {
     if (!player || !player.loaded || songDuration <= 0) return;
-    
+
     const seekTime = (val / 100) * songDuration;
     const wasPlaying = isPlaying;
-    
+
     if (wasPlaying) {
         player.stop();
     }
-    
+
     if (wasPlaying) {
         player.start(undefined, seekTime);
     }
-    
+
     document.getElementById("timeLabel").textContent = formatTime(seekTime);
     document.getElementById("visTimeLabel").textContent = formatTime(seekTime);
 }
 
 async function selectSong(val) {
     await loadSong(val);
-    
+
     setTimeout(async () => {
         await Tone.start();
         if (player && player.loaded) {
@@ -624,11 +645,11 @@ function toggleRadioMode() {
 function toggleLoopMode() {
     isLoopMode = !isLoopMode;
     if (isLoopMode) isRadioMode = false;
-    
+
     if (player) {
         player.loop = isLoopMode;
     }
-    
+
     updateModeUI();
 }
 
@@ -637,32 +658,32 @@ function updateModeUI() {
     const lb = document.getElementById("loopModeBtn");
     const vrb = document.getElementById("visRadioBtn");
     const vlb = document.getElementById("visLoopBtn");
-    
+
     rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
     lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
-    
+
     [rb, vrb].forEach(b => b.classList.toggle("active-mode", isRadioMode));
     [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
 }
 
-// VISUALIZER
+// VISUALIZER (unverändert)
 function setVisMode(mode) { 
     visMode = mode; 
 }
 
 function draw() {
     animationId = requestAnimationFrame(draw);
-    
+
     const canvas = document.getElementById("visualizerCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     if (customCanvasBg) {
         ctx.globalAlpha = 0.7;
         ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1.0;
     }
-    
+
     if (isPlaying) {
         if (visMode === 'ring') {
             drawRingSimulated(ctx, canvas);
@@ -674,28 +695,30 @@ function draw() {
     }
 }
 
+// … (die restlichen Visualizer-Funktionen drawRingSimulated, drawBarsSimulated, drawStaticLogo, openVisualizer, closeVisualizer, handleBackgroundOption, loadCanvasBackground, toggleFullscreen, formatTime bleiben exakt wie im Original)
+
 function drawRingSimulated(ctx, canvas) {
     ctx.save();
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
-    
+
     const time = Date.now() / 1000;
     const pulse = Math.sin(time * 4) * 20 + Math.sin(time * 7) * 10;
     const logoSize = logoBase + pulse;
-    
+
     if (logoImg.complete) {
         ctx.shadowBlur = 20 + Math.abs(pulse);
         ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
         ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
     }
-    
+
     const ringRadius = logoBase * 0.6;
     for (let i = 0; i < 80; i++) {
         const angle = (i / 80) * Math.PI * 2 + time;
         const amp = (Math.sin(time * 5 + i * 0.2) + 1) / 2;
         const rayLength = amp * (ringRadius * 0.8);
-        
+
         ctx.strokeStyle = `rgba(0, 255, 65, ${0.5 + amp * 0.5})`;
         ctx.lineWidth = 2 + amp * 4;
         ctx.beginPath();
@@ -703,7 +726,7 @@ function drawRingSimulated(ctx, canvas) {
         ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
         ctx.stroke();
     }
-    
+
     ctx.restore();
 }
 
@@ -711,15 +734,15 @@ function drawBarsSimulated(ctx, canvas) {
     const barCount = 64;
     const barWidth = canvas.width / barCount;
     const time = Date.now() / 1000;
-    
+
     for (let i = 0; i < barCount; i++) {
         const amp = (Math.sin(time * 3 + i * 0.3) + Math.sin(time * 5 + i * 0.1) + 2) / 4;
         const barHeight = amp * canvas.height * 0.8;
-        
+
         const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
         gradient.addColorStop(0, '#00ff41');
         gradient.addColorStop(1, '#003b00');
-        
+
         ctx.fillStyle = gradient;
         ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
     }
@@ -729,7 +752,7 @@ function drawStaticLogo(ctx, canvas) {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const logoSize = Math.min(canvas.width, canvas.height) * 0.35;
-    
+
     if (logoImg.complete) {
         ctx.shadowBlur = 15;
         ctx.shadowColor = 'rgba(0, 255, 65, 0.3)';
