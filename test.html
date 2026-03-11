@@ -29,14 +29,12 @@
             background-size: 30px 30px;
             overflow-x: hidden;
         }
-        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
                         linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
-        /* Navigation */
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
@@ -58,6 +56,7 @@
         .nav-link-discord:hover { background: var(--discord-blurple); color: #fff; box-shadow: 0 0 10px var(--discord-blurple); }
         .nav-link-admin { color: var(--live-red); border: 1px solid var(--live-red); }
         .nav-link-admin:hover { background: var(--live-red); color: #fff; box-shadow: 0 0 10px var(--live-red); }
+        
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content {
             display: none; position: absolute; right: 0; top: 100%;
@@ -70,9 +69,11 @@
             display: block; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-border);
         }
         .dropdown-content a:hover { background: var(--mgs-green-dim); color: #fff; }
+
         .container { max-width: 1400px; margin: 100px auto 20px; padding: 0 20px; }
         .page { display: none; }
         .page.active { display: block; }
+
         .mgs-header {
             border: 2px solid var(--mgs-green); padding: 1.5rem; background: rgba(0, 59, 0, 0.1); margin-bottom: 2rem;
             position: relative;
@@ -81,19 +82,45 @@
             content: "SYSTEM_ID: 140.85"; position: absolute; top: -12px; left: 20px;
             background: var(--mgs-bg); padding: 0 10px; font-size: 0.7rem; color: var(--mgs-green);
         }
+
+        /* Benachrichtigungs-Banner */
+        .alert-banner {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid var(--live-red);
+            padding: 10px;
+            margin-bottom: 1rem;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .btn-alert {
+            background: var(--live-red);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-family: 'JetBrains Mono';
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
         .stream-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 1024px) { .stream-grid { grid-template-columns: 3fr 1fr; } }
         .frame { border: 1px solid var(--mgs-green-dim); background: #000; padding: 2px; }
         .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; }
         .twitch-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
         .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
         .schedule-card { background: var(--mgs-panel); border-left: 5px solid var(--mgs-green); padding: 1.5rem; border-top: 1px solid var(--mgs-border); }
+        
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); }
+        
         .live-pulse { color: var(--live-red); animation: pulse 1.5s infinite; font-weight: bold; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
+
 <nav class="nav">
     <div class="nav-container">
         <a href="#" class="logo" onclick="showPage('stream')">
@@ -121,7 +148,13 @@
         </div>
     </div>
 </nav>
+
 <main class="container">
+    <div id="notification-banner" class="alert-banner">
+        <span><i data-lucide="bell" style="width:14px; vertical-align:middle;"></i> Taktische Live-Benachrichtigungen aktivieren?</span>
+        <button class="btn-alert" onclick="requestNotificationPermission()">[ ZUSTIMMEN ]</button>
+    </div>
+
     <section id="page-stream" class="page active">
         <div class="mgs-header">
             <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALISIERE MISSIONS-DATEN...</div>
@@ -140,16 +173,19 @@
                 </div>
             </div>
         </div>
+
         <div class="stream-grid">
             <div class="frame"><div class="twitch-embed" id="player"></div></div>
             <div class="frame"><div id="chat" style="height: 600px;"></div></div>
         </div>
+
         <div class="schedule-grid">
             <div class="schedule-card"><h3>MONTAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.15</small></div>
             <div class="schedule-card"><h3>MITTWOCH</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.48</small></div>
             <div class="schedule-card"><h3>FREITAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.85</small></div>
         </div>
     </section>
+
     <section id="page-about" class="page">
         <div class="mgs-header">
             <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
@@ -161,36 +197,26 @@
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[ALTER]:</span> <span id="age-val" style="color:#fff">..</span> JAHRE</p>
                         <p><span style="color: var(--mgs-green); font-weight: bold;">[STATUS]:</span> AKTIV / VOR-SCHICHT OPERATIONEN</p>
                         <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
-                        <p style="margin-bottom: 10px;">
-                            <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
-                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth liegen mir im Blut.
-                        </p>
-                        <p style="margin-bottom: 10px;">
-                            Ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**.
-                        </p>
-                        <p style="margin-top: 15px; padding: 10px; border: 1px dashed var(--mgs-green); background: rgba(0, 255, 65, 0.05);">
-                            <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHES PROTOKOLL]:</span><br>
-                            Trotz regelmäßiger **Dialyse-Einsätze** (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Nachtschicht-Behandlung statt.
-                            <br><br>
-                            <span style="font-weight: bold; color: #fff;">ZEITFENSTER: 13:30 - 16:00 UHR.</span>
-                        </p>
+                        <p><span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span> Metal Gear Solid Experte & Tactical Stealth Operator.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
 <footer>
     <p>© 2026 // FOXHOUND DIGITAL COMMAND // GESICHERTE LEITUNG GETRENNT</p>
 </footer>
+
 <script>
-    // KONFIGURATION
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
     const CHANNEL_NAME = 'VenomSnake_Twitch';
     const BIRTH_DATE = "1994-06-08";
     const schedule = [{d:1,h:13,m:30},{d:3,h:13,m:30},{d:5,h:13,m:30}];
-    
+    let hasNotifiedThisSession = false;
+
     lucide.createIcons();
 
     function showPage(id) {
@@ -202,12 +228,14 @@
         window.scrollTo(0,0);
     }
 
-    function loadTwitch() {
-        const domain = window.location.hostname || "localhost";
-        const playerDiv = document.getElementById('player');
-        const chatDiv = document.getElementById('chat');
-        if(playerDiv) playerDiv.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}&muted=false" height="100%" width="100%" allowfullscreen="true"></iframe>`;
-        if(chatDiv) chatDiv.innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
+    // Benachrichtigungs-Logik
+    function requestNotificationPermission() {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                document.getElementById('notification-banner').style.display = 'none';
+                new Notification("SYSTEM AKTIVIERT", { body: "Du wirst nun über taktische Live-Einsätze informiert.", icon: "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" });
+            }
+        });
     }
 
     async function fetchTwitchLiveInfo() {
@@ -216,34 +244,36 @@
             const authData = await authResp.json();
             const token = authData.access_token;
 
-            // User ID holen
             const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const userData = await userResp.json();
             if(!userData.data.length) return;
             const broadcasterId = userData.data[0].id;
 
-            // Kanal Info (Titel & Game)
-            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
-            const channelData = await channelResp.json();
-            const info = channelData.data[0];
-            document.getElementById('twitch-title').textContent = info.title.toUpperCase();
-            document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
-
-            // Live Stream Info (Viewers)
+            // Stream Status & Viewers
             const streamResp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const streamData = await streamResp.json();
             const viewerElement = document.getElementById('twitch-viewers');
-            
+
             if(streamData.data.length > 0) {
-                viewerElement.textContent = streamData.data[0].viewer_count;
-                viewerElement.style.color = "var(--mgs-green)";
+                const stream = streamData.data[0];
+                viewerElement.textContent = stream.viewer_count;
+                document.getElementById('twitch-title').textContent = stream.title.toUpperCase();
+                document.getElementById('twitch-game').textContent = stream.game_name.toUpperCase();
+                
+                // Benachrichtigung senden, wenn live und noch nicht geschehen
+                if (!hasNotifiedThisSession && Notification.permission === "granted") {
+                    new Notification("● EINSATZ LIVE: VENOMSNAKE", {
+                        body: `Mission läuft: ${stream.game_name}\nStatus: ${stream.viewer_count} Einheiten vor Ort.`,
+                        icon: "https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png"
+                    });
+                    hasNotifiedThisSession = true; // Verhindert Dauer-Popups
+                }
             } else {
                 viewerElement.textContent = "0";
-                viewerElement.style.color = "#fff";
+                hasNotifiedThisSession = false; // Reset wenn Stream offline geht
             }
         } catch (e) {
-            document.getElementById('twitch-title').textContent = "OFFLINE / BEREITSCHAFT";
-            document.getElementById('twitch-viewers').textContent = "0";
+            console.error(e);
         }
     }
 
@@ -274,21 +304,24 @@
         }
     }
 
-    function calculateAge() {
-        const birth = new Date(BIRTH_DATE);
-        const now = new Date();
-        let age = now.getFullYear() - birth.getFullYear();
-        if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
-        document.getElementById('age-val').textContent = age;
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-        loadTwitch();
-        calculateAge();
+        // Banner anzeigen falls noch keine Erlaubnis
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            document.getElementById('notification-banner').style.display = 'flex';
+        }
+
+        const domain = window.location.hostname || "localhost";
+        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}&muted=false" height="100%" width="100%" allowfullscreen="true"></iframe>`;
+        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
+
+        const birth = new Date(BIRTH_DATE);
+        const age = new Date().getFullYear() - birth.getFullYear();
+        document.getElementById('age-val').textContent = age;
+
         fetchTwitchLiveInfo();
         updateCountdown();
         setInterval(updateCountdown, 1000);
-        setInterval(fetchTwitchLiveInfo, 60000); // Alle 60 Sek. aktualisieren
+        setInterval(fetchTwitchLiveInfo, 60000); // Check jede Minute
     });
 </script>
 </body>
