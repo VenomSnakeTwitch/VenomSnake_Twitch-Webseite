@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Live-Bot</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #36393f; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: #2f3136; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 1px solid #40444b; }
+        h2 { text-align: center; color: #fff; margin-bottom: 20px; }
+        textarea { width: 100%; height: 120px; background: #40444b; border: 1px solid #202225; color: white; padding: 12px; border-radius: 8px; box-sizing: border-box; resize: none; font-size: 14px; outline: none; }
+        textarea:focus { border-color: #5865f2; }
+        button { background: #5865f2; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: 15px; width: 100%; font-weight: bold; font-size: 16px; transition: background 0.2s; }
+        button:hover { background: #4752c4; }
+        button:active { background: #3c45a5; }
+        .status { margin-top: 15px; text-align: center; font-weight: 500; min-height: 20px; }
+        .success { color: #3ba55c; }
+        .error { color: #ed4245; }
+        .info { color: #b9bbbe; font-size: 12px; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔴 Live-Status senden</h2>
+    <textarea id="message" placeholder="Schreib hier deine Ankündigung rein... z.B. @everyone Ich bin jetzt live! 🚀"></textarea>
+    
+    <button onclick="sendToDiscord()">An alle Server senden</button>
+    
+    <div id="statusOutput" class="status"></div>
+    <div class="info">Nachricht wird an alle hinterlegten Webhooks gleichzeitig gesendet.</div>
+</div>
+
+<script>
+    // Hier sind deine Webhooks gespeichert
+    const webhookUrls = [
+        "
