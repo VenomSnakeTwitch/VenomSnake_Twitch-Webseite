@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APP DOWNLOAD // VenomSnake_Twitch</title>
+    <title>CODEC // APP DOWNLOAD</title>
 
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -27,10 +27,8 @@
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
             color: var(--text-primary);
-            overflow-x: hidden;
         }
 
         body::before {
@@ -48,45 +46,46 @@
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
-        .main-container { max-width: 800px; margin: 120px auto 50px; padding: 0 20px; text-align: center; }
+        .main-container { max-width: 900px; margin: 100px auto 50px; padding: 0 20px; }
 
         .player-box {
-            background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 3rem 2rem;
+            background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem;
             position: relative; box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1); width: 100%;
             backdrop-filter: blur(5px);
         }
 
-        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 20px; font-size: 2.2rem; }
+        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); text-align: center; margin-bottom: 20px; }
 
         .status-box {
-            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 20px;
-            margin-bottom: 30px; font-size: 0.9rem; color: var(--mgs-green); text-transform: uppercase;
-            line-height: 1.6; text-align: left;
-        }
-
-        .download-section {
-            display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 40px 0;
+            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 15px;
+            margin-bottom: 30px; font-size: 0.85rem; color: var(--mgs-green); text-transform: uppercase;
         }
 
         .download-btn {
-            display: inline-block; background: var(--mgs-green); color: #000;
-            padding: 20px 40px; font-family: 'Chakra Petch'; font-weight: bold;
-            text-transform: uppercase; cursor: pointer; font-size: 1.2rem; 
-            transition: 0.3s; text-decoration: none; border: none;
-            box-shadow: 0 0 15px var(--mgs-green);
+            display: block; background: var(--mgs-green); color: #000; text-align: center;
+            padding: 15px; font-family: 'Chakra Petch'; font-weight: bold; text-decoration: none;
+            font-size: 1.2rem; transition: 0.2s; box-shadow: 0 0 15px var(--mgs-green);
+            margin: 20px 0;
         }
-        .download-btn:hover { background: #fff; box-shadow: 0 0 30px #fff; transform: scale(1.05); }
+        .download-btn:hover { background: #fff; box-shadow: 0 0 25px #fff; }
 
-        .app-info {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;
-            border-top: 2px solid var(--mgs-border); padding-top: 30px; margin-top: 20px;
+        .guide-section {
+            background: rgba(0, 255, 65, 0.05); border: 1px solid var(--mgs-border);
+            padding: 20px; margin-top: 30px;
         }
-        .infoColumn h3 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 0.9rem; margin-bottom: 12px; border-left: 3px solid var(--mgs-green); padding-left: 10px; text-transform: uppercase; }
-        .infoColumn p { font-size: 0.8rem; margin-bottom: 8px; color: var(--text-primary); border-bottom: 1px solid rgba(0,255,65,0.05); padding-bottom: 4px; }
+        .guide-section h2 { font-family: 'Chakra Petch'; color: var(--mgs-green); font-size: 1rem; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; }
+        
+        .step { margin-bottom: 15px; display: flex; gap: 15px; align-items: flex-start; }
+        .step-num { background: var(--mgs-green); color: #000; padding: 2px 8px; font-weight: bold; min-width: 25px; text-align: center; }
+        .step-text { font-size: 0.85rem; line-height: 1.4; }
+        .step-text strong { color: var(--mgs-green); }
+
+        .warning-note {
+            border: 1px dashed #ff4141; color: #ff4141; padding: 10px; font-size: 0.75rem;
+            margin-top: 20px; text-transform: uppercase; text-align: center;
+        }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
-
-        @media (max-width: 600px) { .app-info { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -95,47 +94,61 @@
     <div class="nav-container">
         <a href="index.html" class="logo">
             <img src="./DogVenomsnakeLogo.png" alt="Logo">
-            <span>VENOM_SNAKE_MOBILE</span>
+            <span>VENOM_SNAKE_HQ</span>
         </a>
         <div class="nav-controls">
-            <a href="index.html" style="color: var(--mgs-green); text-decoration: none; font-size: 0.8rem; border: 1px solid var(--mgs-green); padding: 5px 15px;">[ ZURÜCK ]</a>
+            <a href="index.html" style="color: var(--mgs-green); text-decoration: none; font-size: 0.8rem; border: 1px solid var(--mgs-green); padding: 5px 15px;">[ HOME ]</a>
         </div>
     </div>
 </nav>
 
 <main class="main-container">
     <div class="player-box">
-        <h1>APP DEPLOYMENT</h1>
+        <h1>APP UPLINK</h1>
         
         <div class="status-box">
-            [ SYSTEM: STABLE ]<br>
-            [ PACKAGE: app-release.apk ]<br>
-            [ REPOSITORY: VenomSnake_Twitch-Webseite ]<br>
-            [ ACCESS: GRANTED ]
+            [ FILE: app-release.apk ]<br>
+            [ ORIGIN: GitHub / main-branch ]<br>
+            [ STATUS: VERIFIED ]
         </div>
 
-        <div class="download-section">
-            <p style="margin-bottom: 10px; font-size: 0.8rem;">KLICKEN SIE UNTEN, UM DIE ÜBERTRAGUNG ZU STARTEN:</p>
-            <a href="https://github.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/raw/master/app-release.apk" class="download-btn">
-                📥 DOWNLOAD APK
-            </a>
-            <p style="font-size: 0.7rem; margin-top: 10px; color: #888;">Version: Latest Release // Format: Android Package</p>
+        <a href="https://github.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/raw/refs/heads/main/app-release.apk" class="download-btn">
+            📥 DATEI HERUNTERLADEN
+        </a>
+
+        <div class="guide-section">
+            <h2>📦 INSTALLATIONS-ANLEITUNG</h2>
+            
+            <div class="step">
+                <div class="step-num">01</div>
+                <div class="step-text">Tippe oben auf <strong>Herunterladen</strong> und bestätige den Download in deinem Browser (z.B. Chrome).</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">02</div>
+                <div class="step-text">Öffne die heruntergeladene Datei über die Benachrichtigungsleiste oder deinen "Downloads"-Ordner.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">03</div>
+                <div class="step-text">Android wird dich warnen: Tippe im Fenster direkt auf <strong>Einstellungen</strong>.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">04</div>
+                <div class="step-text">Aktiviere den Schalter <strong>"Dieser Quelle vertrauen"</strong> (oder "Apps von diesem Anbieter zulassen").</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">05</div>
+                <div class="step-text">Gehe einen Schritt zurück und tippe auf <strong>Installieren</strong>.</div>
+            </div>
         </div>
 
-        <div class="app-info">
-            <div class="infoColumn">
-                <h3>Systemvoraussetzungen</h3>
-                <p>Betriebssystem: Android 8.0+</p>
-                <p>Berechtigungen: Internetzugriff</p>
-                <p>Speicherplatz: ca. 25 MB</p>
-            </div>
-            <div class="infoColumn">
-                <h3>Sicherheitshinweis</h3>
-                <p>Installation aus unbekannten Quellen muss aktiviert sein.</p>
-                <p>Verschlüsselung: 128-bit AES</p>
-                <p>Integrität: Verifiziert</p>
-            </div>
+        <div class="warning-note">
+            HINWEIS: Entwickleroptionen müssen NICHT aktiviert werden. Die obige Freigabe reicht aus.
         </div>
+
     </div>
 </main>
 
