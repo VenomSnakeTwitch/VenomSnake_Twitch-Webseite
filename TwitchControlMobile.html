@@ -42,7 +42,6 @@
         .tab-item {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: var(--mgs-green); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.4;
-            transition: 0.3s;
         }
         .tab-item.active { opacity: 1; background: var(--mgs-green-dim); border-top: 4px solid var(--mgs-green); }
 
@@ -51,57 +50,52 @@
         .view { display: none; flex-direction: column; min-height: 100%; }
         .view.active { display: flex; }
 
-        h2 { font-size: 1.2rem; text-transform: uppercase; border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; margin-bottom: 25px; letter-spacing: 1px; }
+        h2 { font-size: 1.1rem; text-transform: uppercase; border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; margin-bottom: 20px; }
 
         .input-group { margin-bottom: 20px; position: relative; }
-        label { display: block; font-size: 0.7rem; margin-bottom: 8px; color: #008f11; font-weight: bold; text-transform: uppercase; }
+        label { display: block; font-size: 0.65rem; margin-bottom: 8px; color: #008f11; font-weight: bold; text-transform: uppercase; }
 
         input {
             width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
             color: #fff; padding: 15px; font-family: inherit; outline: none; font-size: 1rem;
         }
 
-        /* Listen & Vorschläge */
-        .suggestion-box {
-            position: absolute; top: 100%; left: 0; width: 100%;
-            background: #0a0f0a; border: 1px solid var(--mgs-green);
-            z-index: 1000; max-height: 180px; overflow-y: auto; display: none;
-        }
-        .suggestion-item { padding: 15px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.9rem; }
-
+        /* Listen */
         #live-follows-list {
             background: #001a00; border: 1px solid var(--mgs-green-dim);
-            flex-grow: 1; min-height: 200px; max-height: 300px; overflow-y: auto; margin-bottom: 15px;
+            height: 250px; overflow-y: auto; margin-bottom: 15px;
         }
         .live-follow-item {
             padding: 15px; border-bottom: 1px solid #1a2e1a;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;
         }
-        .live-follow-item b { color: var(--mgs-green); }
+
+        .suggestion-box {
+            position: absolute; top: 100%; left: 0; width: 100%;
+            background: #0a0f0a; border: 1px solid var(--mgs-green);
+            z-index: 1000; max-height: 150px; overflow-y: auto; display: none;
+        }
+        .suggestion-item { padding: 12px; border-bottom: 1px solid #1a2e1a; font-size: 0.9rem; }
 
         button {
             width: 100%; padding: 18px; background: var(--mgs-green); color: #000;
-            border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem;
+            border: none; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;
         }
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 10px; }
 
-        #status-msg { 
-            position: fixed; top: 0; left: 0; right: 0; padding: 10px; 
-            text-align: center; font-size: 0.7rem; background: var(--mgs-green); color: #000;
-            transform: translateY(-100%); transition: 0.4s; z-index: 2000; font-weight: bold;
+        #status { 
+            margin-top: 15px; padding: 10px; text-align: center; font-size: 0.7rem;
+            border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05);
         }
-        #status-msg.show { transform: translateY(0); }
     </style>
 </head>
 <body>
 
-<div id="status-msg">SYSTEM_STATUS_NORMAL</div>
-
 <div id="lock-overlay">
     <div class="lock-box">
         <h2 style="color: var(--mgs-red); border: none;">[ ZUGRIFF_GESPERRT ]</h2>
-        <input type="password" id="pass-input" placeholder="CODE EINGEBEN" onkeydown="if(event.key==='Enter') checkPass()">
-        <button onclick="checkPass()" style="margin-top:20px;">VERIFIZIEREN</button>
+        <input type="password" id="pass-input" placeholder="CODE" onkeydown="if(event.key==='Enter') checkPass()">
+        <button onclick="checkPass()" style="margin-top:20px;">LOGIN</button>
     </div>
 </div>
 
@@ -110,17 +104,16 @@
     <div id="view-broadcast" class="view active">
         <h2>[ STREAM_SETUP ]</h2>
         <div id="auth-section">
-            <p style="margin-bottom: 20px; font-size: 0.9rem;">Initialisiere HQ-Verbindung...</p>
-            <button onclick="login()">LOGIN BEI TWITCH</button>
+            <button onclick="login()">LOGIN BEI TWITCH (RAID_PERMS)</button>
         </div>
         <div id="control-section" style="display:none;">
             <div class="input-group">
-                <label>MISSION_TITEL</label>
+                <label>AKTUELLER_STREAM_TITEL</label>
                 <input type="text" id="stream-title" placeholder="Lade Titel...">
             </div>
             <div class="input-group">
-                <label>KATEGORIE</label>
-                <input type="text" id="stream-game" placeholder="Nach Spiel suchen..." autocomplete="off">
+                <label>KATEGORIE_UPDATE</label>
+                <input type="text" id="stream-game" placeholder="Spiel suchen..." autocomplete="off">
                 <div id="game-suggestions" class="suggestion-box"></div>
             </div>
             <button onclick="updateTwitch()">UPDATE SENDEN</button>
@@ -128,35 +121,30 @@
     </div>
 
     <div id="view-raid" class="view">
-        <h2>[ RAID_COMMAND ]</h2>
+        <h2>[ TACTICAL_RAID_COMMAND ]</h2>
         <label>LIVE FOLLOWS (AUFKLÄRUNG)</label>
-        <div id="live-follows-list">Suche Live-Ziele...</div>
+        <div id="live-follows-list">Lade Live-Ziele...</div>
 
         <div class="input-group">
-            <label>ZIEL_SCAN (NAME)</label>
-            <input type="text" id="raid-target-input" placeholder="Suche..." autocomplete="off">
+            <label>MANUELLER_ZIEL_SCAN</label>
+            <input type="text" id="raid-target-input" placeholder="Ziel suchen..." autocomplete="off">
             <div id="raid-suggestions" class="suggestion-box"></div>
         </div>
 
-        <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; border: 1px solid #1a2e1a; padding: 15px; background: rgba(255,0,0,0.05);">
+        <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; border: 1px solid #1a2e1a; padding: 10px;">
             ZIEL_ERFASST: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
         </div>
-        <button class="btn-raid" onclick="startRaid()">RAID EINLEITEN</button>
-        <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">ABBRECHEN</button>
+        <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
+        <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">RAID_ABBRECHEN</button>
     </div>
 
+    <div id="status">STATUS: STANDBY</div>
 </div>
 
 <nav class="tab-bar" id="app-nav">
-    <div class="tab-item active" onclick="switchTab('broadcast')">
-        <span>BROADCAST</span>
-    </div>
-    <div class="tab-item" onclick="switchTab('raid')">
-        <span>RAID</span>
-    </div>
-    <div class="tab-item" onclick="window.location.href='index.html'">
-        <span>BACK</span>
-    </div>
+    <div class="tab-item active" onclick="switchTab('broadcast')"><span>BROADCAST</span></div>
+    <div class="tab-item" onclick="switchTab('raid')"><span>RAID</span></div>
+    <div class="tab-item" onclick="window.location.href='index.html'"><span>BACK</span></div>
 </nav>
 
 <script>
@@ -165,14 +153,7 @@
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
-    let accessToken = null, myId = null, selectedGameId = null, selectedRaidTargetId = null;
-
-    function showStatus(text) {
-        const el = document.getElementById('status-msg');
-        el.textContent = text;
-        el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), 3000);
-    }
+    let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
 
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
@@ -215,19 +196,20 @@
         try {
             const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
             const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
-            myId = u.data[0].id;
-            const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myId}`, { headers: h }).then(r => r.json());
+            myBroadcasterId = u.data[0].id;
+            const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
             document.getElementById('stream-title').value = c.data[0].title;
+            document.getElementById('stream-game').placeholder = "Aktuell: " + c.data[0].game_name;
             loadLiveFollows();
-        } catch (e) { showStatus("ERROR: DATA_FETCH_FAILED"); }
+        } catch (e) { console.error("Init Error"); }
     }
 
     async function loadLiveFollows() {
         const list = document.getElementById('live-follows-list');
         const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
         try {
-            const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myId}&first=100`, { headers: h }).then(r => r.json());
-            if(!f.data || f.data.length === 0) return list.innerHTML = "KEINE FOLLOWS.";
+            const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
+            if(!f.data || f.data.length === 0) return;
             const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
             const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
             list.innerHTML = '';
@@ -238,56 +220,74 @@
                 item.onclick = () => {
                     selectedRaidTargetId = stream.user_id;
                     document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
-                    showStatus("ZIEL FIXIERT: " + stream.user_name);
+                    document.getElementById('raid-target-input').value = stream.user_name;
                 };
                 list.appendChild(item);
             });
-        } catch(e) { list.innerHTML = "SCAN_ERROR."; }
+        } catch(e) { console.error("Scan Error"); }
     }
 
-    // SUCHE FÜR SPIELE & MANUELLER RAID
-    const gIn = document.getElementById('stream-game'), gSug = document.getElementById('game-suggestions');
-    gIn.addEventListener('input', async () => {
-        if (gIn.value.length < 3) return gSug.style.display = 'none';
-        const r = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(gIn.value)}`, {
+    const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
+    gameInput.addEventListener('input', async () => {
+        if (gameInput.value.length < 3) { gBox.style.display = 'none'; return; }
+        const r = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(gameInput.value)}`, {
             headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         }).then(res => res.json());
-        gSug.innerHTML = ''; gSug.style.display = 'block';
+        gBox.innerHTML = ''; gBox.style.display = 'block';
         r.data.forEach(g => {
             const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = g.name;
-            d.onclick = () => { gIn.value = g.name; selectedGameId = g.id; gSug.style.display = 'none'; };
-            gSug.appendChild(d);
+            d.onclick = () => { gameInput.value = g.name; selectedGameId = g.id; gBox.style.display = 'none'; };
+            gBox.appendChild(d);
+        });
+    });
+
+    const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
+    raidInput.addEventListener('input', async () => {
+        if (raidInput.value.length < 3) { rBox.style.display = 'none'; return; }
+        const r = await fetch(`https://api.twitch.tv/helix/search/channels?query=${encodeURIComponent(raidInput.value)}`, {
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        }).then(res => res.json());
+        rBox.innerHTML = ''; rBox.style.display = 'block';
+        r.data.filter(u => u.is_live).forEach(u => {
+            const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = `[LIVE] ${u.display_name}`;
+            d.onclick = () => {
+                raidInput.value = u.display_name; selectedRaidTargetId = u.id;
+                document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
+                rBox.style.display = 'none';
+            };
+            rBox.appendChild(d);
         });
     });
 
     async function updateTwitch() {
-        showStatus("SENDING_DATA...");
+        const sEl = document.getElementById('status'); sEl.textContent = "UPDATE...";
         let body = { title: document.getElementById('stream-title').value };
         if (selectedGameId) body.game_id = selectedGameId;
-        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myId}`, {
-            method: 'PATCH',
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
+            method: 'PATCH', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        showStatus(res.ok ? "UPDATE_SUCCESS" : "UPDATE_FAILED");
+        sEl.textContent = res.ok ? "STATUS: ERFOLGREICH" : "STATUS: FEHLER";
     }
 
     async function startRaid() {
-        if(!selectedRaidTargetId) return showStatus("KEIN ZIEL GEWÄHLT!");
-        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myId}&to_broadcaster_id=${selectedRaidTargetId}`, {
+        const sEl = document.getElementById('status');
+        if(!selectedRaidTargetId) return;
+        sEl.textContent = "RAID STARTET...";
+        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
             method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        showStatus(res.ok ? "RAID_INITIALIZED" : "RAID_FAILED");
+        sEl.textContent = res.ok ? "STATUS: RAID LÄUFT" : "STATUS: FEHLER";
     }
 
     async function cancelRaid() {
-        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myId}`, {
+        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}`, {
             method: 'DELETE', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        showStatus(res.ok ? "RAID_ABORTED" : "CANCEL_FAILED");
+        document.getElementById('status').textContent = res.ok ? "STATUS: ABGEBROCHEN" : "STATUS: FEHLER";
     }
 
-    document.addEventListener('click', (e) => { if(!e.target.closest('.input-group')) gSug.style.display = 'none'; });
+    document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
     setInterval(loadLiveFollows, 120000);
 </script>
 </body>
