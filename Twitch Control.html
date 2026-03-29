@@ -4,118 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VENOM_SNAKE - Mission Control (FHD-ADAPTIVE)</title>
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
+    
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --mgs-green: #00ff41; 
             --mgs-bg: #050805; 
             --mgs-red: #ff0000; 
-            --panel-width: 100%;
+            --tactical-blue: #52b6ca;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background: var(--mgs-bg); 
-            color: var(--mgs-green); 
-            font-family: 'JetBrains Mono', monospace;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0;
+            background: var(--mgs-bg); color: var(--mgs-green); font-family: 'JetBrains Mono', monospace;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            overflow-x: hidden;
+            background-size: 40px 40px; overflow-x: hidden;
         }
 
-        /* Passwort Overlay */
         #lock-overlay {
             position: fixed; inset: 0; background: var(--mgs-bg);
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
 
-        .lock-box { 
-            border: 2px solid var(--mgs-green); padding: 2.5rem; background: rgba(0, 20, 0, 0.95); 
-            text-align: center; width: 90%; max-width: 450px; 
-        }
+        .lock-box { border: 2px solid var(--mgs-green); padding: 2.5rem; background: rgba(0, 20, 0, 0.95); text-align: center; width: 90%; max-width: 450px; }
 
-        /* Das Panel - Optimiert für FHD Desktop und Mobile Fullscreen */
         .panel {
-            border: 3px solid var(--mgs-green); 
-            padding: 3rem; 
-            width: 100vw; 
-            height: 100vh;
-            max-width: 1920px; /* FHD Standard */
-            max-height: 1080px;
-            background: rgba(10, 15, 10, 0.98); 
-            box-shadow: inset 0 0 50px rgba(0, 255, 65, 0.1), 0 0 30px rgba(0, 255, 65, 0.2);
-            display: none; 
-            flex-direction: column;
-            position: relative;
-            overflow-y: auto;
+            border: 3px solid var(--mgs-green); padding: 2rem; width: 100vw; height: 100vh;
+            max-width: 1920px; max-height: 1080px; background: rgba(10, 15, 10, 0.98); 
+            display: none; flex-direction: column; position: relative; overflow-y: auto;
         }
 
-        /* Mobile & Tablet Anpassung: Entfernt Rahmen und nutzt 100% Platz */
         @media (max-width: 1024px) {
-            .panel { 
-                border: none; 
-                padding: 1.5rem; 
-                max-height: none; 
-                height: 100vh;
-                width: 100vw;
-                justify-content: flex-start;
-            }
-            h2 { margin-top: 40px; }
-            .btn-back { top: 10px !important; right: 10px !important; width: auto !important; }
+            .panel { border: none; padding: 1rem; height: 100vh; width: 100vw; }
+            h2 { margin-top: 50px; font-size: 1.2rem; }
+            .btn-back { top: 10px !important; right: 10px !important; }
         }
 
-        /* Querformat Optimierung (Landscape auf Handy) */
-        @media (max-height: 500px) {
-            .panel { padding: 1rem; }
-            .input-group { margin: 10px 0; }
-            h2 { font-size: 1rem; margin-top: 30px; }
-        }
+        h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 15px; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px; }
+        .control-grid { display: grid; grid-template-columns: 1fr; gap: 20px; flex-grow: 1; }
+        @media (min-width: 1024px) { .control-grid { grid-template-columns: 1fr 1fr; } }
 
-        h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 15px; font-size: 1.5rem; text-transform: uppercase; margin-top: 0; letter-spacing: 2px; }
-        .input-group { margin: 30px 0; position: relative; }
-        label { display: block; font-size: 0.8rem; margin-bottom: 10px; color: #008f11; font-weight: bold; text-transform: uppercase; }
+        .sub-panel { border: 1px solid var(--mgs-green); padding: 20px; background: rgba(0,255,65,0.02); display: flex; flex-direction: column; }
+        .sub-panel h3 { font-size: 0.9rem; margin-bottom: 15px; color: var(--tactical-blue); border-left: 4px solid var(--tactical-blue); padding-left: 10px; }
+
+        .input-group { margin-bottom: 20px; position: relative; }
+        label { display: block; font-size: 0.7rem; margin-bottom: 8px; color: #008f11; font-weight: bold; text-transform: uppercase; }
         
         input {
-            width: 100%; background: #001a00; border: 2px solid var(--mgs-green);
-            color: #fff; padding: 18px; font-family: inherit; outline: none; font-size: 1.1rem;
-            box-shadow: inset 0 0 10px rgba(0,255,65,0.1);
+            width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
+            color: #fff; padding: 12px; font-family: inherit; outline: none; font-size: 1rem;
         }
 
-        #game-suggestions {
+        .suggestion-box {
             position: absolute; top: 100%; left: 0; width: 100%;
-            background: #0a0f0a; border: 2px solid var(--mgs-green);
-            z-index: 1000; max-height: 300px; overflow-y: auto; display: none;
+            background: #0a0f0a; border: 1px solid var(--mgs-green);
+            z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
         }
 
-        .suggestion-item { padding: 18px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 1rem; }
+        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.9rem; }
         .suggestion-item:hover { background: var(--mgs-green); color: #000; }
 
         button {
-            width: 100%; padding: 20px; background: var(--mgs-green); color: #000;
-            border: none; font-weight: bold; cursor: pointer; transition: 0.3s; 
-            text-transform: uppercase; margin-top: 15px; font-size: 1.1rem;
-            letter-spacing: 1px;
+            width: 100%; padding: 15px; background: var(--mgs-green); color: #000;
+            border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
         }
-        button:hover { background: #fff; box-shadow: 0 0 20px var(--mgs-green); }
+        button:hover { background: #fff; }
+        .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 10px; }
+        .btn-raid:hover { background: #ff4d4d; }
 
         .btn-back {
-            position: absolute; top: 20px; right: 20px; width: auto; padding: 10px 20px;
-            background: transparent; border: 2px solid var(--mgs-green); color: var(--mgs-green);
-            font-size: 0.8rem; z-index: 10;
+            position: absolute; top: 20px; right: 20px; width: auto; padding: 8px 15px;
+            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green); font-size: 0.7rem;
         }
-        .btn-back:hover { background: rgba(0, 255, 65, 0.1); }
 
         #status { 
-            margin-top: auto; padding: 20px; text-align: center; 
-            font-size: 1rem; border: 1px dashed var(--mgs-green); 
-            background: rgba(0,255,65,0.05);
+            margin-top: 20px; padding: 15px; text-align: center; font-size: 0.8rem;
+            border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05);
         }
     </style>
 </head>
@@ -123,36 +91,52 @@
 
 <div id="lock-overlay">
     <div class="lock-box">
-        <h2 style="color: var(--mgs-red); margin-bottom: 20px;">[ ZUGRIFF_GESPERRT ]</h2>
+        <h2 style="color: var(--mgs-red);">[ ZUGRIFF_GESPERRT ]</h2>
         <input type="password" id="pass-input" placeholder="CODE EINGEBEN" onkeydown="if(event.key==='Enter') checkPass()">
-        <button onclick="checkPass()">VERIFIZIEREN</button>
-        <div id="lock-status" style="margin-top:15px;"></div>
+        <button onclick="checkPass()" style="margin-top:15px;">VERIFIZIEREN</button>
+        <div id="lock-status" style="margin-top:15px; font-size: 0.8rem;"></div>
     </div>
 </div>
 
 <div class="panel" id="main-panel">
     <button class="btn-back" onclick="window.location.href='index.html'">[ ZURÜCK_ZUR_BASIS ]</button>
-    
     <h2>[ MISSION_CONTROL_CENTER ]</h2>
     
     <div id="auth-section">
-        <p style="font-size: 1rem; margin: 40px 0; color: #888;">Initialisiere Verbindung zum HQ...</p>
-        <button onclick="login()">LOGIN BEI TWITCH</button>
+        <p style="margin: 40px 0;">Initialisiere Verbindung zum HQ...</p>
+        <button onclick="login()">LOGIN BEI TWITCH (RAID_PERMS)</button>
     </div>
 
-    <div id="control-section" style="display:none; flex-direction: column; flex-grow: 1;">
-        <div class="input-group">
-            <label>AKTUELLER_STREAM_TITEL</label>
-            <input type="text" id="stream-title" placeholder="Lade Daten...">
-        </div>
-        
-        <div class="input-group">
-            <label>KATEGORIE_UPDATE</label>
-            <input type="text" id="stream-game" placeholder="Nach Spiel suchen..." autocomplete="off">
-            <div id="game-suggestions"></div>
-        </div>
+    <div id="control-section" style="display:none;">
+        <div class="control-grid">
+            <div class="sub-panel">
+                <h3>[ BROADCAST_SETTINGS ]</h3>
+                <div class="input-group">
+                    <label>AKTUELLER_STREAM_TITEL</label>
+                    <input type="text" id="stream-title" placeholder="Lade Titel...">
+                </div>
+                <div class="input-group">
+                    <label>KATEGORIE_UPDATE</label>
+                    <input type="text" id="stream-game" placeholder="Spiel suchen..." autocomplete="off">
+                    <div id="game-suggestions" class="suggestion-box"></div>
+                </div>
+                <button onclick="updateTwitch()">UPDATE SENDEN</button>
+            </div>
 
-        <button onclick="updateTwitch()">UPDATE SENDEN</button>
+            <div class="sub-panel">
+                <h3>[ TACTICAL_RAID_COMMAND ]</h3>
+                <div class="input-group">
+                    <label>ZIELPERSON_SCAN (TWITCH NAME)</label>
+                    <input type="text" id="raid-target-input" placeholder="Ziel suchen..." autocomplete="off">
+                    <div id="raid-suggestions" class="suggestion-box"></div>
+                </div>
+                <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; min-height: 40px;">
+                    ZIEL: <span id="selected-target-name">KEINES</span>
+                </div>
+                <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
+                <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">RAID_ABBRECHEN</button>
+            </div>
+        </div>
         <div id="status">STATUS: STANDBY</div>
     </div>
 </div>
@@ -161,10 +145,12 @@
     const CORRECT_PASS = "VenomSnake94";
     const CLIENT_ID = '67qdowganroqrazq3yt4g1bwj9bp8r';
     const REDIRECT_URI = window.location.origin + window.location.pathname;
-    const SCOPES = 'channel:manage:broadcast';
+    const SCOPES = 'channel:manage:broadcast channel:manage:raids';
 
-    let selectedGameId = null;
     let accessToken = null;
+    let selectedGameId = null;
+    let selectedRaidTargetId = null;
+    let myBroadcasterId = null;
 
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
@@ -173,7 +159,6 @@
             sessionStorage.setItem('mission_auth', 'true');
         } else {
             document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT.";
-            document.getElementById('pass-input').value = "";
         }
     }
 
@@ -188,89 +173,108 @@
 
     if (accessToken) {
         document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('control-section').style.display = 'flex';
+        document.getElementById('control-section').style.display = 'block';
         window.history.replaceState({}, document.title, window.location.pathname);
-        loadCurrentStreamData();
+        initMissionData();
     }
 
     function login() {
-        window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${SCOPES}`;
+        window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`;
     }
 
-    async function loadCurrentStreamData() {
+    async function initMissionData() {
         try {
             const userResp = await fetch('https://api.twitch.tv/helix/users', {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
             });
             const userData = await userResp.json();
-            const bId = userData.data[0].id;
-            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
+            myBroadcasterId = userData.data[0].id;
+            
+            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
                 headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
             });
             const channelData = await channelResp.json();
-            if (channelData.data && channelData.data.length > 0) {
-                document.getElementById('stream-title').value = channelData.data[0].title;
-                document.getElementById('stream-game').placeholder = "Aktuell: " + channelData.data[0].game_name;
-            }
-        } catch (e) { console.error("API Error"); }
+            document.getElementById('stream-title').value = channelData.data[0].title;
+            document.getElementById('stream-game').placeholder = "Aktuell: " + channelData.data[0].game_name;
+        } catch (e) { console.error("Initialisierungsfehler"); }
     }
 
     const gameInput = document.getElementById('stream-game');
-    const suggestionBox = document.getElementById('game-suggestions');
-
+    const gBox = document.getElementById('game-suggestions');
     gameInput.addEventListener('input', async () => {
-        const query = gameInput.value;
-        if (query.length < 3) { suggestionBox.style.display = 'none'; return; }
-        try {
-            const resp = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(query)}`, {
-                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        if (gameInput.value.length < 3) { gBox.style.display = 'none'; return; }
+        const r = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(gameInput.value)}`, {
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        }).then(res => res.json());
+        gBox.innerHTML = '';
+        if(r.data) {
+            gBox.style.display = 'block';
+            r.data.forEach(g => {
+                const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = g.name;
+                d.onclick = () => { gameInput.value = g.name; selectedGameId = g.id; gBox.style.display = 'none'; };
+                gBox.appendChild(d);
             });
-            const data = await resp.json();
-            suggestionBox.innerHTML = '';
-            if (data.data && data.data.length > 0) {
-                suggestionBox.style.display = 'block';
-                data.data.forEach(game => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.textContent = game.name;
-                    div.onclick = () => {
-                        gameInput.value = game.name;
-                        selectedGameId = game.id;
-                        suggestionBox.style.display = 'none';
-                    };
-                    suggestionBox.appendChild(div);
-                });
-            }
-        } catch (e) { console.error("Search failed"); }
+        }
     });
 
-    document.addEventListener('click', (e) => { if (e.target !== gameInput) suggestionBox.style.display = 'none'; });
+    const raidInput = document.getElementById('raid-target-input');
+    const rBox = document.getElementById('raid-suggestions');
+    raidInput.addEventListener('input', async () => {
+        if (raidInput.value.length < 3) { rBox.style.display = 'none'; return; }
+        const r = await fetch(`https://api.twitch.tv/helix/search/channels?query=${encodeURIComponent(raidInput.value)}`, {
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        }).then(res => res.json());
+        rBox.innerHTML = '';
+        if(r.data) {
+            rBox.style.display = 'block';
+            r.data.filter(u => u.is_live).forEach(u => {
+                const d = document.createElement('div'); d.className = 'suggestion-item';
+                d.textContent = `[LIVE] ${u.display_name} (${u.game_name})`;
+                d.onclick = () => {
+                    raidInput.value = u.display_name;
+                    selectedRaidTargetId = u.id;
+                    document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
+                    rBox.style.display = 'none';
+                };
+                rBox.appendChild(d);
+            });
+        }
+    });
 
     async function updateTwitch() {
-        const title = document.getElementById('stream-title').value;
         const statusEl = document.getElementById('status');
-        statusEl.textContent = "SENDE DATENPAKET...";
-        try {
-            const userResp = await fetch('https://api.twitch.tv/helix/users', {
-                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-            });
-            const userData = await userResp.json();
-            const bId = userData.data[0].id;
-            let body = {};
-            if (title) body.title = title;
-            if (selectedGameId) body.game_id = selectedGameId;
-            const response = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, {
-                method: 'PATCH',
-                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-            if (response.ok) {
-                statusEl.textContent = "MISSION ERFOLGREICH: KANAL AKTUALISIERT.";
-                statusEl.style.color = "#00ff41";
-                selectedGameId = null;
-            }
-        } catch (e) { statusEl.textContent = "ÜBERTRAGUNGSFEHLER."; }
+        statusEl.textContent = "SENDE BROADCAST_DATEN...";
+        let body = { title: document.getElementById('stream-title').value };
+        if (selectedGameId) body.game_id = selectedGameId;
+        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
+            method: 'PATCH',
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        statusEl.textContent = res.ok ? "KANAL ERFOLGREICH AKTUALISIERT." : "ÜBERTRAGUNGSFEHLER.";
     }
+
+    async function startRaid() {
+        const statusEl = document.getElementById('status');
+        if(!selectedRaidTargetId) { statusEl.textContent = "FEHLER: KEIN ZIEL AUSGEWÄHLT."; return; }
+        statusEl.textContent = "INITIERE RAID-SEQUENZ...";
+        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
+            method: 'POST',
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        });
+        statusEl.textContent = res.ok ? "RAID GESTARTET! ALLE EINHEITEN RÜCKEN AUS." : "RAID-FEHLSCHLAG.";
+    }
+
+    async function cancelRaid() {
+        const statusEl = document.getElementById('status');
+        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}`, {
+            method: 'DELETE',
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        });
+        statusEl.textContent = res.ok ? "RAID ABGEBROCHEN. RÜCKZUG." : "ABBRUCH NICHT MÖGLICH.";
+    }
+
+    document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
 </script>
 </body>
 </html>
