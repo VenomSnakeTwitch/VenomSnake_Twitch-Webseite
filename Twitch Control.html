@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VENOM_SNAKE - Mission Control (FHD-ADAPTIVE)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
-    
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -46,7 +45,7 @@
 
         h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 15px; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px; }
         .control-grid { display: grid; grid-template-columns: 1fr; gap: 20px; flex-grow: 1; }
-        @media (min-width: 1024px) { .control-grid { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 1024px) { .control-grid { grid-template-columns: 1fr 1.2fr; } }
 
         .sub-panel { border: 1px solid var(--mgs-green); padding: 20px; background: rgba(0,255,65,0.02); display: flex; flex-direction: column; }
         .sub-panel h3 { font-size: 0.9rem; margin-bottom: 15px; color: var(--tactical-blue); border-left: 4px solid var(--tactical-blue); padding-left: 10px; }
@@ -67,6 +66,19 @@
 
         .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.9rem; }
         .suggestion-item:hover { background: var(--mgs-green); color: #000; }
+
+        /* Follower Liste Styling */
+        #live-follows-list {
+            background: #001a00; border: 1px solid var(--mgs-green-dim);
+            height: 250px; overflow-y: auto; margin-bottom: 15px; padding: 5px;
+        }
+        .live-follow-item {
+            padding: 10px; border-bottom: 1px solid #1a2e1a; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
+        }
+        .live-follow-item:hover { background: var(--mgs-green-dim); color: #fff; }
+        .live-follow-item b { color: var(--mgs-green); }
+        .live-follow-item span { font-size: 0.7rem; color: var(--tactical-blue); }
 
         button {
             width: 100%; padding: 15px; background: var(--mgs-green); color: #000;
@@ -125,13 +137,17 @@
 
             <div class="sub-panel">
                 <h3>[ TACTICAL_RAID_COMMAND ]</h3>
+                <label>LIVE FOLLOWS (AUFKLÄRUNG)</label>
+                <div id="live-follows-list">Lade Live-Ziele...</div>
+
                 <div class="input-group">
-                    <label>ZIELPERSON_SCAN (TWITCH NAME)</label>
+                    <label>MANUELLER_ZIEL_SCAN</label>
                     <input type="text" id="raid-target-input" placeholder="Ziel suchen..." autocomplete="off">
                     <div id="raid-suggestions" class="suggestion-box"></div>
                 </div>
-                <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; min-height: 40px;">
-                    ZIEL: <span id="selected-target-name">KEINES</span>
+                
+                <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; min-height: 40px; border: 1px solid #1a2e1a; padding: 10px;">
+                    ZIEL_ERFASST: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
                 </div>
                 <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
                 <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">RAID_ABBRECHEN</button>
@@ -145,7 +161,8 @@
     const CORRECT_PASS = "VenomSnake94";
     const CLIENT_ID = '67qdowganroqrazq3yt4g1bwj9bp8r';
     const REDIRECT_URI = window.location.origin + window.location.pathname;
-    const SCOPES = 'channel:manage:broadcast channel:manage:raids';
+    // SCOPES für Raids und Follow-Liste (user:read:follows)
+    const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
     let accessToken = null;
     let selectedGameId = null;
@@ -184,21 +201,51 @@
 
     async function initMissionData() {
         try {
-            const userResp = await fetch('https://api.twitch.tv/helix/users', {
-                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-            });
-            const userData = await userResp.json();
-            myBroadcasterId = userData.data[0].id;
+            const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
+            const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
+            myBroadcasterId = u.data[0].id;
             
-            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
-                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-            });
-            const channelData = await channelResp.json();
-            document.getElementById('stream-title').value = channelData.data[0].title;
-            document.getElementById('stream-game').placeholder = "Aktuell: " + channelData.data[0].game_name;
-        } catch (e) { console.error("Initialisierungsfehler"); }
+            const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
+            document.getElementById('stream-title').value = c.data[0].title;
+            document.getElementById('stream-game').placeholder = "Aktuell: " + c.data[0].game_name;
+            
+            loadLiveFollows();
+        } catch (e) { console.error("Data Init Error"); }
     }
 
+    async function loadLiveFollows() {
+        const list = document.getElementById('live-follows-list');
+        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
+        try {
+            // 1. Holen, wem du folgst
+            const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
+            if(!f.data || f.data.length === 0) { list.innerHTML = "Keine Follows gefunden."; return; }
+            
+            const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
+            
+            // 2. Prüfen, wer davon Live ist
+            const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
+            
+            if(s.data && s.data.length > 0) {
+                list.innerHTML = '';
+                s.data.forEach(stream => {
+                    const item = document.createElement('div');
+                    item.className = 'live-follow-item';
+                    item.innerHTML = `<div><b>${stream.user_name}</b><br><span>${stream.game_name}</span></div><div>${stream.viewer_count} 👤</div>`;
+                    item.onclick = () => {
+                        selectedRaidTargetId = stream.user_id;
+                        document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
+                        document.getElementById('raid-target-input').value = stream.user_name;
+                    };
+                    list.appendChild(item);
+                });
+            } else {
+                list.innerHTML = "Aktuell niemand live.";
+            }
+        } catch(e) { list.innerHTML = "Fehler beim Laden der Aufklärung."; }
+    }
+
+    // GAME SEARCH
     const gameInput = document.getElementById('stream-game');
     const gBox = document.getElementById('game-suggestions');
     gameInput.addEventListener('input', async () => {
@@ -217,6 +264,7 @@
         }
     });
 
+    // MANUEL TARGET SEARCH
     const raidInput = document.getElementById('raid-target-input');
     const rBox = document.getElementById('raid-suggestions');
     raidInput.addEventListener('input', async () => {
@@ -275,6 +323,9 @@
     }
 
     document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
+    
+    // Auto-Refresh für die Live-Liste alle 2 Minuten
+    setInterval(loadLiveFollows, 120000);
 </script>
 </body>
 </html>
