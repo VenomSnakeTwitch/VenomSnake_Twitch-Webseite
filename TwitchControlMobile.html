@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (MOBILE-APP)</title>
+    <title>VENOM_SNAKE - Mission Control (MOBILE-CORRECTED)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -12,7 +12,6 @@
             --mgs-bg: #050805; 
             --mgs-red: #ff0000; 
             --tactical-blue: #52b6ca;
-            --panel-bg: rgba(10, 15, 10, 0.98);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -100,12 +99,10 @@
     
     <div id="view-broadcast" class="view active">
         <h2>[ STREAM_SETUP ]</h2>
-        
         <div id="auth-section">
             <p style="margin: 40px 0;">Initialisiere Verbindung zum HQ...</p>
             <button onclick="login()">LOGIN BEI TWITCH</button>
         </div>
-
         <div id="control-section" style="display:none;">
             <div class="input-group">
                 <label>AKTUELLER_STREAM_TITEL</label>
@@ -122,21 +119,18 @@
 
     <div id="view-raid" class="view">
         <h2>[ RAID_COMMAND ]</h2>
-        
         <label>LIVE FOLLOWS (AUFKLÄRUNG)</label>
         <div id="live-follows-list">Lade Live-Ziele...</div>
-
         <div class="input-group">
             <label>MANUELLER_ZIEL_SCAN</label>
             <input type="text" id="raid-target-input" placeholder="Ziel suchen..." autocomplete="off">
             <div id="raid-suggestions" class="suggestion-box"></div>
         </div>
-
         <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; min-height: 40px; border: 1px solid #1a2e1a; padding: 15px;">
             ZIEL_ERFASST: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
         </div>
         <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
-        <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">ABBRECHEN</button>
+        <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">ABBRUCH_SIGNAL_SENDEN</button>
     </div>
 
     <div id="status">STATUS: STANDBY</div>
@@ -262,7 +256,7 @@
     });
 
     async function updateTwitch() {
-        const sEl = document.getElementById('status'); sEl.textContent = "UPDATE...";
+        const sEl = document.getElementById('status'); sEl.textContent = "SENDE UPDATE...";
         let body = { title: document.getElementById('stream-title').value };
         if (selectedGameId) body.game_id = selectedGameId;
         const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
@@ -273,18 +267,28 @@
     }
 
     async function startRaid() {
-        if(!selectedRaidTargetId) return;
+        const sEl = document.getElementById('status');
+        if(!selectedRaidTargetId) { sEl.textContent = "FEHLER: KEIN ZIEL."; return; }
+        sEl.textContent = "RAID-SEQUENZ GESTARTET...";
         const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
             method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        document.getElementById('status').textContent = res.ok ? "RAID LÄUFT." : "RAID FEHLGESCHLAGEN.";
+        sEl.textContent = res.ok ? "RAID LÄUFT. COUNTDOWN BEI TWITCH PRÜFEN." : "RAID FEHLGESCHLAGEN.";
     }
 
     async function cancelRaid() {
+        const sEl = document.getElementById('status');
+        sEl.textContent = "SENDE ABBRUCH-SIGNAL...";
         const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}`, {
-            method: 'DELETE', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            method: 'DELETE',
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        document.getElementById('status').textContent = res.ok ? "RAID ABGEBROCHEN." : "FEHLER.";
+        // Twitch gibt 204 No Content bei Erfolg zurück
+        if(res.ok || res.status === 204) {
+            sEl.textContent = "RAID ERFOLGREICH ABGEBROCHEN. RÜCKZUG.";
+        } else {
+            sEl.textContent = "ABBRUCH NICHT MÖGLICH (RAID BEREITS VOLLZOGEN?).";
+        }
     }
 
     document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
