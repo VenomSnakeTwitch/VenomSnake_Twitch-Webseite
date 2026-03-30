@@ -49,9 +49,8 @@
         .nav-menu-container { position: relative; }
         .menu-trigger {
             background: var(--mgs-green-dim); color: var(--mgs-green); border: 1px solid var(--mgs-green);
-            padding: 10px 20px; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: 0.3s;
+            padding: 10px 20px; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 10px;
         }
-        .menu-trigger:hover { background: var(--mgs-green); color: #000; }
         .nav-dropdown {
             display: none; position: absolute; right: 0; top: 100%;
             background: var(--mgs-panel); border: 2px solid var(--mgs-green); min-width: 250px;
@@ -67,11 +66,12 @@
         .container { max-width: 1400px; margin: 100px auto 20px; padding: 0 20px; }
         .page { display: none; }
         .page.active { display: block; }
+
         .mgs-header {
             border: 2px solid var(--mgs-green); padding: 1.5rem; background: rgba(0, 59, 0, 0.1); margin-bottom: 2rem;
         }
         .stats-bar {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 1rem; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--mgs-green-dim);
         }
         .stat-label { color: var(--mgs-green); font-weight: bold; }
@@ -82,6 +82,13 @@
         .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; }
         .twitch-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
         
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 2rem; }
+        .schedule-card { 
+            background: var(--mgs-panel); border-left: 4px solid var(--mgs-green); 
+            padding: 1.2rem; border-top: 1px solid var(--mgs-border);
+        }
+        .schedule-card h3 { color: var(--mgs-green); font-family: 'Chakra Petch'; margin-bottom: 5px; font-size: 0.9rem; }
+
         .archive-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
         .archive-title { color: var(--mgs-green); border-bottom: 1px solid var(--mgs-green); padding: 10px 0; margin: 20px 0 10px; text-transform: uppercase; font-family: 'Chakra Petch'; }
 
@@ -120,6 +127,7 @@
             <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALISIERE...</div>
             <div class="stats-bar">
                 <div class="stat-item"><span class="stat-label">STATUS:</span> <span id="status-text">OFFLINE</span></div>
+                <div class="stat-item"><span class="stat-label">VIEWER:</span> <span id="viewer-count">0</span></div>
                 <div class="stat-item"><span class="stat-label">UPTIME:</span> <span id="stream-uptime">00:00:00</span></div>
                 <div class="stat-item"><span class="stat-label">FOLLOWER:</span> <span id="follower-count">LADE...</span></div>
                 <div class="stat-item"><span class="stat-label">ZIEL:</span> <span id="follower-goal">LADE...</span></div>
@@ -132,6 +140,19 @@
         <div class="stream-grid">
             <div class="frame"><div class="twitch-embed" id="player"></div></div>
             <div class="frame"><div id="chat" style="height: 600px;"></div></div>
+        </div>
+        
+        <div class="schedule-grid">
+            <div class="schedule-card">
+                <h3>MONTAG / MITTWOCH / FREITAG</h3>
+                <p>13:30 - 16:00 UHR</p>
+                <small>VOR-DIALYSE OPERATION</small>
+            </div>
+            <div class="schedule-card">
+                <h3>SPECIAL OPS</h3>
+                <p>NACH ANKÜNDIGUNG</p>
+                <small>CHECK DISCORD FÜR BRIEFINGS</small>
+            </div>
         </div>
     </section>
 
@@ -174,21 +195,22 @@
     </section>
 </main>
 
-<footer>
-    <p>© 2026 // FOXHOUND DIGITAL COMMAND</p>
-</footer>
+<footer><p>© 2026 // FOXHOUND DIGITAL COMMAND</p></footer>
 
 <script>
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
     const USER_TOKEN = 'o312lr9lk11zao9el3z1pr5uxcnj9y'; 
     const CHANNEL_NAME = 'VenomSnake_Twitch';
+    const BIRTH_DATE = "1994-06-08";
     let broadcasterId = '';
     let streamStartTime = null;
+    let globalAppToken = '';
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-' + id).classList.add('active');
+        window.scrollTo(0,0);
     }
 
     async function initializeSystem() {
@@ -199,43 +221,68 @@
         try {
             const authResp = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
             const authData = await authResp.json();
-            const appToken = authData.access_token;
+            globalAppToken = authData.access_token;
 
-            const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${appToken}` } });
+            const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
             const userData = await userResp.json();
             broadcasterId = userData.data[0].id;
 
-            // Follower Count
+            // Follower & Goal (Initial laden)
+            updateFollowerInfo();
+            // Live Status (Initial laden)
+            updateLiveInfo();
+            
+            // Intervalle setzen
+            setInterval(updateLiveInfo, 15000); // Live Status & Viewer alle 15 Sek
+            setInterval(updateFollowerInfo, 60000); // Follower alle 60 Sek (reicht aus)
+            
+            loadArchiveData(globalAppToken);
+            
+            const bday = new Date(BIRTH_DATE);
+            const age = Math.floor((new Date() - bday) / (365.25 * 24 * 60 * 60 * 1000));
+            document.getElementById('age-val').textContent = age;
+
+        } catch (e) { console.error(e); }
+    }
+
+    async function updateFollowerInfo() {
+        try {
             const fResp = await fetch(`https://api.twitch.tv/helix/channels/followers?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${USER_TOKEN}` } });
             const fData = await fResp.json();
             document.getElementById('follower-count').textContent = fData.total || "0";
 
-            // Follower Goal (Dynamisch von API)
             const gResp = await fetch(`https://api.twitch.tv/helix/goals?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${USER_TOKEN}` } });
             const gData = await gResp.json();
             if(gData.data && gData.data.length > 0) {
                 const goal = gData.data.find(g => g.type === 'follower');
-                document.getElementById('follower-goal').textContent = goal ? goal.target_amount : "KEIN ZIEL";
-            } else {
-                document.getElementById('follower-goal').textContent = "OFFLINE";
+                document.getElementById('follower-goal').textContent = goal ? goal.target_amount : "OFFLINE";
             }
-
-            updateLiveInfo(appToken);
-            loadArchiveData(appToken);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Follower Update Fehler", e); }
     }
 
-    async function updateLiveInfo(token) {
-        const resp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
-        const data = await resp.json();
-        if(data.data.length > 0) {
-            const s = data.data[0];
-            document.getElementById('status-text').textContent = "LIVE";
-            document.getElementById('status-text').className = "live-pulse";
-            document.getElementById('twitch-title').textContent = s.title;
-            document.getElementById('twitch-game').textContent = s.game_name;
-            streamStartTime = new Date(s.started_at);
-        }
+    async function updateLiveInfo() {
+        try {
+            const resp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
+            const data = await resp.json();
+            
+            if(data.data && data.data.length > 0) {
+                const s = data.data[0];
+                document.getElementById('status-text').textContent = "LIVE";
+                document.getElementById('status-text').className = "live-pulse";
+                document.getElementById('viewer-count').textContent = s.viewer_count;
+                document.getElementById('twitch-title').textContent = s.title;
+                document.getElementById('twitch-game').textContent = s.game_name;
+                streamStartTime = new Date(s.started_at);
+                document.getElementById('countdown-display').innerHTML = '<span class="live-pulse">● EINSATZ LÄUFT</span>';
+            } else {
+                document.getElementById('status-text').textContent = "OFFLINE";
+                document.getElementById('status-text').className = "";
+                document.getElementById('viewer-count').textContent = "0";
+                document.getElementById('countdown-display').textContent = "SYSTEM BEREIT";
+                streamStartTime = null;
+                document.getElementById('stream-uptime').textContent = "00:00:00";
+            }
+        } catch (e) { console.error("Live Update Fehler", e); }
     }
 
     async function loadArchiveData(token) {
@@ -260,6 +307,7 @@
     }, 1000);
 
     document.addEventListener('DOMContentLoaded', initializeSystem);
+    lucide.createIcons();
 </script>
 </body>
 </html>
