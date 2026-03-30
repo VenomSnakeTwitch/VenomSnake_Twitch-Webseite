@@ -28,6 +28,7 @@
             background-size: 30px 30px;
             overflow-x: hidden;
         }
+        /* Scanline Overlay */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
@@ -36,7 +37,7 @@
         }
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
-            background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
+            background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 10001;
         }
         .nav-container {
             max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem;
@@ -55,7 +56,7 @@
         .dropdown-content {
             display: none; position: absolute; right: 0; top: 100%;
             background: var(--mgs-panel); border: 2px solid var(--mgs-green);
-            min-width: 260px; z-index: 1001; box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            min-width: 260px; z-index: 10002; box-shadow: 0 10px 40px rgba(0,0,0,0.9);
         }
         .dropdown:hover .dropdown-content { display: block; }
         .dropdown-content a {
@@ -77,8 +78,13 @@
             background: var(--mgs-bg); padding: 0 10px; font-size: 0.7rem; color: var(--mgs-green);
         }
 
-        .stream-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        /* Stream-Grid über Scanlines heben */
+        .stream-grid { 
+            display: grid; grid-template-columns: 1fr; gap: 1rem; 
+            position: relative; z-index: 10000; 
+        }
         @media (min-width: 1024px) { .stream-grid { grid-template-columns: 3fr 1fr; } }
+        
         .frame { border: 1px solid var(--mgs-green-dim); background: #000; padding: 2px; }
         .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
         .twitch-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
@@ -97,8 +103,8 @@
 
         .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
         .schedule-card { background: var(--mgs-panel); border-left: 5px solid var(--mgs-green); padding: 1.5rem; border-top: 1px solid var(--mgs-border); }
-        
-        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); }
+
+        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); position: relative; z-index: 10001; }
         .live-pulse { color: var(--live-red); animation: pulse 1.5s infinite; font-weight: bold; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
@@ -156,12 +162,12 @@
     <section id="page-archive" class="page">
         <div class="mgs-header"><h2>MISSIONS-ARCHIV</h2></div>
         <div class="archive-layout">
-            <div class="frame"><div class="twitch-embed" id="archive-player-container"><div id="archive-video-player" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#111; color:var(--mgs-green);">[ WÄHLE VIDEO ]</div></div></div>
+            <div class="frame" style="position:relative; z-index:10000;"><div class="twitch-embed" id="archive-player-container"><div id="archive-video-player" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#111; color:var(--mgs-green);">[ WÄHLE VIDEO ]</div></div></div>
             <div class="archive-selection" id="archive-list"></div>
         </div>
     </section>
 
-        <section id="page-about" class="page">
+    <section id="page-about" class="page">
         <div class="mgs-header">
             <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
                 <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);">
@@ -190,8 +196,11 @@
             </div>
         </div>
     </section>
-
 </main>
+
+<footer>
+    <p>&copy; 2026 VENOM_SNAKE_OPS | SYSTEM FREQ: 140.85 | <span class="live-pulse">STEUERUNG_AKTIV</span></p>
+</footer>
 
 <script>
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
@@ -200,7 +209,6 @@
     const schedule = [{d:1,h:13,m:30},{d:3,h:13,m:30},{d:5,h:13,m:30}];
     let streamStartTime = null;
 
-    // TOKEN EXTRAKTION AUS URL
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     const USER_TOKEN = params.get('access_token');
@@ -216,24 +224,21 @@
 
     async function fetchTwitchAPI() {
         try {
-            // Wir nutzen den User Token aus der URL, falls vorhanden, sonst Fallback
             const token = USER_TOKEN || 'xpq1x3m1bta579xsa2fvttudtej519'; 
             const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` };
-            
+
             const u = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: h }).then(r => r.json());
             const bId = u.data[0].id;
 
-            // Follower
             const f = await fetch(`https://api.twitch.tv/helix/channels/followers?broadcaster_id=${bId}`, { headers: h }).then(r => r.json());
             document.getElementById('twitch-followers').textContent = f.total;
 
-            // GOALS API (Hier wird dein neuer Token aktiv)
             const g = await fetch(`https://api.twitch.tv/helix/goals?broadcaster_id=${bId}`, { headers: h }).then(r => r.json());
             if(g.data && g.data.length > 0) {
                 const followGoal = g.data.find(x => x.type === 'follower');
                 if(followGoal) document.getElementById('twitch-goal-display').textContent = followGoal.target_amount;
             } else {
-                document.getElementById('twitch-goal-display').textContent = "50"; // Fallback
+                document.getElementById('twitch-goal-display').textContent = "50"; 
             }
 
             const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${bId}`, { headers: h }).then(r => r.json());
@@ -245,25 +250,52 @@
                 document.getElementById('twitch-viewers').textContent = s.data[0].viewer_count;
                 streamStartTime = new Date(s.data[0].started_at);
                 document.getElementById('uptime-box').style.display = 'block';
+                document.getElementById('countdown-display').innerHTML = '<span class="live-pulse">EINSATZ LÄUFT...</span>';
             } else {
                 document.getElementById('twitch-viewers').textContent = "0";
                 document.getElementById('uptime-box').style.display = 'none';
+                updateCountdown();
             }
         } catch(e) { console.error("API Error"); }
+    }
+
+    function updateCountdown() {
+        if (streamStartTime) return;
+        const now = new Date();
+        let next = null;
+        for (let s of schedule) {
+            let d = new Date();
+            d.setDate(now.getDate() + (s.d + 7 - now.getDay()) % 7);
+            d.setHours(s.h, s.m, 0, 0);
+            if (d < now) d.setDate(d.getDate() + 7);
+            if (!next || d < next) next = d;
+        }
+        const diff = next - now;
+        const days = Math.floor(diff / 86400000);
+        const hrs = Math.floor((diff % 86400000) / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        document.getElementById('countdown-display').textContent = `NÄCHSTER_EINSATZ: ${days}T ${hrs}H ${mins}M ${secs}S`;
     }
 
     async function loadArchive() {
         const container = document.getElementById('archive-list');
         const token = USER_TOKEN || 'xpq1x3m1bta579xsa2fvttudtej519';
         const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` };
-        const u = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: h }).then(r => r.json());
-        const bId = u.data[0].id;
-        const v = await fetch(`https://api.twitch.tv/helix/videos?user_id=${bId}&first=3`, { headers: h }).then(r => r.json());
-        const cl = await fetch(`https://api.twitch.tv/helix/clips?broadcaster_id=${bId}&first=3`, { headers: h }).then(r => r.json());
-        let html = '';
-        v.data.forEach(vid => { html += `<div class="archive-card" onclick="setPlayer('video','${vid.id}')"><img src="${vid.thumbnail_url.replace('%{width}','320').replace('%{height}','180')}"><div class="archive-info"><b>VOD</b>${vid.title}</div></div>`; });
-        cl.data.forEach(clip => { html += `<div class="archive-card" onclick="setPlayer('clip','${clip.id}')"><img src="${clip.thumbnail_url}"><div class="archive-info"><b>CLIP</b>${clip.title}</div></div>`; });
-        container.innerHTML = html;
+        try {
+            const u = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: h }).then(r => r.json());
+            const bId = u.data[0].id;
+            const v = await fetch(`https://api.twitch.tv/helix/videos?user_id=${bId}&first=3`, { headers: h }).then(r => r.json());
+            const cl = await fetch(`https://api.twitch.tv/helix/clips?broadcaster_id=${bId}&first=3`, { headers: h }).then(r => r.json());
+            let html = '';
+            v.data.forEach(vid => { 
+                html += `<div class="archive-card" onclick="setPlayer('video','${vid.id}')"><img src="${vid.thumbnail_url.replace('%{width}','320').replace('%{height}','180')}"><div class="archive-info"><b>VOD</b>${vid.title}</div></div>`; 
+            });
+            cl.data.forEach(clip => { 
+                html += `<div class="archive-card" onclick="setPlayer('clip','${clip.id}')"><img src="${clip.thumbnail_url}"><div class="archive-info"><b>CLIP</b>${clip.title}</div></div>`; 
+            });
+            container.innerHTML = html;
+        } catch(e) { container.innerHTML = "Fehler beim Laden des Archivs."; }
     }
 
     function setPlayer(t, id) {
@@ -284,7 +316,7 @@
         const parent = window.location.hostname || "localhost";
         document.getElementById('main-player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${parent}" height="100%" width="100%" allowfullscreen="true"></iframe>`;
         document.getElementById('main-chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${parent}&darkpopout" height="100%" width="100%"></iframe>`;
-        
+
         const birth = new Date(BIRTH_DATE); const now = new Date();
         let age = now.getFullYear() - birth.getFullYear();
         if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) age--;
@@ -292,7 +324,7 @@
 
         fetchTwitchAPI();
         setInterval(updateUptime, 1000);
-        setInterval(fetchTwitchAPI, 60000);
+        setInterval(fetchTwitchAPI, 10000); 
     });
 </script>
 </body>
