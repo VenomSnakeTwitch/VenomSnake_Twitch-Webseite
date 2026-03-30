@@ -25,24 +25,10 @@
             background-color: var(--mgs-bg);
             color: var(--text-primary);
             overflow-x: hidden;
-            /* Hintergrund-Gitter bleibt auf dem Body */
+            /* Das Gitter im Hintergrund bleibt, da es keine Überlagerung ist */
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
-        }
-
-        /* NEU: SCANLINE BACKGROUND CONTAINER - LIEGT GANZ UNTEN */
-        .scanline-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-            background-size: 100% 3px, 3px 100%;
-            z-index: -1; /* GANZ HINTEN */
-            pointer-events: none;
         }
 
         .nav {
@@ -77,7 +63,7 @@
 
         .container { 
             max-width: 1400px; margin: 100px auto 20px; padding: 0 20px; 
-            position: relative; z-index: 5;
+            position: relative;
         }
         .page { display: none; }
         .page.active { display: block; }
@@ -112,14 +98,12 @@
         .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
         .schedule-card { background: var(--mgs-panel); border-left: 5px solid var(--mgs-green); padding: 1.5rem; border-top: 1px solid var(--mgs-border); }
 
-        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); position: relative; z-index: 5; }
+        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); position: relative; }
         .live-pulse { color: var(--live-red); animation: pulse 1.5s infinite; font-weight: bold; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
-
-<div class="scanline-bg"></div>
 
 <nav class="nav">
     <div class="nav-container">
