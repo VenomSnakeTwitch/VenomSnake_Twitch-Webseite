@@ -29,19 +29,16 @@
             background-size: 30px 30px;
             overflow-x: hidden;
         }
-        body::before {
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
-            z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
-        }
+
+        /* Scanline-Effekt wurde hier entfernt */
+        
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
         .nav-container {
             max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: flex-start; align-items: center; gap: 2rem;
         }
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
@@ -49,16 +46,17 @@
         .nav-menu-container { position: relative; }
         .menu-trigger {
             background: var(--mgs-green-dim); color: var(--mgs-green); border: 1px solid var(--mgs-green);
-            padding: 10px 20px; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 10px;
+            padding: 8px 15px; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 10px;
+            font-size: 0.8rem;
         }
         .nav-dropdown {
-            display: none; position: absolute; right: 0; top: 100%;
+            display: none; position: absolute; left: 0; top: 100%;
             background: var(--mgs-panel); border: 2px solid var(--mgs-green); min-width: 250px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .nav-menu-container:hover .nav-dropdown { display: block; }
         .nav-dropdown a {
-            color: var(--mgs-green); padding: 15px 20px; text-decoration: none; display: block;
+            color: var(--mgs-green); padding: 12px 20px; text-decoration: none; display: block;
             border-bottom: 1px solid var(--mgs-border); text-transform: uppercase; font-size: 0.85rem;
         }
         .nav-dropdown a:hover { background: var(--mgs-green-dim); color: #fff; }
@@ -153,37 +151,17 @@
 
     <section id="page-archive" class="page">
         <div class="mgs-header"><h1 style="color: var(--mgs-green);">MISSIONS-ARCHIV</h1></div>
-        <h2 class="archive-title">Letzte Einsätze</h2>
         <div class="archive-grid" id="vod-container">Lade Daten...</div>
-        <h2 class="archive-title">Highlights</h2>
-        <div class="archive-grid" id="clip-container">Lade Daten...</div>
     </section>
 
     <section id="page-about" class="page">
         <div class="mgs-header">
             <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
-                <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);">
+                <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green);">
                 <div style="flex: 1; min-width: 300px;">
-                    <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green); border-bottom: 2px solid var(--mgs-green); padding-bottom: 5px;">PERSONALAKTE: VENOMSNAKE</h1>
-                    <div style="margin-top: 1.5rem; line-height: 1.6; font-size: 0.9rem;">
-                        <p><span style="color: var(--mgs-green); font-weight: bold;">[IDENTITÄT]:</span> VenomSnake</p>
-                        <p><span style="color: var(--mgs-green); font-weight: bold;">[ALTER]:</span> <span id="age-val" style="color:#fff">..</span> JAHRE</p>
-                        <p><span style="color: var(--mgs-green); font-weight: bold;">[STATUS]:</span> AKTIV / VOR-SCHICHT OPERATIONEN</p>
-                        <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
-                        <p style="margin-bottom: 10px;">
-                            <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
-                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth liegen mir im Blut.
-                        </p>
-                        <p style="margin-bottom: 10px;">
-                            Ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**.
-                        </p>
-                        <p style="margin-top: 15px; padding: 10px; border: 1px dashed var(--mgs-green); background: rgba(0, 255, 65, 0.05);">
-                            <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHES PROTOKOLL]:</span><br>
-                            Trotz regelmäßiger **Dialyse-Einsätze** (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Nachtschicht-Behandlung statt.
-                            <br><br>
-                            <span style="font-weight: bold; color: #fff;">ZEITFENSTER: 13:30 - 16:00 UHR.</span>
-                        </p>
-                    </div>
+                    <h1 style="font-family:'Chakra Petch'; color: var(--mgs-green);">PERSONALAKTE</h1>
+                    <p>[DATEN WERDEN GELADEN...]</p>
+                    <p>Alter: <span id="age-val">..</span> Jahre</p>
                 </div>
             </div>
         </div>
@@ -266,7 +244,6 @@
                 document.getElementById('twitch-game').textContent = s.game_name.toUpperCase();
                 streamStartTime = new Date(s.started_at);
             } else {
-                // Offline: Abfrage der statischen Kanalinfo
                 const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`, { 
                     headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } 
                 });
@@ -277,7 +254,6 @@
                     document.getElementById('twitch-title').textContent = c.title.toUpperCase();
                     document.getElementById('twitch-game').textContent = c.game_name.toUpperCase();
                 }
-
                 document.getElementById('status-text').textContent = "OFFLINE";
                 document.getElementById('status-text').className = "";
                 document.getElementById('viewer-count').textContent = "0";
@@ -318,10 +294,6 @@
             const vResp = await fetch(`https://api.twitch.tv/helix/videos?user_id=${broadcasterId}&first=3&type=archive`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
             const vData = await vResp.json();
             document.getElementById('vod-container').innerHTML = vData.data.map(v => `<div class="frame"><div class="twitch-embed"><iframe src="https://player.twitch.tv/?video=${v.id}&parent=${domain}&autoplay=false" height="100%" width="100%"></iframe></div></div>`).join('');
-
-            const cResp = await fetch(`https://api.twitch.tv/helix/clips?broadcaster_id=${broadcasterId}&first=3`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
-            const cData = await cResp.json();
-            document.getElementById('clip-container').innerHTML = cData.data.map(c => `<div class="frame"><div class="twitch-embed"><iframe src="https://clips.twitch.tv/embed?clip=${c.id}&parent=${domain}&autoplay=false" height="100%" width="100%"></iframe></div></div>`).join('');
         } catch(e) {}
     }
 
