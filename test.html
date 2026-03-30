@@ -30,30 +30,30 @@
             overflow-x: hidden;
         }
 
-        /* NAVIGATION */
+        /* NAVIGATION - NEUE AUSRICHTUNG LINKS */
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
             background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
         }
         .nav-container {
             max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 1.5rem;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: flex-start; align-items: center; gap: 2rem;
         }
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); }
-        .logo img { height: 40px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
+        .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
         
         .nav-links { display: flex; gap: 0.5rem; align-items: center; }
         .nav-link {
             color: var(--mgs-green); text-decoration: none; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 1px; padding: 6px 10px;
+            text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px;
             transition: 0.2s; border: 1px solid transparent; display: flex; align-items: center; gap: 5px;
         }
         .nav-link:hover, .nav-link.active { background: var(--mgs-green-dim); border: 1px solid var(--mgs-green); color: #fff; }
 
-        /* DROPDOWN LOGIK MIT LANDSCAPE FIX */
+        /* DROPDOWN LOGIK */
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content {
-            display: none; position: absolute; right: 0; top: 100%;
+            display: none; position: absolute; left: 0; top: 100%; /* Nach links ausgerichtet */
             background: var(--mgs-panel); border: 2px solid var(--mgs-green);
             width: 280px; grid-template-columns: repeat(2, 1fr);
             z-index: 1001; box-shadow: 0 10px 50px rgba(0,0,0,0.9);
@@ -71,60 +71,36 @@
         .dropdown-content a i { width: 18px; height: 18px; }
         .dropdown-content a:hover { background: var(--mgs-green); color: #000; border-color: #fff; }
 
-        /* SPEZIELLE ANPASSUNG FÜR QUERFORMAT (LANDSCAPE) */
         @media (orientation: landscape) and (max-height: 600px) {
+            .nav-container { gap: 1rem; }
+            .logo span { display: none; } /* Spart Platz im Querformat */
             .dropdown-content {
                 grid-template-columns: repeat(4, 1fr);
                 width: 480px;
-                padding: 4px;
             }
-            .dropdown-content a {
-                height: 45px;
-                flex-direction: row;
-                font-size: 0.55rem;
-                padding: 5px;
-                gap: 8px;
-            }
-            .dropdown-content a i { width: 14px; height: 14px; }
+            .dropdown-content a { height: 45px; flex-direction: row; font-size: 0.55rem; gap: 8px; }
         }
-
-        .link-admin { color: var(--live-red) !important; }
-        .link-discord { color: var(--discord-blurple) !important; }
 
         /* MAIN CONTENT */
         .container { max-width: 1400px; margin: 90px auto 20px; padding: 0 20px; }
         .page { display: none; }
         .page.active { display: block; }
-
-        .mgs-header {
-            border: 2px solid var(--mgs-green); padding: 1.2rem; background: rgba(0, 59, 0, 0.1); margin-bottom: 2rem;
-            position: relative;
-        }
-        .mgs-header::before {
-            content: "SYSTEM_ID: 140.85"; position: absolute; top: -11px; left: 15px;
-            background: var(--mgs-bg); padding: 0 8px; font-size: 0.65rem; color: var(--mgs-green);
-        }
-
+        .mgs-header { border: 2px solid var(--mgs-green); padding: 1.2rem; background: rgba(0, 59, 0, 0.1); margin-bottom: 2rem; position: relative; }
+        .mgs-header::before { content: "SYSTEM_ID: 140.85"; position: absolute; top: -11px; left: 15px; background: var(--mgs-bg); padding: 0 8px; font-size: 0.65rem; color: var(--mgs-green); }
         .stream-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 1024px) { .stream-grid { grid-template-columns: 3fr 1fr; } }
         .frame { border: 1px solid var(--mgs-green-dim); background: #000; padding: 2px; }
         .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; }
         .twitch-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 
-        /* ARCHIV SYSTEM */
+        /* ARCHIV */
         .archive-layout { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 1024px) { .archive-layout { grid-template-columns: 2fr 1fr; } }
         .archive-list { display: flex; flex-direction: column; gap: 10px; max-height: 550px; overflow-y: auto; }
-        .archive-item { 
-            background: var(--mgs-panel); border: 1px solid var(--mgs-border); 
-            display: flex; gap: 10px; padding: 5px; cursor: pointer; transition: 0.2s;
-        }
+        .archive-item { background: var(--mgs-panel); border: 1px solid var(--mgs-border); display: flex; gap: 10px; padding: 5px; cursor: pointer; transition: 0.2s; }
         .archive-item:hover { border-color: var(--mgs-green); background: var(--mgs-green-dim); }
         .archive-item img { width: 100px; height: 56px; object-fit: cover; }
         .archive-item-info { font-size: 0.65rem; display: flex; flex-direction: column; justify-content: center; }
-
-        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 2rem; }
-        .schedule-card { background: var(--mgs-panel); border-left: 4px solid var(--mgs-green); padding: 1.2rem; border-top: 1px solid var(--mgs-border); }
 
         footer { text-align: center; padding: 30px; color: var(--mgs-green-dim); font-size: 0.65rem; border-top: 1px dashed var(--mgs-green-dim); }
         .live-pulse { color: var(--live-red); animation: pulse 1.5s infinite; font-weight: bold; }
@@ -139,6 +115,7 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span style="font-family:'Chakra Petch'; font-weight:bold; font-size: 0.9rem;">VENOM_SNAKE_OPS</span>
         </a>
+        
         <div class="nav-links">
             <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ EINSATZ ]</a>
             <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ PERSONALAKTE ]</a>
@@ -246,10 +223,8 @@
             const headers = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${auth.access_token}` };
             const user = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers }).then(r => r.json());
             const bId = user.data[0].id;
-
             const followers = await fetch(`https://api.twitch.tv/helix/channels/followers?broadcaster_id=${bId}`, { headers }).then(r => r.json());
             document.getElementById('twitch-followers').textContent = followers.total;
-
             const stream = await fetch(`https://api.twitch.tv/helix/streams?user_id=${bId}`, { headers }).then(r => r.json());
             if(stream.data.length > 0) {
                 document.getElementById('twitch-viewers').textContent = stream.data[0].viewer_count;
@@ -288,7 +263,6 @@
         const headers = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${auth.access_token}` };
         const user = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers }).then(r => r.json());
         const videos = await fetch(`https://api.twitch.tv/helix/videos?user_id=${user.data[0].id}&first=10`, { headers }).then(r => r.json());
-        
         let html = '';
         videos.data.forEach(v => {
             html += `<div class="archive-item" onclick="playVid('${v.id}')">
