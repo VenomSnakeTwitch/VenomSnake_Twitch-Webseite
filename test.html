@@ -19,21 +19,22 @@
             --tactical-blue: #52b6ca;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
-        
+
         body {
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--mgs-bg);
             color: var(--text-primary);
             overflow-x: hidden;
-            /* Das Gitter im Hintergrund bleibt, da es keine Überlagerung ist */
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
         }
 
+        /* KORREKTUR: Z-INDEX DER NAV VERRINGERT */
         .nav {
             position: fixed; top: 0; width: 100%; height: 70px;
-            background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
+            background: rgba(10, 15, 10, 0.98); border-bottom: 2px solid var(--mgs-green); 
+            z-index: 10; /* Niedriger Wert, um Twitch nicht zu stören */
         }
         .nav-container {
             max-width: 1600px; margin: 0 auto; height: 100%; padding: 0 2rem;
@@ -63,7 +64,7 @@
 
         .container { 
             max-width: 1400px; margin: 100px auto 20px; padding: 0 20px; 
-            position: relative;
+            position: relative; z-index: 1;
         }
         .page { display: none; }
         .page.active { display: block; }
@@ -80,7 +81,12 @@
         .stream-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 1024px) { .stream-grid { grid-template-columns: 3fr 1fr; } }
         .frame { border: 1px solid var(--mgs-green-dim); background: #000; padding: 2px; }
-        .twitch-embed { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        
+        /* OPTIMIERUNG FÜR INTERAKTION */
+        .twitch-embed { 
+            position: relative; padding-bottom: 56.25%; height: 0; background: #000; 
+            pointer-events: auto; /* Erzwingt Klickbarkeit */
+        }
         .twitch-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 
         .archive-layout { display: grid; grid-template-columns: 1fr; gap: 2rem; }
@@ -144,7 +150,7 @@
         </div>
         <div class="stream-grid">
             <div class="frame"><div class="twitch-embed" id="main-player"></div></div>
-            <div class="frame"><div id="main-chat" style="height: 600px;"></div></div>
+            <div class="frame" style="position: relative; z-index: 50;"><div id="main-chat" style="height: 600px;"></div></div>
         </div>
         <div class="schedule-grid">
             <div class="schedule-card"><h3>MONTAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.15</small></div>
@@ -174,16 +180,14 @@
                         <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
                         <p style="margin-bottom: 10px;">
                             <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
-                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth liegen mir im Blut.
+                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin.
                         </p>
                         <p style="margin-bottom: 10px;">
-                            Ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**.
+                            Ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil**, beweise strategisches Kalkül oder liefere mir packende Duelle in **Rennspielen**.
                         </p>
                         <p style="margin-top: 15px; padding: 10px; border: 1px dashed var(--mgs-green); background: rgba(0, 255, 65, 0.05);">
                             <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHES PROTOKOLL]:</span><br>
-                            Trotz regelmäßiger **Dialyse-Einsätze** (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Nachtschicht-Behandlung statt.
-                            <br><br>
-                            <span style="font-weight: bold; color: #fff;">ZEITFENSTER: 13:30 - 16:00 UHR.</span>
+                            Trotz regelmäßiger **Dialyse-Einsätze** bleibt die Moral ungebrochen. Der Stream findet vor der Verlegung zur Nachtschicht statt.
                         </p>
                     </div>
                 </div>
