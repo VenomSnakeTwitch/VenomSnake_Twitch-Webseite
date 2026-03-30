@@ -25,14 +25,12 @@
             background-size: 40px 40px;
         }
 
-        /* Passwort Overlay */
         #lock-overlay {
             position: fixed; inset: 0; background: var(--mgs-bg);
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
         .lock-box { border: 2px solid var(--mgs-green); padding: 2rem; background: rgba(0, 20, 0, 0.95); text-align: center; width: 90%; max-width: 450px; }
 
-        /* Navigation am unteren Rand */
         .tab-bar {
             position: fixed; bottom: 0; width: 100%; height: 75px;
             background: #0a0f0a; border-top: 2px solid var(--mgs-green);
@@ -44,7 +42,6 @@
         }
         .tab-item.active { opacity: 1; background: rgba(0, 255, 65, 0.1); border-top: 4px solid var(--mgs-green); }
 
-        /* App Container */
         .app-container { height: calc(100vh - 75px); overflow-y: auto; padding: 20px; display: none; position: relative; }
         .view { display: none; flex-direction: column; min-height: 100%; }
         .view.active { display: flex; }
@@ -150,25 +147,17 @@
 </div>
 
 <nav class="tab-bar" id="app-nav">
-    <div class="tab-item active" onclick="switchTab('broadcast')">
-        <span>BROADCAST</span>
-    </div>
-    <div class="tab-item" onclick="switchTab('raid')">
-        <span>RAID</span>
-    </div>
+    <div class="tab-item active" onclick="switchTab('broadcast')"><span>BROADCAST</span></div>
+    <div class="tab-item" onclick="switchTab('raid')"><span>RAID</span></div>
 </nav>
 
 <script>
-    // --- ORIGINAL LOGIK UNVERÄNDERT ---
     const CORRECT_PASS = "VenomSnake94";
-    const CLIENT_ID = '67qdowganroqrazq3yt4g1bwj9bp8r';
+    const CLIENT_ID = 'rcm9o1fq5h707qnuovfxodnvydosux'; // Aktualisierte Client-ID von Screenshot
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
-    let accessToken = null;
-    let selectedGameId = null;
-    let selectedRaidTargetId = null;
-    let myBroadcasterId = null;
+    let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
 
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
@@ -187,7 +176,6 @@
         document.getElementById('app-nav').style.display = 'flex';
     }
 
-    // Tab-Umschalter
     function switchTab(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -219,7 +207,7 @@
             document.getElementById('stream-title').value = c.data[0].title;
             document.getElementById('stream-game').placeholder = "Aktuell: " + c.data[0].game_name;
             loadLiveFollows();
-        } catch (e) { console.error("Data Init Error"); }
+        } catch (e) { console.error("Init Error"); }
     }
 
     async function loadLiveFollows() {
@@ -227,26 +215,22 @@
         const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
         try {
             const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
-            if(!f.data || f.data.length === 0) { list.innerHTML = "Keine Follows gefunden."; return; }
+            if(!f.data || f.data.length === 0) return;
             const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
             const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
-            if(s.data && s.data.length > 0) {
-                list.innerHTML = '';
-                s.data.forEach(stream => {
-                    const item = document.createElement('div');
-                    item.className = 'live-follow-item';
-                    item.innerHTML = `<div><b>${stream.user_name}</b><br><span>${stream.game_name}</span></div><div>${stream.viewer_count} 👤</div>`;
-                    item.onclick = () => {
-                        selectedRaidTargetId = stream.user_id;
-                        document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
-                        document.getElementById('raid-target-input').value = stream.user_name;
-                    };
-                    list.appendChild(item);
-                });
-            } else {
-                list.innerHTML = "Aktuell niemand live.";
-            }
-        } catch(e) { list.innerHTML = "Fehler beim Laden."; }
+            list.innerHTML = '';
+            s.data.forEach(stream => {
+                const item = document.createElement('div');
+                item.className = 'live-follow-item';
+                item.innerHTML = `<div><b>${stream.user_name}</b><br><span>${stream.game_name}</span></div><div>${stream.viewer_count} 👤</div>`;
+                item.onclick = () => {
+                    selectedRaidTargetId = stream.user_id;
+                    document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
+                    document.getElementById('raid-target-input').value = stream.user_name;
+                };
+                list.appendChild(item);
+            });
+        } catch(e) { console.error("Scan Error"); }
     }
 
     const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
@@ -255,15 +239,12 @@
         const r = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(gameInput.value)}`, {
             headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         }).then(res => res.json());
-        gBox.innerHTML = '';
-        if(r.data) {
-            gBox.style.display = 'block';
-            r.data.forEach(g => {
-                const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = g.name;
-                d.onclick = () => { gameInput.value = g.name; selectedGameId = g.id; gBox.style.display = 'none'; };
-                gBox.appendChild(d);
-            });
-        }
+        gBox.innerHTML = ''; gBox.style.display = 'block';
+        if(r.data) r.data.forEach(g => {
+            const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = g.name;
+            d.onclick = () => { gameInput.value = g.name; selectedGameId = g.id; gBox.style.display = 'none'; };
+            gBox.appendChild(d);
+        });
     });
 
     const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
@@ -272,54 +253,42 @@
         const r = await fetch(`https://api.twitch.tv/helix/search/channels?query=${encodeURIComponent(raidInput.value)}`, {
             headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         }).then(res => res.json());
-        rBox.innerHTML = '';
-        if(r.data) {
-            rBox.style.display = 'block';
-            r.data.filter(u => u.is_live).forEach(u => {
-                const d = document.createElement('div'); d.className = 'suggestion-item';
-                d.textContent = `[LIVE] ${u.display_name}`;
-                d.onclick = () => {
-                    raidInput.value = u.display_name;
-                    selectedRaidTargetId = u.id;
-                    document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
-                    rBox.style.display = 'none';
-                };
-                rBox.appendChild(d);
-            });
-        }
+        rBox.innerHTML = ''; rBox.style.display = 'block';
+        if(r.data) r.data.filter(u => u.is_live).forEach(u => {
+            const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = `[LIVE] ${u.display_name}`;
+            d.onclick = () => {
+                raidInput.value = u.display_name; selectedRaidTargetId = u.id;
+                document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
+                rBox.style.display = 'none';
+            };
+            rBox.appendChild(d);
+        });
     });
 
     async function updateTwitch() {
-        const statusEl = document.getElementById('status');
-        statusEl.textContent = "SENDE BROADCAST_DATEN...";
+        const sEl = document.getElementById('status'); sEl.textContent = "UPDATE...";
         let body = { title: document.getElementById('stream-title').value };
         if (selectedGameId) body.game_id = selectedGameId;
         const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
-            method: 'PATCH',
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            method: 'PATCH', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        statusEl.textContent = res.ok ? "KANAL ERFOLGREICH AKTUALISIERT." : "ÜBERTRAGUNGSFEHLER.";
+        sEl.textContent = res.ok ? "KANAL AKTUALISIERT." : "FEHLER.";
     }
 
     async function startRaid() {
-        const statusEl = document.getElementById('status');
-        if(!selectedRaidTargetId) { statusEl.textContent = "FEHLER: KEIN ZIEL AUSGEWÄHLT."; return; }
-        statusEl.textContent = "INITIERE RAID-SEQUENZ...";
+        if(!selectedRaidTargetId) return;
         const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
-            method: 'POST',
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        statusEl.textContent = res.ok ? "RAID GESTARTET!" : "RAID-FEHLSCHLAG.";
+        document.getElementById('status').textContent = res.ok ? "RAID LÄUFT." : "RAID FEHLGESCHLAGEN.";
     }
 
     async function cancelRaid() {
-        const statusEl = document.getElementById('status');
         const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}`, {
-            method: 'DELETE',
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            method: 'DELETE', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        statusEl.textContent = res.ok ? "RAID ABGEBROCHEN." : "FEHLER.";
+        document.getElementById('status').textContent = res.ok ? "RAID ABGEBROCHEN." : "FEHLER.";
     }
 
     document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
