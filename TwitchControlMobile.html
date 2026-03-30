@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (MOBILE-CORRECTED)</title>
+    <title>VENOM_SNAKE - Mission Control (MOBILE-V3)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +11,6 @@
             --mgs-green: #00ff41; 
             --mgs-bg: #050805; 
             --mgs-red: #ff0000; 
-            --tactical-blue: #52b6ca;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -130,7 +129,7 @@
             ZIEL_ERFASST: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
         </div>
         <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
-        <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">ABBRUCH_SIGNAL_SENDEN</button>
+        <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">RAID_STOPPEN / ABBRECHEN</button>
     </div>
 
     <div id="status">STATUS: STANDBY</div>
@@ -149,21 +148,23 @@
 
     let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
 
+    // Dauerhafter Login-Check
+    if(localStorage.getItem('mission_auth') === 'true') {
+        document.getElementById('lock-overlay').style.display = 'none';
+        document.getElementById('main-panel').style.display = 'block';
+        document.getElementById('app-nav').style.display = 'flex';
+    }
+
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
             document.getElementById('lock-overlay').style.display = 'none';
             document.getElementById('main-panel').style.display = 'block';
             document.getElementById('app-nav').style.display = 'flex';
-            sessionStorage.setItem('mission_auth', 'true');
+            localStorage.setItem('mission_auth', 'true');
         } else {
             document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT.";
+            document.getElementById('lock-status').style.color = "var(--mgs-red)";
         }
-    }
-
-    if(sessionStorage.getItem('mission_auth') === 'true') {
-        document.getElementById('lock-overlay').style.display = 'none';
-        document.getElementById('main-panel').style.display = 'block';
-        document.getElementById('app-nav').style.display = 'flex';
     }
 
     function switchTab(viewId) {
@@ -283,11 +284,10 @@
             method: 'DELETE',
             headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        // Twitch gibt 204 No Content bei Erfolg zurück
         if(res.ok || res.status === 204) {
-            sEl.textContent = "RAID ERFOLGREICH ABGEBROCHEN. RÜCKZUG.";
+            sEl.textContent = "RAID ERFOLGREICH ABGEBROCHEN.";
         } else {
-            sEl.textContent = "ABBRUCH NICHT MÖGLICH (RAID BEREITS VOLLZOGEN?).";
+            sEl.textContent = "ABBRUCH NICHT MÖGLICH.";
         }
     }
 
