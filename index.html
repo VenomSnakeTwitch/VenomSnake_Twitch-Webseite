@@ -32,7 +32,7 @@
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
             z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
         .nav {
@@ -45,36 +45,28 @@
         }
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
-        .nav-links { display: flex; gap: 0.8rem; align-items: center; }
-        .nav-link {
-            color: var(--mgs-green); text-decoration: none; font-size: 0.8rem;
-            text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px;
-            transition: 0.2s; border: 1px solid transparent;
-        }
-        .nav-link:hover, .nav-link.active { background: var(--mgs-green-dim); border: 1px solid var(--mgs-green); color: #fff; }
-        .nav-link-discord { color: var(--discord-blurple); border: 1px solid var(--discord-blurple); }
-        .nav-link-discord:hover { background: var(--discord-blurple); color: #fff; box-shadow: 0 0 10px var(--discord-blurple); }
-        .nav-link-admin { color: var(--live-red); border: 1px solid var(--live-red); }
-        .nav-link-admin:hover { background: var(--live-red); color: #fff; box-shadow: 0 0 10px var(--live-red); }
         
-        /* Dropdown */
-        .dropdown { position: relative; display: inline-block; }
-        .dropdown-content {
+        .nav-menu-container { position: relative; }
+        .menu-trigger {
+            background: var(--mgs-green-dim); color: var(--mgs-green); border: 1px solid var(--mgs-green);
+            padding: 10px 20px; text-transform: uppercase; font-weight: bold; display: flex; align-items: center; gap: 10px;
+        }
+        .nav-dropdown {
             display: none; position: absolute; right: 0; top: 100%;
-            background: var(--mgs-panel); border: 2px solid var(--mgs-green); min-width: 220px; z-index: 1001;
+            background: var(--mgs-panel); border: 2px solid var(--mgs-green); min-width: 250px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        .dropdown:hover .dropdown-content { display: block; }
-        .dropdown-content a {
-            color: var(--mgs-green); padding: 12px 16px; text-decoration: none;
-            display: block; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-border);
+        .nav-menu-container:hover .nav-dropdown { display: block; }
+        .nav-dropdown a {
+            color: var(--mgs-green); padding: 15px 20px; text-decoration: none; display: block;
+            border-bottom: 1px solid var(--mgs-border); text-transform: uppercase; font-size: 0.85rem;
         }
-        .dropdown-content a:hover { background: var(--mgs-green-dim); color: #fff; }
+        .nav-dropdown a:hover { background: var(--mgs-green-dim); color: #fff; }
 
         .container { max-width: 1400px; margin: 100px auto 20px; padding: 0 20px; }
         .page { display: none; }
         .page.active { display: block; }
 
-        /* MGS Header & Stats Bar */
         .mgs-header {
             border: 2px solid var(--mgs-green); padding: 1.5rem; background: rgba(0, 59, 0, 0.1); margin-bottom: 2rem;
             position: relative;
@@ -84,11 +76,10 @@
             background: var(--mgs-bg); padding: 0 10px; font-size: 0.7rem; color: var(--mgs-green);
         }
         .stats-bar {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--mgs-green-dim);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--mgs-green-dim);
         }
-        .stat-item { font-size: 0.85rem; }
-        .stat-label { color: var(--mgs-green); font-weight: bold; margin-right: 5px; }
+        .stat-label { color: var(--mgs-green); font-weight: bold; }
 
         .stream-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 1024px) { .stream-grid { grid-template-columns: 3fr 1fr; } }
@@ -98,7 +89,11 @@
         
         .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
         .schedule-card { background: var(--mgs-panel); border-left: 5px solid var(--mgs-green); padding: 1.5rem; border-top: 1px solid var(--mgs-border); }
-        
+        .schedule-card h3 { color: var(--mgs-green); font-family: 'Chakra Petch'; margin-bottom: 5px; font-size: 0.9rem; }
+
+        .archive-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .archive-title { color: var(--mgs-green); border-bottom: 1px solid var(--mgs-green); padding: 10px 0; margin: 20px 0 10px; text-transform: uppercase; font-family: 'Chakra Petch'; }
+
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); }
         .live-pulse { color: var(--live-red); animation: pulse 1.5s infinite; font-weight: bold; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
@@ -112,19 +107,16 @@
             <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" alt="Logo">
             <span style="font-family:'Chakra Petch'; font-weight:bold;">VENOM_SNAKE_OPS</span>
         </a>
-        <div class="nav-links">
-            <a href="#" class="nav-link active" id="btn-stream" onclick="showPage('stream')">[ EINSATZ ]</a>
-            <a href="#" class="nav-link" id="btn-about" onclick="showPage('about')">[ PERSONALAKTE ]</a>
-            <a href="Twitch%20Control.html" class="nav-link nav-link-admin"><i data-lucide="lock" style="width:14px; vertical-align:middle;"></i> [ ADMIN ]</a>
-            <a href="https://discord.gg/SFzk4YxgRv" target="_blank" class="nav-link nav-link-discord">DISCORD</a>
-            <div class="dropdown">
-                <a href="#" class="nav-link">[ MEHR <i data-lucide="chevron-down" style="width:14px; vertical-align:middle;"></i> ]</a>
-                <div class="dropdown-content">
-                    <a href="kontakt.html">Kontakt</a>
-                    <a href="musikplayer.html">Musikplayer</a>
-                    <a href="donation.html">Spenden</a>
-                    <a href="impressum.html">Impressum</a>
-                </div>
+        <div class="nav-menu-container">
+            <button class="menu-trigger"><i data-lucide="menu"></i> HAUPTMENÜ</button>
+            <div class="nav-dropdown">
+                <a href="#" onclick="showPage('stream')">[ EINSATZ ]</a>
+                <a href="#" onclick="showPage('about')">[ PERSONALAKTE ]</a>
+                <a href="#" onclick="showPage('archive')">[ ARCHIV ]</a>
+                <a href="Twitch%20Control.html">[ ADMIN ]</a>
+                <a href="musikplayer.html">Musikplayer</a>
+                <a href="donation.html">Spenden</a>
+                <a href="https://discord.gg/SFzk4YxgRv" target="_blank" style="color:var(--discord-blurple)">Discord</a>
             </div>
         </div>
     </div>
@@ -133,33 +125,23 @@
 <main class="container">
     <section id="page-stream" class="page active">
         <div class="mgs-header">
-            <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALISIERE MISSIONS-DATEN...</div>
-            
+            <div id="countdown-display" style="font-size: 1.5rem; color: var(--mgs-green); font-weight: bold;">INITIALISIERE...</div>
             <div class="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-label">STATUS:</span> 
-                    <span id="status-text">OFFLINE</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">EINHEITEN:</span> 
-                    <span id="twitch-viewers">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">EINSATZ:</span> 
-                    <span id="twitch-title">BEREITSCHAFT</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">MISSION:</span> 
-                    <span id="twitch-game">STBY</span>
-                </div>
+                <div class="stat-item"><span class="stat-label">STATUS:</span> <span id="status-text">OFFLINE</span></div>
+                <div class="stat-item"><span class="stat-label">VIEWER:</span> <span id="viewer-count">0</span></div>
+                <div class="stat-item"><span class="stat-label">UPTIME:</span> <span id="stream-uptime">00:00:00</span></div>
+                <div class="stat-item"><span class="stat-label">FOLLOWER:</span> <span id="follower-count">...</span></div>
+                <div class="stat-item"><span class="stat-label">ZIEL:</span> <span id="follower-goal">...</span></div>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.85rem; border-top: 1px solid rgba(0,255,65,0.1); padding-top: 10px;">
+                <span style="color: var(--mgs-green);">EINSATZ: </span><span id="twitch-title">...</span> | 
+                <span style="color: var(--tactical-blue);">MISSION: </span><span id="twitch-game">...</span>
             </div>
         </div>
-
         <div class="stream-grid">
             <div class="frame"><div class="twitch-embed" id="player"></div></div>
             <div class="frame"><div id="chat" style="height: 600px;"></div></div>
         </div>
-
         <div class="schedule-grid">
             <div class="schedule-card"><h3>MONTAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.15</small></div>
             <div class="schedule-card"><h3>MITTWOCH</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.48</small></div>
@@ -167,7 +149,15 @@
         </div>
     </section>
 
-     <section id="page-about" class="page">
+    <section id="page-archive" class="page">
+        <div class="mgs-header"><h1 style="color: var(--mgs-green);">MISSIONS-ARCHIV</h1></div>
+        <h2 class="archive-title">Letzte Einsätze</h2>
+        <div class="archive-grid" id="vod-container">Lade Daten...</div>
+        <h2 class="archive-title">Highlights</h2>
+        <div class="archive-grid" id="clip-container">Lade Daten...</div>
+    </section>
+
+    <section id="page-about" class="page">
         <div class="mgs-header">
             <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
                 <img src="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/DogVenomsnakeLogo.png" style="width: 250px; border: 3px solid var(--mgs-green); filter: sepia(1) hue-rotate(70deg); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);">
@@ -180,16 +170,11 @@
                         <hr style="border: 0; border-top: 1px solid var(--mgs-border); margin: 15px 0;">
                         <p style="margin-bottom: 10px;">
                             <span style="color: var(--mgs-green); font-weight: bold;">[EINSATZ-PROFIL]:</span><br>
-                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die **Metal Gear Solid** Reihe ist meine primäre Einsatzdoktrin – Infiltration und Stealth liegen mir im Blut.
-                        </p>
-                        <p style="margin-bottom: 10px;">
-                            Ein guter Operator ist vielseitig: Ich stelle mich dem Grauen in **Resident Evil** und anderen **Horrorspielen**, beweise strategisches Kalkül in **Strategiespielen** oder liefere mir packende Duelle in **Rennspielen**.
+                            Ein Veteran an der Controller-Front. Meine Wurzeln liegen tief in der taktischen Spionage-Action. Die Metal Gear Solid Reihe ist meine primäre Einsatzdoktrin.
                         </p>
                         <p style="margin-top: 15px; padding: 10px; border: 1px dashed var(--mgs-green); background: rgba(0, 255, 65, 0.05);">
                             <span style="color: var(--live-red); font-weight: bold;">[MEDIZINISCHES PROTOKOLL]:</span><br>
-                            Trotz regelmäßiger **Dialyse-Einsätze** (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Nachtschicht-Behandlung statt.
-                            <br><br>
-                            <span style="font-weight: bold; color: #fff;">ZEITFENSTER: 13:30 - 16:00 UHR.</span>
+                            Trotz regelmäßiger Dialyse-Einsätze (Mo, Mi, Fr) bleibt die Moral ungebrochen. Der Stream findet immer unmittelbar vor der Verlegung zur Behandlung statt.
                         </p>
                     </div>
                 </div>
@@ -203,80 +188,135 @@
 <script>
     const CLIENT_ID = '8hxk605f3s73ayay6puh6qqonpie7w';
     const CLIENT_SECRET = 'd817lrv3scivntw4zlg0xyzxnasl0z';
+    const USER_TOKEN = 'o312lr9lk11zao9el3z1pr5uxcnj9y'; 
     const CHANNEL_NAME = 'VenomSnake_Twitch';
     const BIRTH_DATE = "1994-06-08";
     const schedule = [{d:1,h:13,m:30},{d:3,h:13,m:30},{d:5,h:13,m:30}];
+    let broadcasterId = '';
+    let streamStartTime = null;
+    let globalAppToken = '';
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         document.getElementById('page-' + id).classList.add('active');
-        const btn = document.getElementById('btn-' + id);
-        if(btn) btn.classList.add('active');
+        window.scrollTo(0,0);
     }
 
-    async function fetchTwitchLiveInfo() {
+    async function initializeSystem() {
+        const domain = window.location.hostname || "localhost";
+        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}" height="100%" width="100%"></iframe>`;
+        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
+
         try {
             const authResp = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
             const authData = await authResp.json();
-            const token = authData.access_token;
+            globalAppToken = authData.access_token;
 
-            const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            const userResp = await fetch(`https://api.twitch.tv/helix/users?login=${CHANNEL_NAME}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
             const userData = await userResp.json();
-            const broadcasterId = userData.data[0].id;
+            broadcasterId = userData.data[0].id;
 
-            const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
-            const channelData = await channelResp.json();
-            const info = channelData.data[0];
-            document.getElementById('twitch-title').textContent = info.title.toUpperCase();
-            document.getElementById('twitch-game').textContent = info.game_name.toUpperCase();
-
-            const streamResp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
-            const streamData = await streamResp.json();
+            updateFollowerInfo();
+            updateLiveInfo();
+            loadArchiveData(globalAppToken);
             
-            if(streamData.data.length > 0) {
+            const bday = new Date(BIRTH_DATE);
+            const age = Math.floor((new Date() - bday) / (365.25 * 24 * 60 * 60 * 1000));
+            document.getElementById('age-val').textContent = age;
+
+            setInterval(updateLiveInfo, 15000);
+            setInterval(updateFollowerInfo, 60000);
+            setInterval(updateCountdown, 1000);
+        } catch (e) { console.error(e); }
+    }
+
+    async function updateFollowerInfo() {
+        try {
+            const fResp = await fetch(`https://api.twitch.tv/helix/channels/followers?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${USER_TOKEN}` } });
+            const fData = await fResp.json();
+            document.getElementById('follower-count').textContent = fData.total || "0";
+
+            const gResp = await fetch(`https://api.twitch.tv/helix/goals?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${USER_TOKEN}` } });
+            const gData = await gResp.json();
+            if(gData.data && gData.data.length > 0) {
+                const goal = gData.data.find(g => g.type === 'follower');
+                document.getElementById('follower-goal').textContent = goal ? goal.target_amount : "---";
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    async function updateLiveInfo() {
+        try {
+            const resp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
+            const data = await resp.json();
+            if(data.data && data.data.length > 0) {
+                const s = data.data[0];
                 document.getElementById('status-text').textContent = "LIVE";
                 document.getElementById('status-text').className = "live-pulse";
-                document.getElementById('twitch-viewers').textContent = streamData.data[0].viewer_count;
+                document.getElementById('viewer-count').textContent = s.viewer_count;
+                document.getElementById('twitch-title').textContent = s.title.toUpperCase();
+                document.getElementById('twitch-game').textContent = s.game_name.toUpperCase();
+                streamStartTime = new Date(s.started_at);
             } else {
                 document.getElementById('status-text').textContent = "OFFLINE";
                 document.getElementById('status-text').className = "";
-                document.getElementById('twitch-viewers').textContent = "0";
+                document.getElementById('viewer-count').textContent = "0";
+                streamStartTime = null;
+                document.getElementById('stream-uptime').textContent = "00:00:00";
             }
-        } catch (e) { console.error("Twitch Sync Error"); }
+        } catch (e) { console.error(e); }
     }
 
     function updateCountdown() {
         const now = new Date();
+        let next = null;
+        for(let i = 0; i < 7; i++) {
+            let d = new Date(); d.setDate(now.getDate() + i);
+            let s = schedule.find(x => x.d === d.getDay());
+            if(s) {
+                d.setHours(s.h, s.m, 0, 0);
+                if(d > now) { next = d; break; }
+            }
+        }
         const display = document.getElementById('countdown-display');
-        const isStreamDay = schedule.some(s => s.d === now.getDay());
-        const currentMinTotal = now.getHours() * 60 + now.getMinutes();
-        if(isStreamDay && currentMinTotal >= (13*60+30) && currentMinTotal < (16*60)) {
-            display.innerHTML = `<span class="live-pulse">● STATUS: MISSION LIVE</span>`;
-        } else {
-            display.textContent = "BEREITSCHAFTSMODUS / STANDBY";
+        const isStreamTime = schedule.some(s => s.d === now.getDay() && (now.getHours()*60+now.getMinutes()) >= (13*60+30) && (now.getHours()*60+now.getMinutes()) < (16*60));
+        
+        if(streamStartTime || isStreamTime) {
+            display.innerHTML = '<span class="live-pulse">● EINSATZ LÄUFT</span>';
+        } else if(next) {
+            const diff = next - now;
+            const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            display.textContent = `T-MINUS: ${h}:${m}:${s}`;
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    async function loadArchiveData(token) {
         const domain = window.location.hostname || "localhost";
-        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}" height="100%" width="100%" allowfullscreen="true"></iframe>`;
-        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
-        
-        // Initialer Aufruf
-        fetchTwitchLiveInfo();
-        updateCountdown();
-        
-        // Intervalle
-        setInterval(fetchTwitchLiveInfo, 15000); // Alle 15 Sekunden
-        setInterval(updateCountdown, 1000);
-        
-        // Alter berechnen
-        const age = Math.floor((new Date() - new Date(BIRTH_DATE)) / (365.25 * 24 * 60 * 60 * 1000));
-        document.getElementById('age-val').textContent = age;
-        
-        lucide.createIcons();
-    });
+        try {
+            const vResp = await fetch(`https://api.twitch.tv/helix/videos?user_id=${broadcasterId}&first=3&type=archive`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            const vData = await vResp.json();
+            document.getElementById('vod-container').innerHTML = vData.data.map(v => `<div class="frame"><div class="twitch-embed"><iframe src="https://player.twitch.tv/?video=${v.id}&parent=${domain}&autoplay=false" height="100%" width="100%"></iframe></div></div>`).join('');
+
+            const cResp = await fetch(`https://api.twitch.tv/helix/clips?broadcaster_id=${broadcasterId}&first=3`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            const cData = await cResp.json();
+            document.getElementById('clip-container').innerHTML = cData.data.map(c => `<div class="frame"><div class="twitch-embed"><iframe src="https://clips.twitch.tv/embed?clip=${c.id}&parent=${domain}&autoplay=false" height="100%" width="100%"></iframe></div></div>`).join('');
+        } catch(e) {}
+    }
+
+    setInterval(() => {
+        if(streamStartTime) {
+            const diff = new Date() - streamStartTime;
+            const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            document.getElementById('stream-uptime').textContent = `${h}:${m}:${s}`;
+        }
+    }, 1000);
+
+    document.addEventListener('DOMContentLoaded', initializeSystem);
+    lucide.createIcons();
 </script>
 </body>
 </html>
