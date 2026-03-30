@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (FIXED-RAID)</title>
+    <title>VENOM_SNAKE - Mission Control (MOBILE-V4)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -77,7 +77,7 @@
             border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
         }
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 10px; }
-        .btn-cancel { background: var(--mgs-blue); color: #fff; margin-top: 10px; }
+        .btn-cancel { background: var(--mgs-blue); color: #fff; margin-top: 10px; border: 1px solid rgba(255,255,255,0.2); }
 
         #status { 
             padding: 15px; text-align: center; font-size: 0.8rem;
@@ -101,7 +101,7 @@
     <div id="view-broadcast" class="view active">
         <h2>[ STREAM_SETUP ]</h2>
         <div id="auth-section">
-            <p style="margin: 40px 0;">Verbindung zum HQ herstellen...</p>
+            <p style="margin: 40px 0; text-align:center;">Verbindung zum HQ herstellen...</p>
             <button onclick="login()">LOGIN BEI TWITCH</button>
         </div>
         <div id="control-section" style="display:none;">
@@ -146,11 +146,11 @@
     const CORRECT_PASS = "VenomSnake94";
     const CLIENT_ID = 'rcm9o1fq5h707qnuovfxodnvydosux'; 
     const REDIRECT_URI = window.location.origin + window.location.pathname;
-    // WICHTIG: Scopes erweitert für vollen Raid-Zugriff
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
     let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
 
+    // Dauerhafter Login via localStorage
     if(localStorage.getItem('mission_auth') === 'true') {
         document.getElementById('lock-overlay').style.display = 'none';
         document.getElementById('main-panel').style.display = 'block';
@@ -165,6 +165,7 @@
             localStorage.setItem('mission_auth', 'true');
         } else {
             document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT.";
+            document.getElementById('lock-status').style.color = "var(--mgs-red)";
         }
     }
 
@@ -227,7 +228,7 @@
 
     async function startRaid() {
         const sEl = document.getElementById('status');
-        if(!selectedRaidTargetId) { sEl.textContent = "FEHLER: KEIN ZIEL."; return; }
+        if(!selectedRaidTargetId) { sEl.textContent = "FEHLER: KEIN ZIEL ERFASST."; return; }
         sEl.textContent = "SENDE RAID-BEFEHL...";
         const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
             method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
@@ -237,22 +238,31 @@
 
     async function cancelRaid() {
         const sEl = document.getElementById('status');
-        sEl.textContent = "VERSUCHE ABBRUCH...";
-        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}`, {
+        sEl.textContent = "SENDE ABBRUCH-SIGNAL...";
+        
+        // Fix: Parameter direkt in die URL einbetten
+        const url = `https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}`;
+        
+        const res = await fetch(url, {
             method: 'DELETE',
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+            headers: { 
+                'Client-ID': CLIENT_ID, 
+                'Authorization': `Bearer ${accessToken}` 
+            }
         });
 
-        // Wichtig: Twitch antwortet bei Erfolg oft mit Status 204 (No Content)
         if (res.ok || res.status === 204) {
             sEl.textContent = "ERFOLG: RAID ABGEBROCHEN.";
+            selectedRaidTargetId = null;
+            document.getElementById('selected-target-name').textContent = "KEINES";
+            document.getElementById('raid-target-input').value = "";
         } else {
             const data = await res.json().catch(() => ({}));
-            sEl.textContent = "ABBRUCH FEHLGESCHLAGEN: " + (data.message || "KEIN AKTIVER RAID?");
+            sEl.textContent = "FEHLER: " + (data.message || "KEIN AKTIVER RAID?");
         }
     }
 
-    // Such-Logik für Spiele und Kanäle (identisch wie vorher)
+    // Such-Logik für Spiele
     const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
     gameInput.addEventListener('input', async () => {
         if (gameInput.value.length < 3) { gBox.style.display = 'none'; return; }
@@ -267,6 +277,7 @@
         });
     });
 
+    // Such-Logik für Raid-Ziele
     const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
     raidInput.addEventListener('input', async () => {
         if (raidInput.value.length < 3) { rBox.style.display = 'none'; return; }
@@ -293,7 +304,7 @@
             method: 'PATCH', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        sEl.textContent = res.ok ? "KANAL AKTUALISIERT." : "FEHLER.";
+        sEl.textContent = res.ok ? "KANAL AKTUALISIERT." : "FEHLER BEIM UPDATE.";
     }
 
     document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
