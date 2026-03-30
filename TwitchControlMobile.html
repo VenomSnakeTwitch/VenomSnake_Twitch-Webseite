@@ -83,8 +83,6 @@
             padding: 15px; text-align: center; font-size: 0.8rem;
             border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05); margin-top: auto; margin-bottom: 20px;
         }
-
-        .btn-back { width: auto; padding: 8px 15px; background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green); font-size: 0.7rem; margin-bottom: 20px; align-self: flex-end; }
     </style>
 </head>
 <body>
@@ -101,7 +99,6 @@
 <div class="app-container" id="main-panel">
     
     <div id="view-broadcast" class="view active">
-        <button class="btn-back" onclick="window.location.href='index.html'">[ BASIS ]</button>
         <h2>[ STREAM_SETUP ]</h2>
         
         <div id="auth-section">
@@ -124,7 +121,6 @@
     </div>
 
     <div id="view-raid" class="view">
-        <button class="btn-back" onclick="window.location.href='index.html'">[ BASIS ]</button>
         <h2>[ RAID_COMMAND ]</h2>
         
         <label>LIVE FOLLOWS (AUFKLÄRUNG)</label>
@@ -153,7 +149,7 @@
 
 <script>
     const CORRECT_PASS = "VenomSnake94";
-    const CLIENT_ID = 'rcm9o1fq5h707qnuovfxodnvydosux'; // Aktualisierte Client-ID von Screenshot
+    const CLIENT_ID = 'rcm9o1fq5h707qnuovfxodnvydosux'; 
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
