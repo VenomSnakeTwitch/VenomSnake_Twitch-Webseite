@@ -282,9 +282,13 @@
 
     async function updateLiveInfo() {
         try {
-            const resp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
+            const resp = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, { 
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } 
+            });
             const data = await resp.json();
+            
             if(data.data && data.data.length > 0) {
+                // Wenn LIVE
                 const s = data.data[0];
                 document.getElementById('status-text').textContent = "LIVE";
                 document.getElementById('status-text').className = "live-pulse";
@@ -293,15 +297,26 @@
                 document.getElementById('twitch-game').textContent = s.game_name.toUpperCase();
                 streamStartTime = new Date(s.started_at);
             } else {
+                // Wenn OFFLINE: Letzten Titel/Kategorie vom Kanal-Endpunkt holen
+                const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`, {
+                    headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` }
+                });
+                const channelData = await channelResp.json();
+                
+                if(channelData.data && channelData.data.length > 0) {
+                    const c = channelData.data[0];
+                    document.getElementById('twitch-title').textContent = c.title.toUpperCase();
+                    document.getElementById('twitch-game').textContent = c.game_name.toUpperCase();
+                }
+
                 document.getElementById('status-text').textContent = "OFFLINE";
                 document.getElementById('status-text').className = "";
                 document.getElementById('viewer-count').textContent = "0";
                 streamStartTime = null;
                 document.getElementById('stream-uptime').textContent = "00:00:00";
             }
-        } catch (e) {}
+        } catch (e) { console.error("Fehler beim Laden der Stream-Infos:", e); }
     }
-
     function updateCountdown() {
         const now = new Date();
         let next = null;
