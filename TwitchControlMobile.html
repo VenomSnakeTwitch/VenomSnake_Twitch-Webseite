@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (V14_FIX)</title>
+    <title>VENOM_SNAKE - Mission Control (V10_CHAT_FIX)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
@@ -34,7 +34,7 @@
 
         .app-container { 
             flex: 1; 
-            overflow-y: auto; 
+            overflow: hidden; 
             padding: 10px 15px; 
             display: none;
             margin-bottom: 110px; 
@@ -44,6 +44,9 @@
         .view.active { display: flex; }
 
         h2 { font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; margin-bottom: 12px; letter-spacing: 1px; }
+
+        .input-group { margin-bottom: 10px; position: relative; }
+        label { display: block; font-size: 0.55rem; margin-bottom: 3px; color: #008f11; font-weight: bold; text-transform: uppercase; }
 
         input {
             width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
@@ -65,6 +68,16 @@
         }
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 5px; }
 
+        #status-container {
+            position: fixed; bottom: 65px; width: 100%;
+            background: var(--mgs-bg); padding: 5px 15px;
+            z-index: 1001; border-top: 1px solid rgba(0, 255, 65, 0.1);
+        }
+        #status { 
+            padding: 8px; text-align: center; font-size: 0.7rem;
+            border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05);
+        }
+
         .tab-bar {
             position: fixed; bottom: 0; width: 100%; height: 65px;
             background: #0a0f0a; border-top: 2px solid var(--mgs-green);
@@ -72,20 +85,19 @@
         }
         .tab-item {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--mgs-green); font-size: 0.55rem; font-weight: bold; cursor: pointer; opacity: 0.4;
+            color: var(--mgs-green); font-size: 0.6rem; font-weight: bold; cursor: pointer; opacity: 0.4;
         }
         .tab-item.active { opacity: 1; background: rgba(0, 255, 65, 0.1); border-top: 3px solid var(--mgs-green); }
 
-        .full-iframe-container { flex: 1; width: 100%; background: #000; border: 1px solid var(--mgs-green); overflow: hidden; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
-
         #preview-player-container { width: 100%; aspect-ratio: 16 / 9; background: #000; border: 1px solid var(--mgs-green); }
+        #chat-view-container { flex: 1; width: 100%; background: #000; border: 1px solid var(--mgs-green); overflow: hidden; }
 
         .suggestion-box {
             position: absolute; top: 100%; left: 0; width: 100%;
             background: #0a0f0a; border: 2px solid var(--mgs-green);
             z-index: 2000; max-height: 150px; overflow-y: auto; display: none;
         }
+        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.8rem; color: #fff; }
     </style>
 </head>
 <body>
@@ -101,44 +113,49 @@
 <div class="app-container" id="main-panel">
     <div id="view-broadcast" class="view active">
         <h2>[ STREAM_SETUP ]</h2>
-        <div id="auth-section"><button onclick="login()">API LOGIN</button></div>
+        <div id="auth-section">
+            <button onclick="login()">LOGIN BEI TWITCH</button>
+        </div>
         <div id="control-section" style="display:none;">
-            <input type="text" id="stream-title" placeholder="Titel...">
-            <button onclick="updateTwitch()" style="margin-top:10px;">UPDATE</button>
+            <div class="input-group"><label>TITEL</label><input type="text" id="stream-title"></div>
+            <div class="input-group">
+                <label>KATEGORIE</label>
+                <input type="text" id="stream-game" placeholder="Suchen..." autocomplete="off">
+                <div id="game-suggestions" class="suggestion-box"></div>
+            </div>
+            <button onclick="updateTwitch()">UPDATE SENDEN</button>
         </div>
     </div>
 
     <div id="view-raid" class="view">
         <h2>[ RAID_COMMAND ]</h2>
-        <div id="live-follows-list">Lade...</div>
-        <input type="text" id="raid-target-input" placeholder="Suche..." autocomplete="off">
-        <div id="target-info" style="margin: 10px 0; font-size: 0.7rem; border: 1px solid #1a2e1a; padding: 8px;">
+        <div id="live-follows-list">Lade Live-Streams...</div>
+        <div class="input-group">
+            <label>MANUELLE SUCHE</label>
+            <input type="text" id="raid-target-input" placeholder="Name..." autocomplete="off">
+            <div id="raid-suggestions" class="suggestion-box"></div>
+        </div>
+        <div id="target-info" style="margin-bottom: 8px; font-size: 0.7rem; border: 1px solid #1a2e1a; padding: 8px;">
             ZIEL: <span id="selected-target-name" style="color: var(--mgs-red);">KEINES</span>
         </div>
         <button class="btn-raid" onclick="startRaid()">RAID STARTEN</button>
     </div>
 
     <div id="view-preview" class="view">
-        <h2>[ VIDEO_FEED ]</h2>
-        <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 5px;">KANAL: <span id="preview-channel-name" style="color: var(--mgs-green);">KEINER</span></div>
+        <h2>[ LIVE_VIDEO ]</h2>
+        <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 5px;">KANAL: <span id="preview-channel-name">---</span></div>
         <div id="preview-player-container"></div>
     </div>
 
     <div id="view-chat" class="view">
-        <h2>[ CHAT_FEED ]</h2>
-        <div id="chat-view-container" class="full-iframe-container">
-            <p style="padding: 20px; font-size: 0.7rem; color: #555;">Wähle einen Kanal im RAID Tab...</p>
-        </div>
+        <h2>[ LIVE_CHAT ]</h2>
+        <div id="chat-view-container">
+            </div>
     </div>
+</div>
 
-    <div id="view-twitch" class="view">
-        <h2>[ TWITCH_WEB ]</h2>
-        <div class="full-iframe-container" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;">
-            <p style="margin-bottom: 20px; font-size: 0.8rem;">Twitch erlaubt kein Einbetten der Hauptseite.</p>
-            <button onclick="window.open('https://m.twitch.tv/login', '_blank')" style="background: #6441a5; color: white;">TWITCH IM NEUEN TAB ÖFFNEN</button>
-            <p style="margin-top: 20px; font-size: 0.6rem; color: var(--mgs-blue);">Logge dich dort ein, damit der Chat hier funktioniert.</p>
-        </div>
-    </div>
+<div id="status-container" style="display:none;">
+    <div id="status">STATUS: BEREIT</div>
 </div>
 
 <nav class="tab-bar" id="app-nav">
@@ -146,7 +163,6 @@
     <div class="tab-item" onclick="switchTab('raid')"><span>RAID</span></div>
     <div class="tab-item" onclick="switchTab('preview')"><span>VIDEO</span></div>
     <div class="tab-item" onclick="switchTab('chat')"><span>CHAT</span></div>
-    <div class="tab-item" onclick="switchTab('twitch')"><span>TWITCH</span></div>
 </nav>
 
 <script>
@@ -155,8 +171,7 @@
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
-    let accessToken = localStorage.getItem('twitch_access_token');
-    let myBroadcasterId = null;
+    let accessToken = null, myBroadcasterId = null, selectedGameId = null, selectedRaidTargetId = null;
     let twitchPlayer = null;
 
     if(localStorage.getItem('mission_auth') === 'true') { unlockApp(); }
@@ -172,21 +187,18 @@
         document.getElementById('lock-overlay').style.display = 'none';
         document.getElementById('main-panel').style.display = 'block';
         document.getElementById('app-nav').style.display = 'flex';
+        document.getElementById('status-container').style.display = 'block';
         checkTwitchAuth();
     }
 
     function checkTwitchAuth() {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
-        const newToken = params.get('access_token');
-        if (newToken) {
-            accessToken = newToken;
-            localStorage.setItem('twitch_access_token', accessToken);
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+        accessToken = params.get('access_token');
         if (accessToken) {
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('control-section').style.display = 'block';
+            window.history.replaceState({}, document.title, window.location.pathname);
             initMissionData();
         }
     }
@@ -202,8 +214,11 @@
         event.currentTarget.classList.add('active');
     }
 
+    // KERNELEMENT: Chat & Video Update
     function setPreviewTarget(userName) {
         document.getElementById('preview-channel-name').textContent = userName.toUpperCase();
+        
+        // Video
         if (!twitchPlayer) {
             twitchPlayer = new Twitch.Player("preview-player-container", {
                 width: "100%", height: "100%", channel: userName,
@@ -212,17 +227,17 @@
         } else {
             twitchPlayer.setChannel(userName);
         }
+
+        // Chat Fix: Iframe komplett neu bauen
         const chatContainer = document.getElementById('chat-view-container');
         chatContainer.innerHTML = `<iframe src="https://www.twitch.tv/embed/${userName}/chat?parent=${window.location.hostname}&darkpopout" height="100%" width="100%" frameborder="0"></iframe>`;
     }
 
     async function initMissionData() {
-        try {
-            const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
-            const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
-            myBroadcasterId = u.data[0].id;
-            loadLiveFollows();
-        } catch (e) { console.error(e); }
+        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
+        const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
+        myBroadcasterId = u.data[0].id;
+        loadLiveFollows();
     }
 
     async function loadLiveFollows() {
@@ -230,7 +245,6 @@
         const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
         try {
             const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
-            if(!f.data) return;
             const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
             const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
             list.innerHTML = '';
@@ -239,6 +253,7 @@
                 item.className = 'live-follow-item';
                 item.innerHTML = `<div><b>${stream.user_name}</b><br><small>${stream.game_name}</small></div><div>${stream.viewer_count}👤</div>`;
                 item.onclick = () => {
+                    selectedRaidTargetId = stream.user_id;
                     document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
                     setPreviewTarget(stream.user_name);
                 };
@@ -247,22 +262,27 @@
         } catch(e) { console.error(e); }
     }
 
+    // Raid Start
     async function startRaid() {
-        const targetName = document.getElementById('selected-target-name').textContent.toLowerCase();
-        if(targetName === "keines") return;
-        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
-        const userRes = await fetch(`https://api.twitch.tv/helix/users?login=${targetName}`, { headers: h }).then(r => r.json());
-        const targetId = userRes.data[0].id;
-        await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${targetId}`, { method: 'POST', headers: h });
+        if(!selectedRaidTargetId) return;
+        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
+            method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        });
+        document.getElementById('status').textContent = res.ok ? "RAID GESTARTET" : "FEHLER";
     }
 
+    // Stream Update
     async function updateTwitch() {
         const title = document.getElementById('stream-title').value;
-        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' };
-        await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
-            method: 'PATCH', headers: h, body: JSON.stringify({ title: title })
+        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
+            method: 'PATCH', 
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title })
         });
+        document.getElementById('status').textContent = res.ok ? "TITEL AKTUALISIERT" : "FEHLER";
     }
+
+    setInterval(loadLiveFollows, 60000);
 </script>
 </body>
 </html>
