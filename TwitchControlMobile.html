@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (V8_CHAT_PREVIEW)</title>
+    <title>VENOM_SNAKE - Mission Control (V9_CHAT_TAB)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
@@ -40,7 +40,7 @@
             margin-bottom: 110px; 
         }
 
-        .view { display: none; flex-direction: column; }
+        .view { display: none; flex-direction: column; height: 100%; }
         .view.active { display: flex; }
 
         h2 { font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; margin-bottom: 12px; letter-spacing: 1px; }
@@ -96,10 +96,11 @@
             width: 100%; aspect-ratio: 16 / 9;
             background: #000; border: 1px solid var(--mgs-green);
         }
-        #preview-chat-container {
-            width: 100%; height: 250px;
+        #chat-view-container {
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 250px); /* Dynamische Höhe für den Chat */
             background: #000; border: 1px solid var(--mgs-green);
-            margin-top: 10px;
         }
 
         .suggestion-box {
@@ -159,12 +160,16 @@
     </div>
 
     <div id="view-preview" class="view">
-        <h2>[ LIVE_VORSCHAU ]</h2>
+        <h2>[ LIVE_VIDEO ]</h2>
         <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 5px;">
             KANAL: <span id="preview-channel-name" style="color: var(--mgs-green);">KEINER</span>
         </div>
         <div id="preview-player-container"></div>
-        <div id="preview-chat-container">
+    </div>
+
+    <div id="view-chat" class="view">
+        <h2>[ LIVE_CHAT ]</h2>
+        <div id="chat-view-container">
             <iframe id="twitch-chat-embed" src="" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
         </div>
     </div>
@@ -177,7 +182,8 @@
 <nav class="tab-bar" id="app-nav">
     <div class="tab-item active" onclick="switchTab('broadcast')"><span>BROADCAST</span></div>
     <div class="tab-item" onclick="switchTab('raid')"><span>RAID</span></div>
-    <div class="tab-item" onclick="switchTab('preview')"><span>PREVIEW</span></div>
+    <div class="tab-item" onclick="switchTab('preview')"><span>VIDEO</span></div>
+    <div class="tab-item" onclick="switchTab('chat')"><span>CHAT</span></div>
 </nav>
 
 <script>
@@ -217,7 +223,7 @@
     function setPreviewTarget(userName) {
         document.getElementById('preview-channel-name').textContent = userName.toUpperCase();
         
-        // Player Update
+        // Video Update
         if (!twitchPlayer) {
             twitchPlayer = new Twitch.Player("preview-player-container", {
                 width: "100%", height: "100%", channel: userName,
@@ -227,7 +233,7 @@
             twitchPlayer.setChannel(userName);
         }
 
-        // Chat Update
+        // Chat Update (für den eigenen Tab)
         const chatUrl = `https://www.twitch.tv/embed/${userName}/chat?parent=${window.location.hostname}&darkpopout`;
         document.getElementById('twitch-chat-embed').src = chatUrl;
     }
