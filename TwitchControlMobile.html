@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (V6_CAT_FIX)</title>
+    <title>VENOM_SNAKE - Mission Control (V7_PREVIEW)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
         :root { 
             --mgs-green: #00ff41; 
@@ -39,7 +40,7 @@
             margin-bottom: 110px; 
         }
 
-        .view { display: none; flex-direction: column; }
+        .view { display: none; flex-direction: column; height: 100%; }
         .view.active { display: flex; }
 
         h2 { font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; margin-bottom: 12px; letter-spacing: 1px; }
@@ -69,7 +70,7 @@
             border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8rem;
         }
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 5px; }
-        .btn-cancel { background: var(--mgs-blue); color: #fff; margin-top: 5px; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-cancel { background: var(--mgs-blue); color: #fff; margin-top: 5px; }
 
         #status-container {
             position: fixed; bottom: 65px; width: 100%;
@@ -89,9 +90,18 @@
         }
         .tab-item {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--mgs-green); font-size: 0.65rem; font-weight: bold; cursor: pointer; opacity: 0.4;
+            color: var(--mgs-green); font-size: 0.6rem; font-weight: bold; cursor: pointer; opacity: 0.4;
         }
         .tab-item.active { opacity: 1; background: rgba(0, 255, 65, 0.1); border-top: 3px solid var(--mgs-green); }
+
+        /* Player Styles */
+        #preview-player-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 1px solid var(--mgs-green);
+            margin-top: 10px;
+        }
 
         .suggestion-box {
             position: absolute; top: 100%; left: 0; width: 100%;
@@ -148,6 +158,17 @@
         <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
         <button class="btn-cancel" onclick="cancelRaid()">RAID_ABBRECHEN</button>
     </div>
+
+    <div id="view-preview" class="view">
+        <h2>[ LIVE_VORSCHAU ]</h2>
+        <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 10px;">
+            KANAL: <span id="preview-channel-name" style="color: var(--mgs-green);">KEINER AUSGEWÄHLT</span>
+        </div>
+        <div id="preview-player-container"></div>
+        <p style="font-size: 0.55rem; color: #555; margin-top: 10px; text-align: center;">
+            Hinweis: Player startet stummgeschaltet (Autoplay-Richtlinie).
+        </p>
+    </div>
 </div>
 
 <div id="status-container" style="display:none;">
@@ -157,6 +178,7 @@
 <nav class="tab-bar" id="app-nav">
     <div class="tab-item active" onclick="switchTab('broadcast')"><span>BROADCAST</span></div>
     <div class="tab-item" onclick="switchTab('raid')"><span>RAID</span></div>
+    <div class="tab-item" onclick="switchTab('preview')"><span>PREVIEW</span></div>
 </nav>
 
 <script>
@@ -166,6 +188,7 @@
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
     let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
+    let twitchPlayer = null;
 
     if(localStorage.getItem('mission_auth') === 'true') { unlockApp(); }
 
@@ -190,6 +213,23 @@
         document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
         document.getElementById('view-' + viewId).classList.add('active');
         event.currentTarget.classList.add('active');
+    }
+
+    // Funktion um das Vorschau-Ziel zu setzen
+    function setPreviewTarget(userName) {
+        document.getElementById('preview-channel-name').textContent = userName.toUpperCase();
+        
+        if (!twitchPlayer) {
+            twitchPlayer = new Twitch.Player("preview-player-container", {
+                width: "100%",
+                height: "100%",
+                channel: userName,
+                parent: [window.location.hostname],
+                muted: true
+            });
+        } else {
+            twitchPlayer.setChannel(userName);
+        }
     }
 
     const hash = window.location.hash.substring(1);
@@ -237,7 +277,6 @@
             s.data.forEach(stream => {
                 const item = document.createElement('div');
                 item.className = 'live-follow-item';
-                // UPDATE: Anzeige des Spiels unter dem Namen
                 item.innerHTML = `
                     <div style="text-align: left;">
                         <b style="color: var(--mgs-green);">${stream.user_name}</b><br>
@@ -249,6 +288,7 @@
                     selectedRaidTargetId = stream.user_id;
                     document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
                     document.getElementById('raid-target-input').value = stream.user_name;
+                    setPreviewTarget(stream.user_name); // Player Ziel setzen
                 };
                 list.appendChild(item);
             });
@@ -267,13 +307,13 @@
             rBox.style.display = 'block';
             res.data.forEach(u => {
                 const d = document.createElement('div'); d.className = 'suggestion-item';
-                // UPDATE: Anzeige von Status und Spiel in der Suche
                 const gameInfo = (u.is_live && u.game_name) ? ` - ${u.game_name}` : "";
                 d.textContent = u.is_live ? `[LIVE] ${u.display_name}${gameInfo}` : u.display_name;
                 
                 d.onclick = () => {
                     raidInput.value = u.display_name; selectedRaidTargetId = u.id;
                     document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
+                    setPreviewTarget(u.display_name); // Player Ziel setzen
                     rBox.style.display = 'none';
                 };
                 rBox.appendChild(d);
