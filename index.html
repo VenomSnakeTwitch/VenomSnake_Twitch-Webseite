@@ -42,7 +42,7 @@
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); }
         .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
         
-        /* Dropdown Ganz Links unterhalb vom Logo */
+        /* Dropdown */
         .sidebar-menu {
             position: absolute;
             left: 20px; 
@@ -123,7 +123,37 @@
         .schedule-card { background: var(--mgs-panel); border-left: 5px solid var(--mgs-green); padding: 1.5rem; border-top: 1px solid var(--mgs-border); }
         .schedule-card h3 { color: var(--mgs-green); font-family: 'Chakra Petch'; margin-bottom: 5px; font-size: 0.9rem; }
 
-        .archive-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .archive-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+
+        /* Video Overlay */
+        #videoOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .overlay-content {
+            width: 90%;
+            max-width: 1100px;
+            border: 2px solid var(--mgs-green);
+            background: #000;
+            position: relative;
+            box-shadow: 0 0 30px var(--mgs-green-dim);
+        }
+        .close-btn {
+            position: absolute;
+            top: -35px;
+            right: 0;
+            color: var(--mgs-green);
+            cursor: pointer;
+            font-family: 'Chakra Petch';
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.7rem; border-top: 1px dashed var(--mgs-green-dim); }
         .live-pulse { color: var(--live-red); animation: pulse 1.5s infinite; font-weight: bold; }
@@ -184,7 +214,10 @@
     </section>
 
     <section id="page-archive" class="page">
-        <div class="mgs-header"><h1 style="color: var(--mgs-green);">MISSIONS-ARCHIV</h1></div>
+        <div class="mgs-header">
+            <h1 style="color: var(--mgs-green); font-family:'Chakra Petch';">MISSIONS-ARCHIV</h1>
+            <p style="font-size:0.7rem; color:var(--mgs-green-dim);">ZUGRIFF AUF AUFZEICHNUNGEN DER VERGANGENEN EINSÄTZE...</p>
+        </div>
         <div class="archive-grid" id="vod-container">Lade Daten...</div>
     </section>
 
@@ -219,6 +252,14 @@
     </section>
 </main>
 
+<div id="videoOverlay">
+    <div class="overlay-content">
+        <span class="close-btn" onclick="closeVideo()">[ X ] OPERATION ABBRECHEN</span>
+        <div class="twitch-embed" id="overlay-player"></div>
+    </div>
+    <div id="overlay-title" style="margin-top: 15px; color: var(--mgs-green); font-size: 0.9rem;"></div>
+</div>
+
 <footer><p>© 2026 // FOXHOUND DIGITAL COMMAND</p></footer>
 
 <script>
@@ -240,8 +281,8 @@
 
     async function initializeSystem() {
         const domain = window.location.hostname || "localhost";
-        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}" height="100%" width="100%"></iframe>`;
-        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%"></iframe>`;
+        document.getElementById('player').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${CHANNEL_NAME}&parent=${domain}" height="100%" width="100%" frameborder="0"></iframe>`;
+        document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%" frameborder="0"></iframe>`;
 
         try {
             const authResp = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
@@ -288,7 +329,6 @@
             const data = await resp.json();
             
             if(data.data && data.data.length > 0) {
-                // Wenn LIVE
                 const s = data.data[0];
                 document.getElementById('status-text').textContent = "LIVE";
                 document.getElementById('status-text').className = "live-pulse";
@@ -297,7 +337,6 @@
                 document.getElementById('twitch-game').textContent = s.game_name.toUpperCase();
                 streamStartTime = new Date(s.started_at);
             } else {
-                // Wenn OFFLINE: Letzten Titel/Kategorie vom Kanal-Endpunkt holen
                 const channelResp = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`, {
                     headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` }
                 });
@@ -317,6 +356,7 @@
             }
         } catch (e) { console.error("Fehler beim Laden der Stream-Infos:", e); }
     }
+
     function updateCountdown() {
         const now = new Date();
         let next = null;
@@ -342,13 +382,62 @@
         }
     }
 
-    async function loadArchiveData(token) {
+    // ARCHIV LOGIK MIT OVERLAY
+    function openVideo(videoId, title) {
         const domain = window.location.hostname || "localhost";
+        const overlay = document.getElementById('videoOverlay');
+        const playerContainer = document.getElementById('overlay-player');
+        
+        playerContainer.innerHTML = `<iframe src="https://player.twitch.tv/?video=${videoId}&parent=${domain}&autoplay=true" height="100%" width="100%" frameborder="0" allowfullscreen="true"></iframe>`;
+        document.getElementById('overlay-title').textContent = "DATA_STREAM: " + title.toUpperCase();
+        
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeVideo() {
+        document.getElementById('videoOverlay').style.display = 'none';
+        document.getElementById('overlay-player').innerHTML = ''; 
+        document.body.style.overflow = 'auto';
+    }
+
+    async function loadArchiveData(token) {
         try {
-            const vResp = await fetch(`https://api.twitch.tv/helix/videos?user_id=${broadcasterId}&first=6&type=archive`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+            const vResp = await fetch(`https://api.twitch.tv/helix/videos?user_id=${broadcasterId}&first=12&type=archive`, { 
+                headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` } 
+            });
             const vData = await vResp.json();
-            document.getElementById('vod-container').innerHTML = vData.data.map(v => `<div class="frame"><div class="twitch-embed"><iframe src="https://player.twitch.tv/?video=${v.id}&parent=${domain}&autoplay=false" height="100%" width="100%"></iframe></div></div>`).join('');
-        } catch(e) {}
+            
+            if(!vData.data || vData.data.length === 0) {
+                document.getElementById('vod-container').innerHTML = "KEINE AUFZEICHNUNGEN GEFUNDEN.";
+                return;
+            }
+
+            document.getElementById('vod-container').innerHTML = vData.data.map(v => {
+                const thumb = v.thumbnail_url.replace('%{width}', '480').replace('%{height}', '270');
+                const cleanTitle = v.title.replace(/'/g, "");
+                return `
+                    <div class="frame" onclick="openVideo('${v.id}', '${cleanTitle}')" style="cursor:pointer; transition:all 0.3s ease;">
+                        <div style="position:relative;">
+                            <img src="${thumb}" alt="VOD" style="width:100%; display:block; filter: grayscale(0.5) sepia(0.2);">
+                            <div style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.8); color:var(--mgs-green); padding:2px 5px; font-size:0.7rem;">
+                                ${v.duration}
+                            </div>
+                        </div>
+                        <div style="padding:10px; background:var(--mgs-panel); border-top:1px solid var(--mgs-green-dim);">
+                            <div style="color:var(--mgs-green); font-weight:bold; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                ${v.title.toUpperCase()}
+                            </div>
+                            <div style="font-size:0.65rem; color:var(--tactical-blue); margin-top:4px;">
+                                DATUM: ${v.created_at.split('T')[0]}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch(e) {
+            document.getElementById('vod-container').innerHTML = "FEHLER BEIM LADEN DER ARCHIV-DATEN.";
+        }
     }
 
     setInterval(() => {
