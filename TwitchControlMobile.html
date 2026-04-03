@@ -52,16 +52,16 @@
             color: #fff; padding: 10px; font-family: inherit; outline: none; font-size: 0.9rem;
         }
 
-        /* Liste Live Follows */
         #live-follows-list {
             background: #001a00; border: 1px solid rgba(0, 255, 65, 0.2);
-            height: 130px; 
+            height: 150px; 
             overflow-y: auto; 
             margin-bottom: 10px;
         }
         .live-follow-item {
-            padding: 8px; border-bottom: 1px solid #1a2e1a;
+            padding: 10px; border-bottom: 1px solid #1a2e1a;
             display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;
+            cursor: pointer;
         }
 
         button {
@@ -71,7 +71,6 @@
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 5px; }
         .btn-cancel { background: var(--mgs-blue); color: #fff; margin-top: 5px; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* Status & Navigation */
         #status-container {
             position: fixed; bottom: 65px; width: 100%;
             background: var(--mgs-bg); padding: 5px 15px;
@@ -215,13 +214,11 @@
             myBroadcasterId = u.data[0].id;
             const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
             
-            // Titel setzen
             document.getElementById('stream-title').value = c.data[0].title;
             
-            // AKTUELL EINGESTELLTE KATEGORIE ALS PLATZHALTER ANZEIGEN
             if(c.data[0].game_name) {
                 document.getElementById('stream-game').placeholder = "AKTUELL: " + c.data[0].game_name;
-                selectedGameId = c.data[0].game_id; // Merken, falls nur Titel geändert wird
+                selectedGameId = c.data[0].game_id;
             }
 
             loadLiveFollows();
@@ -240,7 +237,14 @@
             s.data.forEach(stream => {
                 const item = document.createElement('div');
                 item.className = 'live-follow-item';
-                item.innerHTML = `<div><b>${stream.user_name}</b></div><div>${stream.viewer_count}👤</div>`;
+                // UPDATE: Anzeige des Spiels unter dem Namen
+                item.innerHTML = `
+                    <div style="text-align: left;">
+                        <b style="color: var(--mgs-green);">${stream.user_name}</b><br>
+                        <span style="font-size: 0.6rem; color: var(--mgs-blue);">${stream.game_name || 'Unbekannt'}</span>
+                    </div>
+                    <div style="text-align: right;">${stream.viewer_count}👤</div>
+                `;
                 item.onclick = () => {
                     selectedRaidTargetId = stream.user_id;
                     document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
@@ -251,7 +255,6 @@
         } catch(e) { console.error(e); }
     }
 
-    // RAID SUCHE
     const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
     raidInput.addEventListener('input', async () => {
         const q = raidInput.value.trim();
@@ -264,7 +267,10 @@
             rBox.style.display = 'block';
             res.data.forEach(u => {
                 const d = document.createElement('div'); d.className = 'suggestion-item';
-                d.textContent = u.is_live ? `[LIVE] ${u.display_name}` : u.display_name;
+                // UPDATE: Anzeige von Status und Spiel in der Suche
+                const gameInfo = (u.is_live && u.game_name) ? ` - ${u.game_name}` : "";
+                d.textContent = u.is_live ? `[LIVE] ${u.display_name}${gameInfo}` : u.display_name;
+                
                 d.onclick = () => {
                     raidInput.value = u.display_name; selectedRaidTargetId = u.id;
                     document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
@@ -275,7 +281,6 @@
         }
     });
 
-    // KATEGORIE SUCHE
     const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
     gameInput.addEventListener('input', async () => {
         const q = gameInput.value.trim();
@@ -330,7 +335,6 @@
         });
         if(res.ok) {
             sEl.textContent = "UPDATED.";
-            // Kategorie nach Update im Placeholder aktualisieren
             document.getElementById('stream-game').placeholder = "AKTUELL: " + gameInput.value;
             gameInput.value = "";
         } else {
