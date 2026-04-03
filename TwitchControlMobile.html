@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (V7_PREVIEW)</title>
+    <title>VENOM_SNAKE - Mission Control (V8_CHAT_PREVIEW)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
@@ -40,7 +40,7 @@
             margin-bottom: 110px; 
         }
 
-        .view { display: none; flex-direction: column; height: 100%; }
+        .view { display: none; flex-direction: column; }
         .view.active { display: flex; }
 
         h2 { font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; margin-bottom: 12px; letter-spacing: 1px; }
@@ -55,14 +55,11 @@
 
         #live-follows-list {
             background: #001a00; border: 1px solid rgba(0, 255, 65, 0.2);
-            height: 150px; 
-            overflow-y: auto; 
-            margin-bottom: 10px;
+            height: 150px; overflow-y: auto; margin-bottom: 10px;
         }
         .live-follow-item {
             padding: 10px; border-bottom: 1px solid #1a2e1a;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;
-            cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; cursor: pointer;
         }
 
         button {
@@ -94,12 +91,14 @@
         }
         .tab-item.active { opacity: 1; background: rgba(0, 255, 65, 0.1); border-top: 3px solid var(--mgs-green); }
 
-        /* Player Styles */
+        /* Player & Chat Styles */
         #preview-player-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border: 1px solid var(--mgs-green);
+            width: 100%; aspect-ratio: 16 / 9;
+            background: #000; border: 1px solid var(--mgs-green);
+        }
+        #preview-chat-container {
+            width: 100%; height: 250px;
+            background: #000; border: 1px solid var(--mgs-green);
             margin-top: 10px;
         }
 
@@ -161,13 +160,13 @@
 
     <div id="view-preview" class="view">
         <h2>[ LIVE_VORSCHAU ]</h2>
-        <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 10px;">
-            KANAL: <span id="preview-channel-name" style="color: var(--mgs-green);">KEINER AUSGEWÄHLT</span>
+        <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 5px;">
+            KANAL: <span id="preview-channel-name" style="color: var(--mgs-green);">KEINER</span>
         </div>
         <div id="preview-player-container"></div>
-        <p style="font-size: 0.55rem; color: #555; margin-top: 10px; text-align: center;">
-            Hinweis: Player startet stummgeschaltet (Autoplay-Richtlinie).
-        </p>
+        <div id="preview-chat-container">
+            <iframe id="twitch-chat-embed" src="" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
+        </div>
     </div>
 </div>
 
@@ -215,21 +214,22 @@
         event.currentTarget.classList.add('active');
     }
 
-    // Funktion um das Vorschau-Ziel zu setzen
     function setPreviewTarget(userName) {
         document.getElementById('preview-channel-name').textContent = userName.toUpperCase();
         
+        // Player Update
         if (!twitchPlayer) {
             twitchPlayer = new Twitch.Player("preview-player-container", {
-                width: "100%",
-                height: "100%",
-                channel: userName,
-                parent: [window.location.hostname],
-                muted: true
+                width: "100%", height: "100%", channel: userName,
+                parent: [window.location.hostname], muted: true
             });
         } else {
             twitchPlayer.setChannel(userName);
         }
+
+        // Chat Update
+        const chatUrl = `https://www.twitch.tv/embed/${userName}/chat?parent=${window.location.hostname}&darkpopout`;
+        document.getElementById('twitch-chat-embed').src = chatUrl;
     }
 
     const hash = window.location.hash.substring(1);
@@ -253,14 +253,11 @@
             const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
             myBroadcasterId = u.data[0].id;
             const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
-            
             document.getElementById('stream-title').value = c.data[0].title;
-            
             if(c.data[0].game_name) {
                 document.getElementById('stream-game').placeholder = "AKTUELL: " + c.data[0].game_name;
                 selectedGameId = c.data[0].game_id;
             }
-
             loadLiveFollows();
         } catch (e) { console.error(e); }
     }
@@ -288,7 +285,7 @@
                     selectedRaidTargetId = stream.user_id;
                     document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
                     document.getElementById('raid-target-input').value = stream.user_name;
-                    setPreviewTarget(stream.user_name); // Player Ziel setzen
+                    setPreviewTarget(stream.user_name);
                 };
                 list.appendChild(item);
             });
@@ -309,11 +306,10 @@
                 const d = document.createElement('div'); d.className = 'suggestion-item';
                 const gameInfo = (u.is_live && u.game_name) ? ` - ${u.game_name}` : "";
                 d.textContent = u.is_live ? `[LIVE] ${u.display_name}${gameInfo}` : u.display_name;
-                
                 d.onclick = () => {
                     raidInput.value = u.display_name; selectedRaidTargetId = u.id;
                     document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
-                    setPreviewTarget(u.display_name); // Player Ziel setzen
+                    setPreviewTarget(u.display_name);
                     rBox.style.display = 'none';
                 };
                 rBox.appendChild(d);
