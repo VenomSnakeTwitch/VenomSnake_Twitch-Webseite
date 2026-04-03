@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (V11_AUTO)</title>
+    <title>VENOM_SNAKE - Mission Control (V12_AUTO_FULL)</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
@@ -26,13 +26,21 @@
         .view { display: none; flex-direction: column; height: 100%; }
         .view.active { display: flex; }
         h2 { font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; margin-bottom: 12px; }
-        input { width: 100%; background: #001a00; border: 1px solid var(--mgs-green); color: #fff; padding: 10px; font-family: inherit; font-size: 0.9rem; margin-bottom: 10px; }
+        .input-group { margin-bottom: 10px; position: relative; }
+        label { display: block; font-size: 0.55rem; margin-bottom: 3px; color: #008f11; font-weight: bold; }
+        input { width: 100%; background: #001a00; border: 1px solid var(--mgs-green); color: #fff; padding: 10px; font-family: inherit; font-size: 0.9rem; outline: none; }
         button { width: 100%; padding: 12px; background: var(--mgs-green); color: #000; border: none; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 5px; }
+        #live-follows-list { background: #001a00; border: 1px solid rgba(0, 255, 65, 0.2); height: 140px; overflow-y: auto; margin-bottom: 10px; }
+        .live-follow-item { padding: 10px; border-bottom: 1px solid #1a2e1a; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
         #status-container { position: fixed; bottom: 65px; width: 100%; background: var(--mgs-bg); padding: 5px 15px; z-index: 1001; border-top: 1px solid rgba(0, 255, 65, 0.1); }
         #status { padding: 8px; text-align: center; font-size: 0.7rem; border: 1px dashed var(--mgs-green); }
         .tab-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #0a0f0a; border-top: 2px solid var(--mgs-green); display: none; z-index: 1000; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--mgs-green); font-size: 0.6rem; opacity: 0.4; }
         .tab-item.active { opacity: 1; background: rgba(0, 255, 65, 0.1); border-top: 3px solid var(--mgs-green); }
+        .suggestion-box { position: absolute; top: 100%; left: 0; width: 100%; background: #0a0f0a; border: 2px solid var(--mgs-green); z-index: 2000; max-height: 150px; overflow-y: auto; display: none; }
+        .suggestion-item { padding: 12px; border-bottom: 1px solid #1a2e1a; font-size: 0.8rem; }
+        #preview-player-container, #chat-view-container { flex: 1; width: 100%; background: #000; border: 1px solid var(--mgs-green); }
     </style>
 </head>
 <body>
@@ -49,12 +57,34 @@
 <div class="app-container" id="main-panel">
     <div id="view-broadcast" class="view active">
         <h2>[ STREAM_SETUP ]</h2>
-        <div id="control-section">
-            <input type="text" id="stream-title" placeholder="Titel...">
-            <button onclick="updateTwitch()">UPDATE SENDEN</button>
+        <div class="input-group"><label>STREAM_TITEL</label><input type="text" id="stream-title"></div>
+        <div class="input-group">
+            <label>KATEGORIE</label>
+            <input type="text" id="stream-game" placeholder="Suchen..." autocomplete="off">
+            <div id="game-suggestions" class="suggestion-box"></div>
         </div>
+        <button onclick="updateTwitch()">UPDATE SENDEN</button>
     </div>
+
+    <div id="view-raid" class="view">
+        <h2>[ RAID_COMMAND ]</h2>
+        <div id="live-follows-list">Lade...</div>
+        <div id="target-info" style="margin-bottom: 8px; font-size: 0.7rem; border: 1px solid #1a2e1a; padding: 8px;">
+            ZIEL: <span id="selected-target-name" style="color: var(--mgs-red);">KEINES</span>
+        </div>
+        <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
     </div>
+
+    <div id="view-preview" class="view">
+        <h2>[ LIVE_VIDEO ]</h2>
+        <div id="preview-player-container"></div>
+    </div>
+
+    <div id="view-chat" class="view">
+        <h2>[ LIVE_CHAT ]</h2>
+        <div id="chat-view-container"></div>
+    </div>
+</div>
 
 <div id="status-container" style="display:none;">
     <div id="status">STATUS: STANDBY</div>
@@ -73,10 +103,10 @@
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
-    // 1. Token-Management
     let accessToken = localStorage.getItem('twitch_access_token');
+    let myBroadcasterId, selectedGameId, selectedRaidTargetId, twitchPlayer;
 
-    // Prüfe, ob wir gerade vom Login zurückkommen
+    // Token Capture
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     if (params.get('access_token')) {
@@ -85,7 +115,6 @@
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    // Automatisches Entsperren, wenn Passwort schon mal korrekt war
     if(localStorage.getItem('mission_auth') === 'true') { unlockApp(); }
 
     function checkPass() {
@@ -103,9 +132,8 @@
         document.getElementById('app-nav').style.display = 'flex';
         document.getElementById('status-container').style.display = 'block';
         
-        // 2. Auto-Login Logik
         if (!accessToken) {
-            login(); // Springt sofort zu Twitch
+            login();
         } else {
             initMissionData();
         }
@@ -115,21 +143,68 @@
         window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`;
     }
 
-    // Deine restlichen Funktionen (switchTab, initMissionData, updateTwitch etc.) 
-    // bleiben gleich wie in V10, nutzen aber das gespeicherte accessToken.
-    
+    async function initMissionData() {
+        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
+        try {
+            const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
+            if(!u.data) { localStorage.removeItem('twitch_access_token'); login(); return; }
+            myBroadcasterId = u.data[0].id;
+            loadLiveFollows();
+        } catch (e) { console.error(e); }
+    }
+
+    async function loadLiveFollows() {
+        const list = document.getElementById('live-follows-list');
+        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
+        try {
+            const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
+            const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
+            const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
+            list.innerHTML = '';
+            s.data.forEach(stream => {
+                const item = document.createElement('div');
+                item.className = 'live-follow-item';
+                item.innerHTML = `<span>${stream.user_name}</span><small>${stream.viewer_count}👤</small>`;
+                item.onclick = () => selectTarget(stream.user_id, stream.user_name);
+                list.appendChild(item);
+            });
+        } catch(e) { list.innerHTML = "Fehler beim Laden."; }
+    }
+
+    function selectTarget(id, name) {
+        selectedRaidTargetId = id;
+        document.getElementById('selected-target-name').textContent = name.toUpperCase();
+        if (!twitchPlayer) {
+            twitchPlayer = new Twitch.Player("preview-player-container", { width: "100%", height: "100%", channel: name, parent: [window.location.hostname] });
+        } else { twitchPlayer.setChannel(name); }
+        document.getElementById('chat-view-container').innerHTML = `<iframe src="https://www.twitch.tv/embed/${name}/chat?parent=${window.location.hostname}&darkpopout" height="100%" width="100%"></iframe>`;
+    }
+
     function switchTab(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-        const targetView = document.getElementById('view-' + viewId);
-        if(targetView) targetView.classList.add('active');
+        document.getElementById('view-' + viewId).classList.add('active');
         event.currentTarget.classList.add('active');
     }
 
-    async function initMissionData() {
-        // Hier deine API-Abfragen einbauen...
-        console.log("Mission Data geladen mit Token: " + accessToken.substring(0,5) + "...");
+    async function updateTwitch() {
+        const title = document.getElementById('stream-title').value;
+        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
+            method: 'PATCH', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title })
+        });
+        document.getElementById('status').textContent = res.ok ? "UPDATED" : "FEHLER";
     }
+
+    async function startRaid() {
+        if(!selectedRaidTargetId) return;
+        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
+            method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        });
+        document.getElementById('status').textContent = res.ok ? "RAID AKTIV" : "FEHLER";
+    }
+
+    setInterval(loadLiveFollows, 60000);
 </script>
 </body>
 </html>
