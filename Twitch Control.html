@@ -236,7 +236,6 @@
         } catch(e) { console.error("Load Error"); }
     }
 
-    // GAME SEARCH
     const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
     gameInput.addEventListener('input', async () => {
         const q = gameInput.value.trim();
@@ -255,7 +254,6 @@
         }
     });
 
-    // RAID SEARCH
     const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
     raidInput.addEventListener('input', async () => {
         const q = raidInput.value.trim();
@@ -279,21 +277,52 @@
         }
     });
 
+    // --- ÜBERARBEITETE UPDATE FUNKTION ---
     async function updateTwitch() {
         const sEl = document.getElementById('status');
+        const titleVal = document.getElementById('stream-title').value;
+        
         sEl.textContent = "SENDE UPDATE...";
-        let body = { title: document.getElementById('stream-title').value };
-        if (selectedGameId) body.game_id = selectedGameId;
-        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
-            method: 'PATCH',
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if(res.ok) {
-            sEl.textContent = "ERFOLG.";
-            document.getElementById('stream-game').placeholder = "Aktuell: " + gameInput.value;
-            gameInput.value = "";
-        } else { sEl.textContent = "FEHLER."; }
+        sEl.style.color = "var(--mgs-green)";
+
+        // Body für Twitch zusammenstellen
+        let updateBody = {};
+        if (titleVal) updateBody.title = titleVal;
+        if (selectedGameId) updateBody.game_id = selectedGameId;
+
+        // Falls beides leer ist, nichts tun
+        if (Object.keys(updateBody).length === 0) {
+            sEl.textContent = "KEINE DATEN ZUM ÄNDERN.";
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
+                method: 'PATCH',
+                headers: { 
+                    'Client-ID': CLIENT_ID, 
+                    'Authorization': `Bearer ${accessToken}`, 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(updateBody)
+            });
+
+            if(res.ok) {
+                sEl.textContent = "ERFOLG: DATEN AKTUALISIERT.";
+                if(gameInput.value) {
+                    document.getElementById('stream-game').placeholder = "Aktuell: " + gameInput.value;
+                    gameInput.value = "";
+                }
+            } else {
+                const err = await res.json();
+                sEl.textContent = "FEHLER: " + (err.message || "Twitch lehnt ab");
+                sEl.style.color = "var(--mgs-red)";
+                console.log("Fehler-Details:", err);
+            }
+        } catch (e) {
+            sEl.textContent = "VERBINDUNGSFEHLER ZU TWITCH.";
+            sEl.style.color = "var(--mgs-red)";
+        }
     }
 
     async function startRaid() {
