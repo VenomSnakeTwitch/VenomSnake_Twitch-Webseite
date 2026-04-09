@@ -2,391 +2,311 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VENOM_SNAKE - Mission Control (V7_PREVIEW)</title>
-    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEC // VenomSnake_Twitch</title>
+
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        :root { 
+        :root {
             --mgs-green: #00ff41; 
-            --mgs-bg: #050805; 
-            --mgs-red: #ff0000; 
-            --mgs-blue: #0088ff;
+            --mgs-green-dim: #003b00;
+            --mgs-bg: #050805;
+            --mgs-panel: #0a0f0a;
+            --mgs-border: #1a2e1a;
+            --text-primary: #d1ffd1;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-
+        /* Vorhandene Styles beibehalten */
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
         body {
-            background: var(--mgs-bg); color: var(--mgs-green); font-family: 'JetBrains Mono', monospace;
-            height: 100vh; width: 100vw; overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--mgs-bg);
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
-            display: flex; flex-direction: column;
+            color: var(--text-primary);
         }
 
-        #lock-overlay {
-            position: fixed; inset: 0; background: var(--mgs-bg);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .lock-box { border: 2px solid var(--mgs-green); padding: 1rem; background: rgba(0, 20, 0, 0.95); text-align: center; width: 85%; max-width: 400px; }
+        .nav { position: fixed; top: 0; width: 100%; height: 70px; background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
+        .logo img { height: 45px; }
 
-        .app-container { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 10px 15px; 
-            display: none;
-            margin-bottom: 110px; 
-        }
+        .main-container { max-width: 1000px; margin: 100px auto 50px; padding: 0 20px; text-align: center; }
+        .player-box { background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem; backdrop-filter: blur(5px); }
 
-        .view { display: none; flex-direction: column; height: 100%; }
-        .view.active { display: flex; }
+        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; }
+        .suno-notice { background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 12px; margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase; }
 
-        h2 { font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--mgs-green); padding-bottom: 5px; margin-bottom: 12px; letter-spacing: 1px; }
+        /* Song-Anzeige als Klick-Fläche */
+        #currentSong { 
+            color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); 
+            padding: 15px; border: 1px dashed var(--mgs-green); min-height: 45px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+        }
+        #currentSong:hover { background: var(--mgs-green); color: #000; }
 
-        .input-group { margin-bottom: 10px; position: relative; }
-        label { display: block; font-size: 0.55rem; margin-bottom: 3px; color: #008f11; font-weight: bold; text-transform: uppercase; }
+        .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        button, .download-btn, .home-btn {
+            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
+            padding: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; cursor: pointer;
+            font-size: 0.75rem; transition: 0.2s; text-decoration: none; text-align: center;
+        }
+        button:hover, .download-btn:hover { background: var(--mgs-green); color: #000; }
 
-        input {
-            width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
-            color: #fff; padding: 10px; font-family: inherit; outline: none; font-size: 0.9rem;
+        /* --- NEUES OVERLAY STYLE --- */
+        #songOverlay {
+            position: fixed; inset: 0; background: rgba(5, 8, 5, 0.98); z-index: 3000;
+            display: none; flex-direction: column; padding: 40px;
         }
+        #songOverlay.active { display: flex; }
+        .overlay-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--mgs-green); padding-bottom: 20px; margin-bottom: 20px; }
+        
+        .song-list-container {
+            overflow-y: auto; flex-grow: 1; padding-right: 10px;
+        }
+        .song-list-container::-webkit-scrollbar { width: 8px; }
+        .song-list-container::-webkit-scrollbar-thumb { background: var(--mgs-green); }
 
-        #live-follows-list {
-            background: #001a00; border: 1px solid rgba(0, 255, 65, 0.2);
-            height: 150px; 
-            overflow-y: auto; 
-            margin-bottom: 10px;
+        .song-item {
+            padding: 15px; border: 1px solid var(--mgs-green-dim); margin-bottom: 8px;
+            text-align: left; transition: 0.2s; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
         }
-        .live-follow-item {
-            padding: 10px; border-bottom: 1px solid #1a2e1a;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;
-            cursor: pointer;
-        }
+        .song-item:hover { background: var(--mgs-green); color: #000; padding-left: 25px; }
+        .song-item.playing { border-color: var(--mgs-green); background: rgba(0, 255, 65, 0.1); color: var(--mgs-green); }
 
-        button {
-            width: 100%; padding: 12px; background: var(--mgs-green); color: #000;
-            border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8rem;
+        .search-input {
+            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
+            padding: 10px; font-family: 'JetBrains Mono'; width: 300px;
         }
-        .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 5px; }
-        .btn-cancel { background: var(--mgs-blue); color: #fff; margin-top: 5px; }
+        /* --- ENDE OVERLAY STYLE --- */
 
-        #status-container {
-            position: fixed; bottom: 65px; width: 100%;
-            background: var(--mgs-bg); padding: 5px 15px;
-            z-index: 1001; border-top: 1px solid rgba(0, 255, 65, 0.1);
-        }
-        #status { 
-            padding: 8px; text-align: center; font-size: 0.7rem;
-            border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05);
-            text-transform: uppercase;
-        }
+        .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
+        .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
+        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); }
 
-        .tab-bar {
-            position: fixed; bottom: 0; width: 100%; height: 65px;
-            background: #0a0f0a; border-top: 2px solid var(--mgs-green);
-            display: none; z-index: 1000;
-        }
-        .tab-item {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--mgs-green); font-size: 0.6rem; font-weight: bold; cursor: pointer; opacity: 0.4;
-        }
-        .tab-item.active { opacity: 1; background: rgba(0, 255, 65, 0.1); border-top: 3px solid var(--mgs-green); }
-
-        /* Player Styles */
-        #preview-player-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border: 1px solid var(--mgs-green);
-            margin-top: 10px;
-        }
-
-        .suggestion-box {
-            position: absolute; top: 100%; left: 0; width: 100%;
-            background: #0a0f0a; border: 2px solid var(--mgs-green);
-            z-index: 2000; max-height: 150px; overflow-y: auto; display: none;
-        }
-        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.8rem; color: #fff; }
+        #visualizerOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #visualizerOverlay.active { display: flex; }
+        #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; }
     </style>
 </head>
 <body>
 
-<div id="lock-overlay">
-    <div class="lock-box">
-        <h2 style="color: var(--mgs-red); border: none;">[ ZUGRIFF_GESPERRT ]</h2>
-        <input type="password" id="pass-input" placeholder="CODE EINGEBEN" onkeydown="if(event.key==='Enter') checkPass()">
-        <button onclick="checkPass()" style="margin-top:10px;">VERIFIZIEREN</button>
-        <div id="lock-status" style="margin-top:10px; font-size: 0.7rem;"></div>
-    </div>
-</div>
-
-<div class="app-container" id="main-panel">
-    <div id="view-broadcast" class="view active">
-        <h2>[ STREAM_SETUP ]</h2>
-        <div id="auth-section">
-            <p style="margin: 20px 0; text-align:center; font-size: 0.75rem;">Login erforderlich...</p>
-            <button onclick="login()">LOGIN BEI TWITCH</button>
-        </div>
-        <div id="control-section" style="display:none;">
-            <div class="input-group">
-                <label>STREAM_TITEL</label>
-                <input type="text" id="stream-title">
-            </div>
-            <div class="input-group">
-                <label>KATEGORIE</label>
-                <input type="text" id="stream-game" placeholder="Aktuelles Spiel laden..." autocomplete="off">
-                <div id="game-suggestions" class="suggestion-box"></div>
-            </div>
-            <button onclick="updateTwitch()">UPDATE SENDEN</button>
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="./DogVenomsnakeLogo.png" alt="Logo">
+            <span>VENOM_SNAKE_AUDIO</span>
+        </a>
+        <div class="nav-controls">
+            <a href="index.html" class="home-btn" style="padding: 5px 15px;">[ HOME ]</a>
+            <button onclick="toggleFullscreen()" style="padding: 5px 15px;">[ VOLLBILD ]</button>
         </div>
     </div>
-
-    <div id="view-raid" class="view">
-        <h2>[ RAID_COMMAND ]</h2>
-        <label>LIVE FOLLOWS</label>
-        <div id="live-follows-list">Lade...</div>
-        <div class="input-group">
-            <label>ZIEL_SCAN (MANUELL)</label>
-            <input type="text" id="raid-target-input" placeholder="Name tippen..." autocomplete="off">
-            <div id="raid-suggestions" class="suggestion-box"></div>
-        </div>
-        <div id="target-info" style="margin-bottom: 8px; font-size: 0.7rem; border: 1px solid #1a2e1a; padding: 8px;">
-            ZIEL: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
-        </div>
-        <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
-        <button class="btn-cancel" onclick="cancelRaid()">RAID_ABBRECHEN</button>
-    </div>
-
-    <div id="view-preview" class="view">
-        <h2>[ LIVE_VORSCHAU ]</h2>
-        <div id="preview-info" style="font-size: 0.7rem; margin-bottom: 10px;">
-            KANAL: <span id="preview-channel-name" style="color: var(--mgs-green);">KEINER AUSGEWÄHLT</span>
-        </div>
-        <div id="preview-player-container"></div>
-        <p style="font-size: 0.55rem; color: #555; margin-top: 10px; text-align: center;">
-            Hinweis: Player startet stummgeschaltet (Autoplay-Richtlinie).
-        </p>
-    </div>
-</div>
-
-<div id="status-container" style="display:none;">
-    <div id="status">STATUS: STANDBY</div>
-</div>
-
-<nav class="tab-bar" id="app-nav">
-    <div class="tab-item active" onclick="switchTab('broadcast')"><span>BROADCAST</span></div>
-    <div class="tab-item" onclick="switchTab('raid')"><span>RAID</span></div>
-    <div class="tab-item" onclick="switchTab('preview')"><span>PREVIEW</span></div>
 </nav>
 
-<script>
-    const CORRECT_PASS = "VenomSnake94";
-    const CLIENT_ID = 'rcm9o1fq5h707qnuovfxodnvydosux'; 
-    const REDIRECT_URI = window.location.origin + window.location.pathname;
-    const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
+<main class="main-container">
+    <div class="player-box">
+        <h1>CODEC INTERFACE</h1>
+        <div class="suno-notice">
+            [ STATUS: TRANSMISSION ACTIVE ]<br>
+            KLICKE AUF DEN SONG-TITEL, UM DIE PLAYLIST ZU ÖFFNEN.
+        </div>
 
-    let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
-    let twitchPlayer = null;
-
-    if(localStorage.getItem('mission_auth') === 'true') { unlockApp(); }
-
-    function checkPass() {
-        if(document.getElementById('pass-input').value === CORRECT_PASS) {
-            unlockApp();
-            localStorage.setItem('mission_auth', 'true');
-        } else {
-            document.getElementById('lock-status').textContent = "FEHLER.";
-        }
-    }
-
-    function unlockApp() {
-        document.getElementById('lock-overlay').style.display = 'none';
-        document.getElementById('main-panel').style.display = 'block';
-        document.getElementById('app-nav').style.display = 'flex';
-        document.getElementById('status-container').style.display = 'block';
-    }
-
-    function switchTab(viewId) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-        document.getElementById('view-' + viewId).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-
-    // Funktion um das Vorschau-Ziel zu setzen
-    function setPreviewTarget(userName) {
-        document.getElementById('preview-channel-name').textContent = userName.toUpperCase();
+        <div id="currentSong" onclick="toggleSongOverlay()">INITIALISIERE...</div>
         
-        if (!twitchPlayer) {
-            twitchPlayer = new Twitch.Player("preview-player-container", {
-                width: "100%",
-                height: "100%",
-                channel: userName,
-                parent: [window.location.hostname],
-                muted: true
-            });
-        } else {
-            twitchPlayer.setChannel(userName);
-        }
-    }
+        <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    accessToken = params.get('access_token');
+        <div class="control-grid">
+            <button onclick="toggleSongOverlay()">[ PLAYLIST ]</button>
+            <button onclick="openVisualizer()">[ VISUALIZER ]</button>
+            <a id="downloadBtn" href="#" download class="download-btn">DOWNLOAD</a>
+        </div>
 
-    if (accessToken) {
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('control-section').style.display = 'block';
-        window.history.replaceState({}, document.title, window.location.pathname);
-        initMissionData();
-    }
+        <div class="slider-row">
+            <span class="slider-label" id="timeLabel">0:00</span>
+            <input type="range" id="progress" min="0" max="100" value="0">
+            <span class="slider-label" id="durationLabel">0:00</span>
+        </div>
 
-    function login() {
-        window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`;
-    }
+        <div class="slider-row">
+            <span class="slider-label">VOL</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <span class="slider-label" id="volumeLabel">50%</span>
+        </div>
 
-    async function initMissionData() {
-        try {
-            const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
-            const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
-            myBroadcasterId = u.data[0].id;
-            const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
-            
-            document.getElementById('stream-title').value = c.data[0].title;
-            
-            if(c.data[0].game_name) {
-                document.getElementById('stream-game').placeholder = "AKTUELL: " + c.data[0].game_name;
-                selectedGameId = c.data[0].game_id;
-            }
+        <div class="control-grid">
+            <button id="radioModeBtn" onclick="toggleRadioMode()">📻 RADIO: AUS</button>
+            <button id="loopModeBtn" onclick="toggleLoopMode()">🔂 LOOP: AUS</button>
+            <button onclick="prevSong()">⏮ ZURÜCK</button>
+            <button id="playPauseBtn" onclick="togglePlay()">▶ PLAY</button>
+            <button onclick="nextSong()">WEITER ⏭</button>
+        </div>
+    </div>
+</main>
 
-            loadLiveFollows();
-        } catch (e) { console.error(e); }
-    }
+<div id="songOverlay">
+    <div class="overlay-header">
+        <h2 style="font-family:'Chakra Petch'; color:var(--mgs-green);">SELECT FREQUENCY (SONGS)</h2>
+        <div>
+            <input type="text" id="songSearch" class="search-input" placeholder="SUCHEN..." oninput="filterSongs()">
+            <button onclick="toggleSongOverlay()" style="color:#ff4141; border-color:#ff4141; margin-left:10px;">X SCHLIESSEN</button>
+        </div>
+    </div>
+    <div id="songList" class="song-list-container">
+        </div>
+</div>
 
-    async function loadLiveFollows() {
-        const list = document.getElementById('live-follows-list');
-        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
-        try {
-            const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
-            if(!f.data || f.data.length === 0) return;
-            const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
-            const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
-            list.innerHTML = '';
-            s.data.forEach(stream => {
-                const item = document.createElement('div');
-                item.className = 'live-follow-item';
-                item.innerHTML = `
-                    <div style="text-align: left;">
-                        <b style="color: var(--mgs-green);">${stream.user_name}</b><br>
-                        <span style="font-size: 0.6rem; color: var(--mgs-blue);">${stream.game_name || 'Unbekannt'}</span>
-                    </div>
-                    <div style="text-align: right;">${stream.viewer_count}👤</div>
-                `;
-                item.onclick = () => {
-                    selectedRaidTargetId = stream.user_id;
-                    document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
-                    document.getElementById('raid-target-input').value = stream.user_name;
-                    setPreviewTarget(stream.user_name); // Player Ziel setzen
-                };
-                list.appendChild(item);
-            });
-        } catch(e) { console.error(e); }
-    }
+<div id="visualizerOverlay">
+    <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
+    <canvas id="visualizerCanvas"></canvas>
+    <div class="vis-player-ui" style="width: 90%; max-width: 800px; margin-top:20px;">
+        <div class="vis-row">
+            <button onclick="toggleSongOverlay()">SONG WÄHLEN</button>
+            <button id="visPlayPauseBtn" onclick="togglePlay()">▶ PLAY</button>
+            <button onclick="closeVisualizer()" style="color:#ff4141;">EXIT</button>
+        </div>
+    </div>
+</div>
 
-    const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
-    raidInput.addEventListener('input', async () => {
-        const q = raidInput.value.trim();
-        if (q.length < 3) { rBox.style.display = 'none'; return; }
-        const res = await fetch(`https://api.twitch.tv/helix/search/channels?query=${encodeURIComponent(q)}&first=5`, {
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        }).then(r => r.json());
-        rBox.innerHTML = '';
-        if(res.data && res.data.length > 0) {
-            rBox.style.display = 'block';
-            res.data.forEach(u => {
-                const d = document.createElement('div'); d.className = 'suggestion-item';
-                const gameInfo = (u.is_live && u.game_name) ? ` - ${u.game_name}` : "";
-                d.textContent = u.is_live ? `[LIVE] ${u.display_name}${gameInfo}` : u.display_name;
-                
-                d.onclick = () => {
-                    raidInput.value = u.display_name; selectedRaidTargetId = u.id;
-                    document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
-                    setPreviewTarget(u.display_name); // Player Ziel setzen
-                    rBox.style.display = 'none';
-                };
-                rBox.appendChild(d);
-            });
-        }
+<script>
+const songTitles = [
+    "Snake Eater VenomSnake_Twitch Mix", "Ghost Town by VenomSnake_Twitch", "Wreckfest", 
+    "In The Air Tonight(VenomSnake_Twitch)", "Paradies City", "Parasitäres Bewustsein", 
+    "Still Alive (Voiced)", "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix", "Bye Bye Beautiful", 
+    "Kettenreaktion (Cover)", "Straße der Verdammnis", "Syphon Filter Synth Mix", 
+    "VenomSnake Mode Intro song", "Hell March [Retaliation Cover]", "Dance hall Dance(Cover)", 
+    "Resident Evil 5 Desperate Escape Main Theme Music(Remix)", "Bleed out My Frend", "Revange", 
+    "Revange 2", "Survival Of Death", "Pile of Total Wreck", "Dessert Storm Ahead", 
+    "Industrial Breakdown", "Mental Breakdown", "Metal Gear 2 Solid Snake Chasing the Green Beret Remix", 
+    "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026", "Metal Gear 2 Solid Snake Level1 Warning Remix", 
+    "Metal Gear 2 Solid Snake Level3 Warning Remix", "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix", 
+    "Operation Stealth Destruction", "Takin' On The Shagohod Remake", "Metal Gear 2 Solid Snake Freqency 140.85", 
+    "Ghostbusters 2 - Savin The Day Remix", "Resident Evil Requiem Titel Song Through the Darkness Female Version", 
+    "Dragonball Z Du Wirst Unbesiegbar Sein", "Dragonball Z Cha La Head Cha La", "Wir Kiffen Parodie", 
+    "LA-LE-LU", "Feel the Storm Coming", "Inu Yasha Was ist Zeit Lange Vesion", 
+    "Thunder in Paradiese Cover", "The Dead Inside Me", "Gesang von Asgard (Remix)"
+];
+
+const songs = [
+    "Snake Eater VenomSnake_Twitch Mix.mp3", "Ghost Town by VenomSnake_Twitch.mp3", "Wreckfest.mp3", 
+    "In The Air Tonight(VenomSnake_Twitch).mp3", "Paradies City.mp3", "Parasitäres Bewustsein.mp3", 
+    "Still Alive (Voiced).mp3", "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix.mp3", "ByeByeBeautiful.mp3", 
+    "Kettenreaktion (Cover).mp3", "Strasse der Verdammnis.mp3", "Syphon Filter Synth Mix.mp3", 
+    "VenomSnake Mode Intro song.mp3", "Hell March [Retaliation Cover].mp3", "Dance hall Dance(Cover).mp3", 
+    "Resident Evil 5 Desperate Escape Main Theme Music(Remix).mp3", "Bleed out My Frend.mp3", "Revange.mp3", 
+    "Revange 2.mp3", "Survival Of Death.mp3", "Pile of Total Wreck.mp3", "Dessert Storm Ahead.mp3", 
+    "Industrial Breakdown.mp3", "Mental Breakdown.mp3", "Metal Gear 2 Solid Snake Chasing the Green Beret Remix.mp3", 
+    "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026.mp3", "Metal Gear 2 Solid Snake Level1 Warning Remix.mp3", 
+    "Metal Gear 2 Solid Snake Level3 Warning Remix.mp3", "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix.mp3", 
+    "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3", "Metal Gear 2 Solid Snake Freqency 140.85.mp3", 
+    "Ghostbusters 2 - Savin The Day Remix.mp3","Resident Evil Requiem Titel Song Through the Darkness Female Version.mp3",
+    "Dragonball Z Du Wirst Unbesiegbar Sein.mp3","Dragonball Z  Cha La Head Cha La.mp3","Wir Kiffen Parodie.mp3","LA-LE-LU.mp3","Feel the Storm Coming.mp3",
+    "Inu Yasha Was ist Zeit Lange Vesion.mp3","Thunder in Paradise.mp3", "The Dead Inside Me.mp3","Gesang von Asgard (Remix).mp3"
+];
+
+const BASE_URL = "./";
+let currentIndex = 0;
+let audioCtx, analyser, dataArray, animationId;
+let isRadioMode = false;
+let isLoopMode = false;
+
+const audio = document.getElementById("audioPlayer");
+
+// Playlist generieren
+function buildPlaylist() {
+    const list = document.getElementById("songList");
+    list.innerHTML = "";
+    songTitles.forEach((title, index) => {
+        const div = document.createElement("div");
+        div.className = "song-item" + (index === currentIndex ? " playing" : "");
+        div.textContent = `${(index + 1).toString().padStart(2, '0')} // ${title}`;
+        div.onclick = () => { selectSong(index); toggleSongOverlay(); };
+        list.appendChild(div);
     });
+}
 
-    const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
-    gameInput.addEventListener('input', async () => {
-        const q = gameInput.value.trim();
-        if (q.length < 3) { gBox.style.display = 'none'; return; }
-        const r = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(q)}`, {
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        }).then(res => res.json());
-        gBox.innerHTML = '';
-        if(r.data && r.data.length > 0) {
-            gBox.style.display = 'block';
-            r.data.forEach(g => {
-                const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = g.name;
-                d.onclick = () => { gameInput.value = g.name; selectedGameId = g.id; gBox.style.display = 'none'; };
-                gBox.appendChild(d);
-            });
-        }
+function toggleSongOverlay() {
+    const overlay = document.getElementById("songOverlay");
+    overlay.classList.toggle("active");
+    if(overlay.classList.contains("active")) {
+        buildPlaylist();
+        document.getElementById("songSearch").focus();
+    }
+}
+
+function filterSongs() {
+    const term = document.getElementById("songSearch").value.toLowerCase();
+    const items = document.querySelectorAll(".song-item");
+    items.forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(term) ? "block" : "none";
     });
+}
 
-    async function startRaid() {
-        const sEl = document.getElementById('status');
-        if(!selectedRaidTargetId) { sEl.textContent = "ZIEL FEHLT."; return; }
-        sEl.textContent = "RAID SENDET...";
-        const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
-            method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        });
-        sEl.textContent = res.ok ? "RAID LÄUFT." : "FEHLER.";
+function loadSong(index) {
+    currentIndex = parseInt(index);
+    audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
+    document.getElementById("downloadBtn").href = audio.src;
+    document.getElementById("currentSong").textContent = "▶ " + songTitles[currentIndex].toUpperCase();
+}
+
+function selectSong(val) {
+    loadSong(val);
+    audio.play();
+    updatePlayButtons("⏸ PAUSE");
+}
+
+function togglePlay() {
+    if(!audioCtx) initAudioSystem();
+    if (audio.paused) { audio.play(); updatePlayButtons("⏸ PAUSE"); } 
+    else { audio.pause(); updatePlayButtons("▶ PLAY"); }
+}
+
+function updatePlayButtons(text) {
+    document.getElementById("playPauseBtn").textContent = text;
+    document.getElementById("visPlayPauseBtn").textContent = text;
+}
+
+audio.onended = () => {
+    if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
+    else if (isRadioMode) {
+        let randomIndex = Math.floor(Math.random() * songs.length);
+        selectSong(randomIndex);
+    } else { nextSong(); }
+};
+
+function nextSong() { selectSong((currentIndex + 1) % songs.length); }
+function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
+
+function initAudioSystem() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    const source = audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+}
+
+// Zeit-Update & Slider (vereinfacht für dieses Beispiel)
+audio.ontimeupdate = () => {
+    if(!isNaN(audio.duration)) {
+        const prog = (audio.currentTime / audio.duration) * 100;
+        document.getElementById("progress").value = prog;
+        document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("durationLabel").textContent = formatTime(audio.duration);
     }
+};
 
-    async function cancelRaid() {
-        const sEl = document.getElementById('status');
-        sEl.textContent = "ABBRUCH...";
-        const url = `https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&broadcaster_id=${myBroadcasterId}`;
-        const res = await fetch(url, {
-            method: 'DELETE', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        });
-        if (res.ok || res.status === 204) {
-            sEl.textContent = "ABGEBROCHEN.";
-            document.getElementById('selected-target-name').textContent = "KEINES";
-        } else {
-            const data = await res.json().catch(() => ({}));
-            sEl.textContent = "FEHLER: " + (data.message || "KEIN RAID?");
-        }
-    }
+function formatTime(s) { 
+    let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); 
+    return m + ":" + sec; 
+}
 
-    async function updateTwitch() {
-        const sEl = document.getElementById('status');
-        let body = { title: document.getElementById('stream-title').value };
-        if (selectedGameId) body.game_id = selectedGameId;
-        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
-            method: 'PATCH', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if(res.ok) {
-            sEl.textContent = "UPDATED.";
-            document.getElementById('stream-game').placeholder = "AKTUELL: " + gameInput.value;
-            gameInput.value = "";
-        } else {
-            sEl.textContent = "FEHLER.";
-        }
-    }
+function openVisualizer() { document.getElementById("visualizerOverlay").classList.add("active"); }
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); }
 
-    document.addEventListener('click', (e) => { 
-        if(!gBox.contains(e.target)) gBox.style.display = 'none';
-        if(!rBox.contains(e.target)) rBox.style.display = 'none';
-    });
-    setInterval(loadLiveFollows, 60000);
+window.onload = () => { loadSong(0); audio.volume = 0.5; };
 </script>
 </body>
 </html>
