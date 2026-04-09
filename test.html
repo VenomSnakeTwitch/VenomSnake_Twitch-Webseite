@@ -18,78 +18,97 @@
             --text-primary: #d1ffd1;
         }
 
-        /* Vorhandene Styles beibehalten */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
         body {
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--mgs-bg);
             background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text-primary);
+            overflow-x: hidden;
         }
 
-        .nav { position: fixed; top: 0; width: 100%; height: 70px; background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000; }
+        body::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
+            z-index: 9999; background-size: 100% 3px, 3px 100%; pointer-events: none;
+        }
+
+        .nav {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(10, 15, 10, 0.95); border-bottom: 2px solid var(--mgs-green); z-index: 1000;
+        }
         .nav-container { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-controls { display: flex; gap: 10px; }
         .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--mgs-green); font-family: 'Chakra Petch'; font-weight: bold; }
-        .logo img { height: 45px; }
+        .logo img { height: 45px; filter: drop-shadow(0 0 5px var(--mgs-green)); }
 
         .main-container { max-width: 1000px; margin: 100px auto 50px; padding: 0 20px; text-align: center; }
-        .player-box { background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem; backdrop-filter: blur(5px); }
 
-        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; }
-        .suno-notice { background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 12px; margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase; }
-
-        /* Song-Anzeige als Klick-Fläche */
-        #currentSong { 
-            color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); 
-            padding: 15px; border: 1px dashed var(--mgs-green); min-height: 45px; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+        .player-box {
+            background: rgba(10, 15, 10, 0.85); border: 2px solid var(--mgs-green); padding: 2rem;
+            position: relative; box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.1); width: 100%;
+            backdrop-filter: blur(5px);
         }
-        #currentSong:hover { background: var(--mgs-green); color: #000; }
+
+        h1 { font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 5px; color: var(--mgs-green); margin-bottom: 5px; font-size: 2rem; }
+
+        .suno-notice {
+            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--mgs-green); padding: 12px;
+            margin-bottom: 20px; font-size: 0.8rem; color: var(--mgs-green); text-transform: uppercase;
+            line-height: 1.4;
+        }
+
+        #currentSong { color: #fff; font-size: 0.9rem; margin-bottom: 20px; background: var(--mgs-green-dim); padding: 12px; border: 1px dashed var(--mgs-green); min-height: 45px; display: flex; align-items: center; justify-content: center; }
 
         .control-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        button, .download-btn, .home-btn {
+
+        select, button, .download-btn, .home-btn {
             background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
             padding: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; cursor: pointer;
             font-size: 0.75rem; transition: 0.2s; text-decoration: none; text-align: center;
         }
-        button:hover, .download-btn:hover { background: var(--mgs-green); color: #000; }
+        button:hover, select:hover, .download-btn:hover, .home-btn:hover { background: var(--mgs-green); color: #000; box-shadow: 0 0 10px var(--mgs-green); }
 
-        /* --- NEUES OVERLAY STYLE --- */
-        #songOverlay {
-            position: fixed; inset: 0; background: rgba(5, 8, 5, 0.98); z-index: 3000;
-            display: none; flex-direction: column; padding: 40px;
-        }
-        #songOverlay.active { display: flex; }
-        .overlay-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--mgs-green); padding-bottom: 20px; margin-bottom: 20px; }
-        
-        .song-list-container {
-            overflow-y: auto; flex-grow: 1; padding-right: 10px;
-        }
-        .song-list-container::-webkit-scrollbar { width: 8px; }
-        .song-list-container::-webkit-scrollbar-thumb { background: var(--mgs-green); }
-
-        .song-item {
-            padding: 15px; border: 1px solid var(--mgs-green-dim); margin-bottom: 8px;
-            text-align: left; transition: 0.2s; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
-        }
-        .song-item:hover { background: var(--mgs-green); color: #000; padding-left: 25px; }
-        .song-item.playing { border-color: var(--mgs-green); background: rgba(0, 255, 65, 0.1); color: var(--mgs-green); }
-
-        .search-input {
-            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green);
-            padding: 10px; font-family: 'JetBrains Mono'; width: 300px;
-        }
-        /* --- ENDE OVERLAY STYLE --- */
+        .active-mode { background: var(--mgs-green) !important; color: #000 !important; }
 
         .slider-row { display: flex; align-items: center; gap: 15px; margin: 10px 0; background: rgba(0,255,65,0.05); padding: 10px; border: 1px solid var(--mgs-border); }
         .slider-label { font-size: 0.7rem; color: var(--mgs-green); min-width: 40px; font-weight: bold; }
-        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); }
 
-        #visualizerOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        input[type="range"] { flex-grow: 1; accent-color: var(--mgs-green); cursor: pointer; height: 6px; background: var(--mgs-green-dim); border: none; }
+
+        /* Overlay Styles */
+        #mainSongOverlay {
+            display: none; position: fixed; inset: 0; background: rgba(5, 8, 5, 0.98); z-index: 5000; flex-direction: column; padding: 20px; border: 2px solid var(--mgs-green);
+        }
+        .main-song-item {
+            padding: 15px; border-bottom: 1px solid var(--mgs-green-dim); cursor: pointer; transition: 0.2s; font-size: 0.9rem; color: var(--text-primary); text-transform: uppercase; display: flex; justify-content: space-between;
+        }
+        .main-song-item:hover { background: var(--mgs-green); color: #000; }
+        .main-song-item.active-song { border-left: 5px solid var(--mgs-green); background: rgba(0, 255, 65, 0.1); }
+
+        #visualizerOverlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
         #visualizerOverlay.active { display: flex; }
-        #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; }
+        #visualizerCanvas { border: 2px solid var(--mgs-green); max-width: 95vw; max-height: 60vh; background: transparent; }
+
+        .vis-player-ui {
+            margin-top: 20px; padding: 15px; border: 1px solid var(--mgs-green);
+            background: rgba(0, 255, 65, 0.05); display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 800px;
+        }
+        .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+
+        footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
+
+        @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -112,15 +131,14 @@
         <h1>CODEC INTERFACE</h1>
         <div class="suno-notice">
             [ STATUS: TRANSMISSION ACTIVE ]<br>
-            KLICKE AUF DEN SONG-TITEL, UM DIE PLAYLIST ZU ÖFFNEN.
+            Hier werden alle Songs hochgeladen, die ich auf <strong>Suno.com</strong> erstelle alle Songs Können auch Runtergeladen werden.
         </div>
 
-        <div id="currentSong" onclick="toggleSongOverlay()">INITIALISIERE...</div>
-        
+        <h2 id="currentSong">INITIALISIERE...</h2>
         <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
         <div class="control-grid">
-            <button onclick="toggleSongOverlay()">[ PLAYLIST ]</button>
+            <button onclick="toggleMainSongList()">[ SONG AUSWÄHLEN ]</button>
             <button onclick="openVisualizer()">[ VISUALIZER ]</button>
             <a id="downloadBtn" href="#" download class="download-btn">DOWNLOAD</a>
         </div>
@@ -144,52 +162,66 @@
             <button id="playPauseBtn" onclick="togglePlay()">▶ PLAY</button>
             <button onclick="nextSong()">WEITER ⏭</button>
         </div>
+
+        <div id="infoBox">
+            <div class="infoColumn">
+                <h3>Neue Songs Sind Da!</h3>
+                <p>The Dead Inside Me</p>
+                <p>Gesang von Asgard (Remix)</p>
+            </div>
+            <div class="infoColumn">
+                <h3>Bald Erscheinende Songs</h3>
+                <p>Weitere Projekte in Planung...</p>
+            </div>
+        </div>
     </div>
 </main>
 
-<div id="songOverlay">
-    <div class="overlay-header">
-        <h2 style="font-family:'Chakra Petch'; color:var(--mgs-green);">SELECT FREQUENCY (SONGS)</h2>
-        <div>
-            <input type="text" id="songSearch" class="search-input" placeholder="SUCHEN..." oninput="filterSongs()">
-            <button onclick="toggleSongOverlay()" style="color:#ff4141; border-color:#ff4141; margin-left:10px;">X SCHLIESSEN</button>
-        </div>
+<div id="mainSongOverlay">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--mgs-green); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="font-family: 'Chakra Petch'; color: var(--mgs-green); margin: 0;">CODEC: FREQUENZ-ARCHIV</h2>
+        <button onclick="toggleMainSongList()" style="color: #ff4141; border-color: #ff4141; padding: 5px 15px;">X SCHLIESSEN</button>
     </div>
-    <div id="songList" class="song-list-container">
+    <div id="mainListContent" style="overflow-y: auto; flex-grow: 1;">
         </div>
 </div>
 
 <div id="visualizerOverlay">
     <div style="color:var(--mgs-green); margin-bottom:10px; font-family:'Chakra Petch';">VENOM_VISUALIZER_V5.0</div>
     <canvas id="visualizerCanvas"></canvas>
-    <div class="vis-player-ui" style="width: 90%; max-width: 800px; margin-top:20px;">
+    <div class="vis-player-ui">
+        <div class="slider-row" style="margin:0; background:none; border:none;">
+            <span class="slider-label" id="visTimeLabel">0:00</span>
+            <input type="range" id="visProgress" min="0" max="100" value="0" oninput="seekAudio(this.value)">
+            <span class="slider-label" id="visDurationLabel">0:00</span>
+        </div>
         <div class="vis-row">
-            <button onclick="toggleSongOverlay()">SONG WÄHLEN</button>
-            <button id="visPlayPauseBtn" onclick="togglePlay()">▶ PLAY</button>
-            <button onclick="closeVisualizer()" style="color:#ff4141;">EXIT</button>
+            <select id="visSongSelect" onchange="selectSong(this.value)" style="flex-grow:1;"></select>
+        </div>
+        <div class="vis-row">
+            <button onclick="prevSong()">⏮</button>
+            <button id="visPlayPauseBtn" onclick="togglePlay()" style="min-width:100px;">▶ PLAY</button>
+            <button onclick="nextSong()">⏭</button>
+            <button id="visRadioBtn" onclick="toggleRadioMode()">📻</button>
+            <button id="visLoopBtn" onclick="toggleLoopMode()">🔂</button>
+            <button onclick="setVisMode('ring')">RING</button>
+            <button onclick="setVisMode('bars')">BARS</button>
+            <select onchange="handleBackgroundOption(this.value); this.value='';" style="width:auto;">
+                <option value="">BG</option>
+                <option value="change">EDIT</option>
+                <option value="reset">X</option>
+            </select>
+            <button onclick="closeVisualizer()" style="color:#ff4141; border-color:#ff4141;">EXIT</button>
         </div>
     </div>
+    <input type="file" id="bgFileInput" accept="image/*" style="display:none;">
 </div>
 
-<script>
-const songTitles = [
-    "Snake Eater VenomSnake_Twitch Mix", "Ghost Town by VenomSnake_Twitch", "Wreckfest", 
-    "In The Air Tonight(VenomSnake_Twitch)", "Paradies City", "Parasitäres Bewustsein", 
-    "Still Alive (Voiced)", "Yu-Gi-Oh! Master Duel Solo Gate Theme Synth Mix", "Bye Bye Beautiful", 
-    "Kettenreaktion (Cover)", "Straße der Verdammnis", "Syphon Filter Synth Mix", 
-    "VenomSnake Mode Intro song", "Hell March [Retaliation Cover]", "Dance hall Dance(Cover)", 
-    "Resident Evil 5 Desperate Escape Main Theme Music(Remix)", "Bleed out My Frend", "Revange", 
-    "Revange 2", "Survival Of Death", "Pile of Total Wreck", "Dessert Storm Ahead", 
-    "Industrial Breakdown", "Mental Breakdown", "Metal Gear 2 Solid Snake Chasing the Green Beret Remix", 
-    "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026", "Metal Gear 2 Solid Snake Level1 Warning Remix", 
-    "Metal Gear 2 Solid Snake Level3 Warning Remix", "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix", 
-    "Operation Stealth Destruction", "Takin' On The Shagohod Remake", "Metal Gear 2 Solid Snake Freqency 140.85", 
-    "Ghostbusters 2 - Savin The Day Remix", "Resident Evil Requiem Titel Song Through the Darkness Female Version", 
-    "Dragonball Z Du Wirst Unbesiegbar Sein", "Dragonball Z Cha La Head Cha La", "Wir Kiffen Parodie", 
-    "LA-LE-LU", "Feel the Storm Coming", "Inu Yasha Was ist Zeit Lange Vesion", 
-    "Thunder in Paradiese Cover", "The Dead Inside Me", "Gesang von Asgard (Remix)"
-];
+<footer>
+    <p>EST. 2026 // FREQUENCY: 140.85 MHz // OPERATOR: VENOMSNAKE_TWITCH</p>
+</footer>
 
+<script>
 const songs = [
     "Snake Eater VenomSnake_Twitch Mix.mp3", "Ghost Town by VenomSnake_Twitch.mp3", "Wreckfest.mp3", 
     "In The Air Tonight(VenomSnake_Twitch).mp3", "Paradies City.mp3", "Parasitäres Bewustsein.mp3", 
@@ -201,61 +233,66 @@ const songs = [
     "Industrial Breakdown.mp3", "Mental Breakdown.mp3", "Metal Gear 2 Solid Snake Chasing the Green Beret Remix.mp3", 
     "Metal Gear 2 Solid Snake Freqency 140.85 Remix Version 2026.mp3", "Metal Gear 2 Solid Snake Level1 Warning Remix.mp3", 
     "Metal Gear 2 Solid Snake Level3 Warning Remix.mp3", "Metal Gear 2 Solid Snake Reprieve of The Doctor Remix.mp3", 
-    "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3", "Metal Gear 2 Solid Snake Freqency 140.85.mp3", 
-    "Ghostbusters 2 - Savin The Day Remix.mp3","Resident Evil Requiem Titel Song Through the Darkness Female Version.mp3",
+    "Operation Stealth Destruction.mp3", "Takin' On The Shagohod Remake.mp3", "Metal Gear 2 Solid Snake Freqency 140.85.mp3", "Ghostbusters 2 - Savin The Day Remix.mp3","Resident Evil Requiem Titel Song Through the Darkness Female Version.mp3",
     "Dragonball Z Du Wirst Unbesiegbar Sein.mp3","Dragonball Z  Cha La Head Cha La.mp3","Wir Kiffen Parodie.mp3","LA-LE-LU.mp3","Feel the Storm Coming.mp3",
-    "Inu Yasha Was ist Zeit Lange Vesion.mp3","Thunder in Paradise.mp3", "The Dead Inside Me.mp3","Gesang von Asgard (Remix).mp3"
+"Inu Yasha Was ist Zeit Lange Vesion.mp3","Thunder in Paradise.mp3", "The Dead Inside Me.mp3","Gesang von Asgard (Remix).mp3"
 ];
 
 const BASE_URL = "./";
 let currentIndex = 0;
 let audioCtx, analyser, dataArray, animationId;
+let visMode = 'ring';
+let customCanvasBg = null;
 let isRadioMode = false;
 let isLoopMode = false;
 
 const audio = document.getElementById("audioPlayer");
+const logoImg = new Image();
+logoImg.src = BASE_URL + "DogVenomsnakeLogo.png";
+const bgInput = document.getElementById('bgFileInput');
 
-// Playlist generieren
-function buildPlaylist() {
-    const list = document.getElementById("songList");
-    list.innerHTML = "";
-    songTitles.forEach((title, index) => {
-        const div = document.createElement("div");
-        div.className = "song-item" + (index === currentIndex ? " playing" : "");
-        div.textContent = `${(index + 1).toString().padStart(2, '0')} // ${title}`;
-        div.onclick = () => { selectSong(index); toggleSongOverlay(); };
-        list.appendChild(div);
+// Befüllt das Visualizer-Dropdown beim Start
+window.addEventListener('DOMContentLoaded', () => {
+    const visSelect = document.getElementById("visSongSelect");
+    songs.forEach((song, index) => {
+        let opt = document.createElement("option");
+        opt.value = index;
+        opt.textContent = song.replace('.mp3', '');
+        visSelect.appendChild(opt);
     });
-}
+});
 
-function toggleSongOverlay() {
-    const overlay = document.getElementById("songOverlay");
-    overlay.classList.toggle("active");
-    if(overlay.classList.contains("active")) {
-        buildPlaylist();
-        document.getElementById("songSearch").focus();
+function toggleMainSongList() {
+    const overlay = document.getElementById('mainSongOverlay');
+    if (overlay.style.display === 'none' || overlay.style.display === '') {
+        buildMainSongList();
+        overlay.style.display = 'flex';
+    } else {
+        overlay.style.display = 'none';
     }
 }
 
-function filterSongs() {
-    const term = document.getElementById("songSearch").value.toLowerCase();
-    const items = document.querySelectorAll(".song-item");
-    items.forEach(item => {
-        item.style.display = item.textContent.toLowerCase().includes(term) ? "block" : "none";
+function buildMainSongList() {
+    const container = document.getElementById('mainListContent');
+    container.innerHTML = ''; 
+    songs.forEach((song, index) => {
+        const item = document.createElement('div');
+        item.className = 'main-song-item';
+        if (index === currentIndex) item.classList.add('active-song');
+        const cleanName = song.replace('.mp3', '').replaceAll('_', ' ');
+        item.innerHTML = `<span>${index.toString().padStart(2, '0')} // ${cleanName.toUpperCase()}</span>`;
+        item.onclick = () => { selectSong(index); toggleMainSongList(); };
+        container.appendChild(item);
     });
 }
 
 function loadSong(index) {
     currentIndex = parseInt(index);
     audio.src = BASE_URL + encodeURIComponent(songs[currentIndex]);
+    document.getElementById("visSongSelect").value = currentIndex;
     document.getElementById("downloadBtn").href = audio.src;
-    document.getElementById("currentSong").textContent = "▶ " + songTitles[currentIndex].toUpperCase();
-}
-
-function selectSong(val) {
-    loadSong(val);
-    audio.play();
-    updatePlayButtons("⏸ PAUSE");
+    const songTitle = songs[currentIndex].replace('.mp3', '').toUpperCase();
+    document.getElementById("currentSong").textContent = "▶ " + songTitle;
 }
 
 function togglePlay() {
@@ -272,13 +309,24 @@ function updatePlayButtons(text) {
 audio.onended = () => {
     if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
     else if (isRadioMode) {
-        let randomIndex = Math.floor(Math.random() * songs.length);
+        let randomIndex;
+        do { randomIndex = Math.floor(Math.random() * songs.length); } 
+        while (randomIndex === currentIndex && songs.length > 1);
         selectSong(randomIndex);
     } else { nextSong(); }
 };
 
-function nextSong() { selectSong((currentIndex + 1) % songs.length); }
-function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
+function toggleRadioMode() { isRadioMode = !isRadioMode; if (isRadioMode) isLoopMode = false; updateModeUI(); }
+function toggleLoopMode() { isLoopMode = !isLoopMode; if (isLoopMode) isRadioMode = false; updateModeUI(); }
+
+function updateModeUI() {
+    const rb = document.getElementById("radioModeBtn"), lb = document.getElementById("loopModeBtn");
+    const vrb = document.getElementById("visRadioBtn"), vlb = document.getElementById("visLoopBtn");
+    rb.textContent = isRadioMode ? "📻 RADIO: AN" : "📻 RADIO: AUS";
+    lb.textContent = isLoopMode ? "🔂 LOOP: AN" : "🔂 LOOP: AUS";
+    [rb, vrb].forEach(b => b.classList.toggle("active-mode", isRadioMode));
+    [lb, vlb].forEach(b => b.classList.toggle("active-mode", isLoopMode));
+}
 
 function initAudioSystem() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -286,26 +334,122 @@ function initAudioSystem() {
     const source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
-// Zeit-Update & Slider (vereinfacht für dieses Beispiel)
+function setVisMode(mode) { visMode = mode; }
+
+function draw() {
+    animationId = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
+    const canvas = document.getElementById("visualizerCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
+    if (customCanvasBg) {
+        ctx.globalAlpha = 0.7; 
+        ctx.drawImage(customCanvasBg, 0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1.0;
+    }
+    if (visMode === 'ring') drawRing(ctx, canvas); else drawBars(ctx, canvas);
+}
+
+function drawRing(ctx, canvas) {
+    ctx.save();
+    const centerX = canvas.width / 2, centerY = canvas.height / 2;
+    const bufferLength = dataArray.length;
+    const logoBase = Math.min(canvas.width, canvas.height) * 0.32;
+    let sum = 0; for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
+    let pulse = (sum / bufferLength) * 0.4;
+    const logoSize = logoBase + pulse;
+    if (logoImg.complete) {
+        ctx.shadowBlur = 20 + pulse; ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
+        ctx.drawImage(logoImg, centerX - logoSize/2, centerY - logoSize/2, logoSize, logoSize);
+    }
+    const ringRadius = (logoBase * 0.6) + (pulse * 0.2);
+    for (let i = 0; i < 80; i++) {
+        const angle = (i / 80) * Math.PI * 2;
+        const amp = dataArray[Math.floor(Math.abs((i % 40) - 20) * (bufferLength / 20))] / 255;
+        const rayLength = amp * (ringRadius * 0.8);
+        ctx.strokeStyle = `rgba(0, 255, 65, ${0.7 + amp * 0.3})`; ctx.lineWidth = 2 + amp * 5;
+        ctx.beginPath();
+        ctx.moveTo(centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius);
+        ctx.lineTo(centerX + Math.cos(angle) * (ringRadius + rayLength), centerY + Math.sin(angle) * (ringRadius + rayLength));
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawBars(ctx, canvas) {
+    const barWidth = (canvas.width / dataArray.length) * 2.5;
+    let x = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+        let barHeight = dataArray[i] * 1.5;
+        ctx.fillStyle = "#00ff41";
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+        x += barWidth;
+    }
+}
+
+function handleBackgroundOption(val) {
+    if(val === 'change') bgInput.click();
+    if(val === 'reset') { localStorage.removeItem('codec_canvas_bg'); customCanvasBg = null; }
+}
+
+bgInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgData = event.target.result;
+            localStorage.setItem('codec_canvas_bg', imgData);
+            loadCanvasBackground(imgData);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function loadCanvasBackground(data) {
+    const img = new Image();
+    img.onload = () => { customCanvasBg = img; };
+    img.src = data;
+}
+
+if(localStorage.getItem('codec_canvas_bg')) loadCanvasBackground(localStorage.getItem('codec_canvas_bg'));
+
+function openVisualizer() { 
+    if(!audioCtx) initAudioSystem();
+    document.getElementById("visualizerOverlay").classList.add("active");
+    const canvas = document.getElementById("visualizerCanvas");
+    canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.6;
+    draw();
+}
+
+function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
+function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+function selectSong(val) { loadSong(val); audio.play(); updatePlayButtons("⏸ PAUSE"); }
+function nextSong() { selectSong((currentIndex + 1) % songs.length); }
+function prevSong() { selectSong((currentIndex - 1 + songs.length) % songs.length); }
+function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
+
 audio.ontimeupdate = () => {
     if(!isNaN(audio.duration)) {
         const prog = (audio.currentTime / audio.duration) * 100;
         document.getElementById("progress").value = prog;
-        document.getElementById("timeLabel").textContent = formatTime(audio.currentTime);
-        document.getElementById("durationLabel").textContent = formatTime(audio.duration);
+        document.getElementById("visProgress").value = prog;
+        document.getElementById("timeLabel").textContent = document.getElementById("visTimeLabel").textContent = formatTime(audio.currentTime);
+        document.getElementById("durationLabel").textContent = document.getElementById("visDurationLabel").textContent = formatTime(audio.duration);
     }
 };
 
-function formatTime(s) { 
-    let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); 
-    return m + ":" + sec; 
-}
+document.getElementById("volumeSlider").oninput = function() {
+    audio.volume = this.value;
+    document.getElementById("volumeLabel").textContent = Math.round(this.value * 100) + "%";
+};
+document.getElementById("progress").oninput = function() { seekAudio(this.value); };
 
-function openVisualizer() { document.getElementById("visualizerOverlay").classList.add("active"); }
-function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); }
-
+function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
 window.onload = () => { loadSong(0); audio.volume = 0.5; };
 </script>
 </body>
