@@ -263,8 +263,13 @@
 <footer><p>© 2026 // FOXHOUND DIGITAL COMMAND</p></footer>
 
 <script>
-    const CLIENT_ID = '43j9welokz78g6bpjbhyggtd4vq3gt';
-    const CLIENT_SECRET = 're41b28t7k2ulgc9xaou2sz587uoo1';
+    // Validierte API-Daten aus der Entwicklerkonsole (WebVenom)
+    const CLIENT_ID = 'qddscq50ssq3wygjkro1xlspf74z9x';
+    const CLIENT_SECRET = '3t9hl7nw2440olxfrtnmgyo5wffcg8'; 
+    
+    // Autorisierter User Token für die Goal-Schnittstelle
+    const USER_TOKEN = 'ztv1y8d8tmphym071to7acxwjw31xw';
+
     const CHANNEL_NAME = 'VenomSnake_Twitch';
     const BIRTH_DATE = "1994-06-08";
     const schedule = [{d:1,h:13,m:30},{d:3,h:13,m:30},{d:5,h:13,m:30}];
@@ -284,6 +289,7 @@
         document.getElementById('chat').innerHTML = `<iframe src="https://www.twitch.tv/embed/${CHANNEL_NAME}/chat?parent=${domain}&darkpopout" height="100%" width="100%" frameborder="0"></iframe>`;
 
         try {
+            // Holt den App-Token für die allgemeinen API-Abfragen
             const authResp = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`, { method: 'POST' });
             const authData = await authResp.json();
             globalAppToken = authData.access_token;
@@ -302,25 +308,35 @@
 
             setInterval(updateLiveInfo, 15000);
             setInterval(updateCountdown, 1000);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("System-Initialisierung fehlgeschlagen:", e); }
     }
 
     async function updateFollowerInfo() {
         try {
-            // Geändert: Nutzt jetzt den aktuellen helix/channels/followers Endpunkt mit dem globalAppToken
+            // 1. Follower-Anzahl abrufen (funktioniert mit dem globalen App-Token)
             const fResp = await fetch(`https://api.twitch.tv/helix/channels/followers?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
             const fData = await fResp.json();
             document.getElementById('follower-count').textContent = fData.total || "0";
 
-            const gResp = await fetch(`https://api.twitch.tv/helix/goals?broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${globalAppToken}` } });
+            // 2. Creator-Ziel abrufen (Erfordert zwingend den USER_TOKEN)
+            const gResp = await fetch(`https://api.twitch.tv/helix/goals?broadcaster_id=${broadcasterId}`, { 
+                headers: { 
+                    'Client-ID': CLIENT_ID, 
+                    'Authorization': `Bearer ${USER_TOKEN}` 
+                } 
+            });
             const gData = await gResp.json();
+            
             if(gData.data && gData.data.length > 0) {
-                const goal = gData.data.find(g => g.type === 'follower');
+                const goal = gData.data.find(g => g.type === 'follower' || g.type === 'followers');
                 document.getElementById('follower-goal').textContent = goal ? goal.target_amount : "---";
             } else {
                 document.getElementById('follower-goal').textContent = "---";
             }
-        } catch (e) { console.error("Fehler beim Laden der Follower/Ziele:", e); }
+        } catch (e) { 
+            console.error("Fehler beim Laden der Follower/Ziele:", e); 
+            document.getElementById('follower-goal').textContent = "---";
+        }
     }
 
     async function updateLiveInfo() {
@@ -384,7 +400,6 @@
         }
     }
 
-    // ARCHIV LOGIK MIT OVERLAY
     function openVideo(videoId, title) {
         const domain = window.location.hostname || "localhost";
         const overlay = document.getElementById('videoOverlay');
