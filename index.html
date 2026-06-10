@@ -206,10 +206,15 @@
             <div class="frame"><div class="twitch-embed" id="player"></div></div>
             <div class="frame"><div id="chat" style="height: 600px;"></div></div>
         </div>
-        <div class="schedule-grid">
+        <div class="schedule-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
             <div class="schedule-card"><h3>MONTAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.15</small></div>
             <div class="schedule-card"><h3>MITTWOCH</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.48</small></div>
             <div class="schedule-card"><h3>FREITAG</h3><p>13:30 - 16:00 UHR</p><small>FREQ: 140.85</small></div>
+            <div class="schedule-card" style="border-left-color: var(--live-red);">
+                <h3>HINWEIS</h3>
+                <p>ÄNDERUNGEN MÖGLICH</p>
+                <small>Sollte ein Einsatz an den regulären Tagen nicht möglich sein, wird der Stream verschoben oder fällt aus.</small>
+            </div>
         </div>
     </section>
 
