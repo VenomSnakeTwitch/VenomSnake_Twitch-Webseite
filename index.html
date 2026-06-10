@@ -195,7 +195,7 @@
                 <div class="stat-item"><span class="stat-label">VIEWER:</span> <span id="viewer-count">0</span></div>
                 <div class="stat-item"><span class="stat-label">UPTIME:</span> <span id="stream-uptime">00:00:00</span></div>
                 <div class="stat-item"><span class="stat-label">FOLLOWER:</span> <span id="follower-count">...</span></div>
-                <div class="stat-item"><span class="stat-label">ZIEL:</span> <span id="follower-goal">...</span></div>
+                <div class="stat-item"><span class="stat-label">ZIEL:</span> <span id="follower-goal">300</span></div>
             </div>
             <div style="margin-top: 15px; font-size: 0.85rem; border-top: 1px solid rgba(0,255,65,0.1); padding-top: 10px;">
                 <span style="color: var(--mgs-green);">EINSATZ: </span><span id="twitch-title">LADE INFOS...</span> | 
@@ -318,24 +318,11 @@
             const fData = await fResp.json();
             document.getElementById('follower-count').textContent = fData.total || "0";
 
-            // 2. Creator-Ziel abrufen (Erfordert zwingend den USER_TOKEN)
-            const gResp = await fetch(`https://api.twitch.tv/helix/goals?broadcaster_id=${broadcasterId}`, { 
-                headers: { 
-                    'Client-ID': CLIENT_ID, 
-                    'Authorization': `Bearer ${USER_TOKEN}` 
-                } 
-            });
-            const gData = await gResp.json();
-            
-            if(gData.data && gData.data.length > 0) {
-                const goal = gData.data.find(g => g.type === 'follower' || g.type === 'followers');
-                document.getElementById('follower-goal').textContent = goal ? goal.target_amount : "---";
-            } else {
-                document.getElementById('follower-goal').textContent = "---";
-            }
+            // Fester Wert für das Follower-Ziel
+            document.getElementById('follower-goal').textContent = "300";
         } catch (e) { 
-            console.error("Fehler beim Laden der Follower/Ziele:", e); 
-            document.getElementById('follower-goal').textContent = "---";
+            console.error("Fehler beim Laden der Follower:", e); 
+            document.getElementById('follower-goal').textContent = "300";
         }
     }
 
