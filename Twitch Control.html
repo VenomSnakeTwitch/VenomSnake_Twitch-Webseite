@@ -7,96 +7,31 @@
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/VenomSnakeTwitch/VenomSnake_Twitch-Webseite/main/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --mgs-green: #00ff41; 
-            --mgs-bg: #050805; 
-            --mgs-red: #ff0000; 
-            --tactical-blue: #52b6ca;
-            --mgs-green-dim: rgba(0, 255, 65, 0.2);
-        }
-
+        :root { --mgs-green: #00ff41; --mgs-bg: #050805; --mgs-red: #ff0000; --tactical-blue: #52b6ca; --mgs-green-dim: rgba(0, 255, 65, 0.2); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background: var(--mgs-bg); color: var(--mgs-green); font-family: 'JetBrains Mono', monospace;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
-            background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), 
-                              linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px; overflow-x: hidden;
-        }
-
-        #lock-overlay {
-            position: fixed; inset: 0; background: var(--mgs-bg);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
-        }
-
+        body { background: var(--mgs-bg); color: var(--mgs-green); font-family: 'JetBrains Mono', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px); background-size: 40px 40px; overflow-x: hidden; }
+        #lock-overlay { position: fixed; inset: 0; background: var(--mgs-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
         .lock-box { border: 2px solid var(--mgs-green); padding: 2.5rem; background: rgba(0, 20, 0, 0.95); text-align: center; width: 90%; max-width: 450px; }
-
-        .panel {
-            border: 3px solid var(--mgs-green); padding: 2rem; width: 100vw; height: 100vh;
-            max-width: 1920px; max-height: 1080px; background: rgba(10, 15, 10, 0.98); 
-            display: none; flex-direction: column; position: relative; overflow-y: auto;
-        }
-
-        @media (max-width: 1024px) {
-            .panel { border: none; padding: 1rem; height: 100vh; width: 100vw; }
-            h2 { margin-top: 50px; font-size: 1.2rem; }
-            .btn-back { top: 10px !important; right: 10px !important; }
-        }
-
+        .panel { border: 3px solid var(--mgs-green); padding: 2rem; width: 100vw; height: 100vh; max-width: 1920px; max-height: 1080px; background: rgba(10, 15, 10, 0.98); display: none; flex-direction: column; position: relative; overflow-y: auto; }
+        @media (max-width: 1024px) { .panel { border: none; padding: 1rem; height: 100vh; width: 100vw; } }
         h2 { border-bottom: 2px solid var(--mgs-green); padding-bottom: 15px; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px; }
         .control-grid { display: grid; grid-template-columns: 1fr; gap: 20px; flex-grow: 1; }
         @media (min-width: 1024px) { .control-grid { grid-template-columns: 1fr 1.2fr; } }
-
         .sub-panel { border: 1px solid var(--mgs-green); padding: 20px; background: rgba(0,255,65,0.02); display: flex; flex-direction: column; }
         .sub-panel h3 { font-size: 0.9rem; margin-bottom: 15px; color: var(--tactical-blue); border-left: 4px solid var(--tactical-blue); padding-left: 10px; }
-
         .input-group { margin-bottom: 20px; position: relative; }
         label { display: block; font-size: 0.7rem; margin-bottom: 8px; color: #008f11; font-weight: bold; text-transform: uppercase; }
-
-        input {
-            width: 100%; background: #001a00; border: 1px solid var(--mgs-green);
-            color: #fff; padding: 12px; font-family: inherit; outline: none; font-size: 1rem;
-        }
-
-        .suggestion-box {
-            position: absolute; top: 100%; left: 0; width: 100%;
-            background: #0a0f0a; border: 1px solid var(--mgs-green);
-            z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
-        }
-
+        input { width: 100%; background: #001a00; border: 1px solid var(--mgs-green); color: #fff; padding: 12px; font-family: inherit; outline: none; font-size: 1rem; }
+        .suggestion-box { position: absolute; top: 100%; left: 0; width: 100%; background: #0a0f0a; border: 1px solid var(--mgs-green); z-index: 1000; max-height: 200px; overflow-y: auto; display: none; }
         .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #1a2e1a; font-size: 0.9rem; }
         .suggestion-item:hover { background: var(--mgs-green); color: #000; }
-
-        #live-follows-list {
-            background: #001a00; border: 1px solid var(--mgs-green-dim);
-            height: 250px; overflow-y: auto; margin-bottom: 15px; padding: 5px;
-        }
-        .live-follow-item {
-            padding: 10px; border-bottom: 1px solid #1a2e1a; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
-        }
-        .live-follow-item:hover { background: var(--mgs-green-dim); color: #fff; }
-        .live-follow-item b { color: var(--mgs-green); }
-        .live-follow-item span { font-size: 0.7rem; color: var(--tactical-blue); }
-
-        button {
-            width: 100%; padding: 15px; background: var(--mgs-green); color: #000;
-            border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
-        }
+        #live-follows-list { background: #001a00; border: 1px solid var(--mgs-green-dim); height: 250px; overflow-y: auto; margin-bottom: 15px; padding: 5px; }
+        .live-follow-item { padding: 10px; border-bottom: 1px solid #1a2e1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        button { width: 100%; padding: 15px; background: var(--mgs-green); color: #000; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
         button:hover { background: #fff; }
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 10px; }
-        .btn-raid:hover { background: #ff4d4d; }
-
-        .btn-back {
-            position: absolute; top: 20px; right: 20px; width: auto; padding: 8px 15px;
-            background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green); font-size: 0.7rem;
-        }
-
-        #status { 
-            margin-top: 20px; padding: 15px; text-align: center; font-size: 0.8rem;
-            border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05);
-        }
+        .btn-back { position: absolute; top: 20px; right: 20px; width: auto; padding: 8px 15px; background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green); font-size: 0.7rem; }
+        #status { margin-top: 20px; padding: 15px; text-align: center; font-size: 0.8rem; border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05); }
     </style>
 </head>
 <body>
@@ -139,18 +74,15 @@
                 <h3>[ TACTICAL_RAID_COMMAND ]</h3>
                 <label>LIVE FOLLOWS (AUFKLÄRUNG)</label>
                 <div id="live-follows-list">Lade Live-Ziele...</div>
-
                 <div class="input-group">
                     <label>MANUELLER_ZIEL_SCAN</label>
                     <input type="text" id="raid-target-input" placeholder="Ziel suchen..." autocomplete="off">
                     <div id="raid-suggestions" class="suggestion-box"></div>
                 </div>
-
                 <div id="target-info" style="margin-bottom: 15px; font-size: 0.8rem; min-height: 40px; border: 1px solid #1a2e1a; padding: 10px;">
                     ZIEL_ERFASST: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
                 </div>
                 <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
-                <button style="margin-top:10px; background: #333; color: #aaa;" onclick="cancelRaid()">RAID_ABBRECHEN</button>
             </div>
         </div>
         <div id="status">STATUS: STANDBY</div>
@@ -158,23 +90,20 @@
 </div>
 
 <script>
-        const CORRECT_PASS = "VenomSnake94";
-    // Client ID wurde eingefügt
-    const CLIENT_ID = 'hj1kge8133rar4fyjpy06tmsgelw0a'; 
-    // ACHTUNG: Das Client Secret sollte niemals öffentlich im Frontend stehen!
-    const CLIENT_SECRET = '67qdowganroqrazq3yt4g1bwj9bp8r'; 
+    const CORRECT_PASS = "VenomSnake94";
+    // Client ID aus deinem Screenshot 1781655876430.jpeg übernommen
+    const CLIENT_ID = '49hgyh1e44chqcmiayon76rbn2v1yr';
     const REDIRECT_URI = window.location.origin + window.location.pathname;
+    const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
 
-    let accessToken = null, selectedGameId = null, selectedRaidTargetId = null, myBroadcasterId = null;
+    let accessToken = null, myBroadcasterId = null, selectedRaidTargetId = null;
 
     function checkPass() {
         if(document.getElementById('pass-input').value === CORRECT_PASS) {
             document.getElementById('lock-overlay').style.display = 'none';
             document.getElementById('main-panel').style.display = 'flex';
             sessionStorage.setItem('mission_auth', 'true');
-        } else {
-            document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT.";
-        }
+        } else { document.getElementById('lock-status').textContent = "ZUGRIFF VERWEIGERT."; }
     }
 
     if(sessionStorage.getItem('mission_auth') === 'true') {
@@ -182,8 +111,7 @@
         document.getElementById('main-panel').style.display = 'flex';
     }
 
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
+    const params = new URLSearchParams(window.location.hash.substring(1));
     accessToken = params.get('access_token');
 
     if (accessToken) {
@@ -198,157 +126,48 @@
     }
 
     async function initMissionData() {
+        const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
         try {
-            const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
             const u = await fetch('https://api.twitch.tv/helix/users', { headers: h }).then(r => r.json());
             myBroadcasterId = u.data[0].id;
             const c = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, { headers: h }).then(r => r.json());
-            
             document.getElementById('stream-title').value = c.data[0].title;
-            if(c.data[0].game_name) {
-                document.getElementById('stream-game').placeholder = "Aktuell: " + c.data[0].game_name;
-                selectedGameId = c.data[0].game_id;
-            }
             loadLiveFollows();
         } catch (e) { console.error("Init Error"); }
     }
 
     async function loadLiveFollows() {
-        const list = document.getElementById('live-follows-list');
         const h = { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` };
-        try {
-            const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
-            if(!f.data || f.data.length === 0) { list.innerHTML = "Keine Follows."; return; }
-            const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
-            const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
-            list.innerHTML = '';
-            if(s.data && s.data.length > 0) {
-                s.data.forEach(stream => {
-                    const item = document.createElement('div');
-                    item.className = 'live-follow-item';
-                    item.innerHTML = `<div><b>${stream.user_name}</b><br><span>${stream.game_name}</span></div><div>${stream.viewer_count} 👤</div>`;
-                    item.onclick = () => {
-                        selectedRaidTargetId = stream.user_id;
-                        document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase();
-                        document.getElementById('raid-target-input').value = stream.user_name;
-                    };
-                    list.appendChild(item);
-                });
-            } else { list.innerHTML = "Niemand live."; }
-        } catch(e) { console.error("Load Error"); }
+        const f = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${myBroadcasterId}&first=100`, { headers: h }).then(r => r.json());
+        const ids = f.data.map(x => x.broadcaster_id).join('&user_id=');
+        const s = await fetch(`https://api.twitch.tv/helix/streams?user_id=${ids}`, { headers: h }).then(r => r.json());
+        const list = document.getElementById('live-follows-list'); list.innerHTML = '';
+        s.data.forEach(stream => {
+            const item = document.createElement('div');
+            item.className = 'live-follow-item';
+            item.innerHTML = `<div><b>${stream.user_name}</b><br><span>${stream.game_name}</span></div><div>${stream.viewer_count} 👤</div>`;
+            item.onclick = () => { selectedRaidTargetId = stream.user_id; document.getElementById('selected-target-name').textContent = stream.user_name.toUpperCase(); };
+            list.appendChild(item);
+        });
     }
 
-    const gameInput = document.getElementById('stream-game'), gBox = document.getElementById('game-suggestions');
-    gameInput.addEventListener('input', async () => {
-        const q = gameInput.value.trim();
-        if (q.length < 3) { gBox.style.display = 'none'; return; }
-        const r = await fetch(`https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(q)}`, {
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        }).then(res => res.json());
-        gBox.innerHTML = '';
-        if(r.data) {
-            gBox.style.display = 'block';
-            r.data.forEach(g => {
-                const d = document.createElement('div'); d.className = 'suggestion-item'; d.textContent = g.name;
-                d.onclick = () => { gameInput.value = g.name; selectedGameId = g.id; gBox.style.display = 'none'; };
-                gBox.appendChild(d);
-            });
-        }
-    });
-
-    const raidInput = document.getElementById('raid-target-input'), rBox = document.getElementById('raid-suggestions');
-    raidInput.addEventListener('input', async () => {
-        const q = raidInput.value.trim();
-        if (q.length < 3) { rBox.style.display = 'none'; return; }
-        const r = await fetch(`https://api.twitch.tv/helix/search/channels?query=${encodeURIComponent(q)}`, {
-            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        }).then(res => res.json());
-        rBox.innerHTML = '';
-        if(r.data) {
-            rBox.style.display = 'block';
-            r.data.filter(u => u.is_live).forEach(u => {
-                const d = document.createElement('div'); d.className = 'suggestion-item';
-                d.textContent = `[LIVE] ${u.display_name} (${u.game_name})`;
-                d.onclick = () => {
-                    raidInput.value = u.display_name; selectedRaidTargetId = u.id;
-                    document.getElementById('selected-target-name').textContent = u.display_name.toUpperCase();
-                    rBox.style.display = 'none';
-                };
-                rBox.appendChild(d);
-            });
-        }
-    });
-
-    // --- ÜBERARBEITETE UPDATE FUNKTION ---
     async function updateTwitch() {
-        const sEl = document.getElementById('status');
         const titleVal = document.getElementById('stream-title').value;
-        
-        sEl.textContent = "SENDE UPDATE...";
-        sEl.style.color = "var(--mgs-green)";
-
-        // Body für Twitch zusammenstellen
-        let updateBody = {};
-        if (titleVal) updateBody.title = titleVal;
-        if (selectedGameId) updateBody.game_id = selectedGameId;
-
-        // Falls beides leer ist, nichts tun
-        if (Object.keys(updateBody).length === 0) {
-            sEl.textContent = "KEINE DATEN ZUM ÄNDERN.";
-            return;
-        }
-
-        try {
-            const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
-                method: 'PATCH',
-                headers: { 
-                    'Client-ID': CLIENT_ID, 
-                    'Authorization': `Bearer ${accessToken}`, 
-                    'Content-Type': 'application/json' 
-                },
-                body: JSON.stringify(updateBody)
-            });
-
-            if(res.ok) {
-                sEl.textContent = "ERFOLG: DATEN AKTUALISIERT.";
-                if(gameInput.value) {
-                    document.getElementById('stream-game').placeholder = "Aktuell: " + gameInput.value;
-                    gameInput.value = "";
-                }
-            } else {
-                const err = await res.json();
-                sEl.textContent = "FEHLER: " + (err.message || "Twitch lehnt ab");
-                sEl.style.color = "var(--mgs-red)";
-                console.log("Fehler-Details:", err);
-            }
-        } catch (e) {
-            sEl.textContent = "VERBINDUNGSFEHLER ZU TWITCH.";
-            sEl.style.color = "var(--mgs-red)";
-        }
+        const res = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${myBroadcasterId}`, {
+            method: 'PATCH',
+            headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: titleVal })
+        });
+        document.getElementById('status').textContent = res.ok ? "UPDATE ERFOLGREICH." : "FEHLER BEIM UPDATE.";
     }
 
     async function startRaid() {
-        const sEl = document.getElementById('status');
-        if(!selectedRaidTargetId) { sEl.textContent = "KEIN ZIEL."; return; }
-        sEl.textContent = "STARTE RAID...";
+        if(!selectedRaidTargetId) return;
         const res = await fetch(`https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&to_broadcaster_id=${selectedRaidTargetId}`, {
             method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
-        sEl.textContent = res.ok ? "RAID INITIERT." : "FEHLER.";
+        document.getElementById('status').textContent = res.ok ? "RAID INITIERT." : "RAID FEHLGESCHLAGEN.";
     }
-
-    async function cancelRaid() {
-        const sEl = document.getElementById('status');
-        sEl.textContent = "BRECHE AB...";
-        const url = `https://api.twitch.tv/helix/raids?from_broadcaster_id=${myBroadcasterId}&broadcaster_id=${myBroadcasterId}`;
-        const res = await fetch(url, {
-            method: 'DELETE', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
-        });
-        sEl.textContent = res.ok ? "RAID ABGEBROCHEN." : "KEIN AKTIVER RAID GEFUNDEN.";
-    }
-
-    document.addEventListener('click', () => { gBox.style.display = 'none'; rBox.style.display = 'none'; });
-    setInterval(loadLiveFollows, 120000);
 </script>
 </body>
 </html>
