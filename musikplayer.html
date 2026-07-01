@@ -329,16 +329,28 @@
     }
 
     audio.onended = () => {
-        if (isLoopMode) { audio.currentTime = 0; audio.play(); } 
-        else if (isRadioMode) {
+        if (isLoopMode) { 
+            audio.currentTime = 0; 
+            audio.play(); 
+        } else if (isRadioMode) {
             let list = loadedSongs[currentCat];
-            let randomIndex = Math.floor(Math.random() * list.length);
-            loadSong(currentCat, randomIndex);
+            currentIndex = Math.floor(Math.random() * list.length);
+            loadSong(currentCat, currentIndex);
             audio.play();
+            updatePlayButtons("⏸ PAUSE");
         } else { nextSong(); }
     };
 
-    function toggleRadioMode() { isRadioMode = !isRadioMode; if (isRadioMode) isLoopMode = false; updateModeUI(); }
+    function toggleRadioMode() { 
+        isRadioMode = !isRadioMode; 
+        if (isRadioMode) isLoopMode = false; 
+        updateModeUI(); 
+        if (isRadioMode && audio.paused) {
+            audio.play();
+            updatePlayButtons("⏸ PAUSE");
+        }
+    }
+    
     function toggleLoopMode() { isLoopMode = !isLoopMode; if (isLoopMode) isRadioMode = false; updateModeUI(); }
 
     function updateModeUI() {
@@ -451,20 +463,31 @@
 
     function closeVisualizer() { document.getElementById("visualizerOverlay").classList.remove("active"); cancelAnimationFrame(animationId); }
     function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    
     function nextSong() {
         let list = loadedSongs[currentCat];
-        currentIndex = (currentIndex + 1) % list.length;
+        if (isRadioMode) {
+            currentIndex = Math.floor(Math.random() * list.length);
+        } else {
+            currentIndex = (currentIndex + 1) % list.length;
+        }
         loadSong(currentCat, currentIndex);
         audio.play();
         updatePlayButtons("⏸ PAUSE");
     }
+
     function prevSong() {
         let list = loadedSongs[currentCat];
-        currentIndex = (currentIndex - 1 + list.length) % list.length;
+        if (isRadioMode) {
+            currentIndex = Math.floor(Math.random() * list.length);
+        } else {
+            currentIndex = (currentIndex - 1 + list.length) % list.length;
+        }
         loadSong(currentCat, currentIndex);
         audio.play();
         updatePlayButtons("⏸ PAUSE");
     }
+
     function seekAudio(val) { audio.currentTime = (val / 100) * audio.duration; }
 
     audio.ontimeupdate = () => {
