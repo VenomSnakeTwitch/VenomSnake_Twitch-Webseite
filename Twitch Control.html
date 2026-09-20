@@ -30,6 +30,8 @@
         button { width: 100%; padding: 15px; background: var(--mgs-green); color: #000; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
         button:hover { background: #fff; }
         .btn-raid { background: var(--mgs-red); color: #fff; margin-top: 10px; }
+        .btn-cancel { background: #333; color: #fff; margin-top: 10px; border: 1px solid #555; }
+        .btn-cancel:hover { background: #555; }
         .btn-back { position: absolute; top: 20px; right: 20px; width: auto; padding: 8px 15px; background: transparent; border: 1px solid var(--mgs-green); color: var(--mgs-green); font-size: 0.7rem; }
         #status { margin-top: 20px; padding: 15px; text-align: center; font-size: 0.8rem; border: 1px dashed var(--mgs-green); background: rgba(0,255,65,0.05); }
     </style>
@@ -83,6 +85,7 @@
                     ZIEL_ERFASST: <span id="selected-target-name" style="color: var(--mgs-red); font-weight: bold;">KEINES</span>
                 </div>
                 <button class="btn-raid" onclick="startRaid()">RAID_EINLEITEN</button>
+                <button class="btn-cancel" onclick="cancelRaid()">RAID_ABBRECHEN</button>
             </div>
         </div>
         <div id="status">STATUS: STANDBY</div>
@@ -91,7 +94,6 @@
 
 <script>
     const CORRECT_PASS = "VenomSnake94";
-    // Client ID aus deinem Screenshot 1781655876430.jpeg übernommen
     const CLIENT_ID = '49hgyh1e44chqcmiayon76rbn2v1yr';
     const REDIRECT_URI = window.location.origin + window.location.pathname;
     const SCOPES = 'channel:manage:broadcast channel:manage:raids user:read:follows';
@@ -167,6 +169,14 @@
             method: 'POST', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
         });
         document.getElementById('status').textContent = res.ok ? "RAID INITIERT." : "RAID FEHLGESCHLAGEN.";
+    }
+
+    async function cancelRaid() {
+        if(!myBroadcasterId) return;
+        const res = await fetch(`https://api.twitch.tv/helix/raids?broadcaster_id=${myBroadcasterId}`, {
+            method: 'DELETE', headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${accessToken}` }
+        });
+        document.getElementById('status').textContent = res.ok ? "RAID ABGEBROCHEN." : "ABBRUCH FEHLGESCHLAGEN.";
     }
 </script>
 </body>
