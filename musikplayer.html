@@ -107,6 +107,18 @@
         }
         .vis-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
 
+        /* DISCORD VOTE BUTTON STYLES */
+        .vote-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 255, 65, 0.05);
+            padding: 10px;
+            border: 1px solid var(--mgs-border);
+        }
+
         footer { text-align: center; padding: 40px; color: var(--mgs-green-dim); font-size: 0.65rem; letter-spacing: 2px; }
 
         @media (max-width: 768px) { #infoBox { grid-template-columns: 1fr; } }
@@ -136,6 +148,13 @@
         </div>
 
         <h2 id="currentSong">INITIALISIERE...</h2>
+
+        <!-- DISCORD VOTE BUTTONS -->
+        <div class="vote-row">
+            <button id="likeBtn" onclick="sendDiscordVote('LIKE')">👍 SONG MOCHTE ICH</button>
+            <button id="dislikeBtn" onclick="sendDiscordVote('DISLIKE')">👎 NICHT MEIN FALL</button>
+        </div>
+
         <audio id="audioPlayer" crossOrigin="anonymous"></audio>
 
         <div class="control-grid">
@@ -301,6 +320,8 @@
         updateVisSelect();
         document.getElementById("downloadBtn").href = audio.src;
         document.getElementById("currentSong").textContent = "▶ " + song.replace('.mp3', '').toUpperCase();
+
+        resetVoteButtons();
     }
 
     function updateVisSelect() {
@@ -508,6 +529,60 @@
 
     function formatTime(s) { let m = Math.floor(s/60), sec = Math.floor(s%60).toString().padStart(2, '0'); return m + ":" + sec; }
     window.onload = () => { audio.volume = 0.5; };
+
+    /* -------------------------------------------------------------
+       DISCORD WEBHOOK SYSTEM LOGIC
+    ------------------------------------------------------------- */
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1551608931984613386/HtomYgWCBSKCk3Mv3j5eFbvGB7uEUCeYK2Nd13-inzuqN9GzQ2P6ZoUEhVZPZWtoPE8Z";
+
+    function resetVoteButtons() {
+        const likeBtn = document.getElementById("likeBtn");
+        const dislikeBtn = document.getElementById("dislikeBtn");
+        likeBtn.textContent = "👍 SONG MOCHTE ICH";
+        dislikeBtn.textContent = "👎 NICHT MEIN FALL";
+        likeBtn.disabled = false;
+        dislikeBtn.disabled = false;
+    }
+
+    async function sendDiscordVote(type) {
+        if (!loadedSongs[currentCat] || !loadedSongs[currentCat][currentIndex]) return;
+
+        const songName = loadedSongs[currentCat][currentIndex].replace('.mp3', '').replaceAll('_', ' ');
+        const likeBtn = document.getElementById("likeBtn");
+        const dislikeBtn = document.getElementById("dislikeBtn");
+
+        likeBtn.disabled = true;
+        dislikeBtn.disabled = true;
+
+        if (type === 'LIKE') {
+            likeBtn.textContent = "✔ DANKE FÜR DEIN LIKE!";
+        } else {
+            dislikeBtn.textContent = "✔ FEEDBACK GESENDET!";
+        }
+
+        const payload = {
+            username: "CODEC Audio Interface",
+            embeds: [{
+                title: type === 'LIKE' ? "💚 Neues Song-Like erhalten!" : "💔 Neues Dislike erhalten",
+                color: type === 'LIKE' ? 65281 : 16711680,
+                fields: [
+                    { name: "Song", value: songName, inline: true },
+                    { name: "Ordner", value: currentCat, inline: true }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        try {
+            await fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+        } catch(e) {
+            console.error("Fehler beim Senden an Discord:", e);
+        }
+    }
 </script>
 </body>
 </html>
