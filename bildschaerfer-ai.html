@@ -18,7 +18,29 @@ function blur(src,w,h,r){const out=new Float32Array(src.length),temp=new Float32
 $('sharp').onclick=async()=>{busy=true;buttons();setStatus('Schärfe wird berechnet …');await new Promise(r=>setTimeout(r,30));try{const w=original.width,h=original.height;if(w*h>8000000)throw Error('Für die klassische Schärfung auf diesem Gerät maximal 8 Megapixel verwenden.');const src=original.getContext('2d').getImageData(0,0,w,h),dst=new ImageData(w,h),soft=blur(src.data,w,h,Number($('radius').value)),a=Number($('amount').value)/100;for(let i=0;i<src.data.length;i+=4){for(let c=0;c<3;c++)dst.data[i+c]=Math.max(0,Math.min(255,Math.round(src.data[i+c]+a*(src.data[i+c]-soft[i+c]))));dst.data[i+3]=src.data[i+3]}result.width=w;result.height=h;result.getContext('2d').putImageData(dst,0,0);setStatus('Fertig. Klassische Schärfung angewendet.')}catch(e){setStatus('Fehler: '+e.message)}finally{busy=false;buttons()}};
 let upscaler=null;
 async function getAI(){if(upscaler)return upscaler;setStatus('Lade KI-Bibliothek und Modell … (dies kann beim ersten Mal dauern)');const timeout=new Promise((_,reject)=>setTimeout(()=>reject(Error('Zeitüberschreitung beim Laden (45 Sekunden). Bitte Internetverbindung prüfen.')),45000));const load=(async()=>{const [a,b]=await Promise.all([import('https://esm.sh/upscaler@1.0.0?bundle'),import('https://esm.sh/@upscalerjs/default-model@1.0.0?bundle')]);const U=a.default||a.Upscaler;const M=b.default||b;const instance=new U({model:M});await instance.ready;return instance})();return upscaler=await Promise.race([load,timeout])}
-async function upscale(times){if(!loaded)return;busy=true;buttons();try{const w=original.width,h=original.height;if(w*h>(times===2?1500000:350000))throw Error('Für KI '+times+'× bitte ein kleineres Bild wählen (Speichergrenze auf Mobilgeräten).');const ai=await getAI();let input=original;for(let i=0;i<(times===2?1:2);i++){setStatus('KI-Durchlauf '+(i+1)+' von '+(times===2?1:2)+' läuft …');const output=await ai.upscale(input,{output:'tensor',patchSize:64,padding:4});const next=document.createElement('canvas');const data=await ai.upscale(input,{output:'base64',patchSize:64,padding:4});output.dispose?.();const image=new Image();image.src=data;await image.decode();next.width=image.naturalWidth;next.height=image.naturalHeight;next.getContext('2d').drawImage(image,0,0);input=next}result.width=input.width;result.height=input.height;result.getContext('2d').drawImage(input,0,0);setStatus('KI '+times+'× fertig: '+result.width+' × '+result.height+' Pixel.')}catch(e){setStatus('KI konnte nicht ausgeführt werden: '+e.message+'\nDu kannst weiterhin „Klassisch schärfen“ nutzen.')}finally{busy=false;buttons()}}
+async function upscale(times){
+if(!loaded)return;busy=true;buttons();
+try{
+ const w=original.width,h=original.height,limit=12000000;
+ if(w*h*times*times>limit)throw Error('Das Ergebnis würde mehr als 12 Megapixel haben. Bitte ein kleineres Foto verwenden oder zunächst zuschneiden.');
+ const ai=await getAI();
+ // Process a memory-safe intermediate image. The final resize is conventional interpolation,
+ // so this is a hybrid method, not full-resolution neural inference.
+ const maxPixels=times===4?200000:650000;
+ const scale=Math.min(1,Math.sqrt(maxPixels/(w*h)));
+ const input=document.createElement('canvas');
+ input.width=Math.max(1,Math.round(w*scale));input.height=Math.max(1,Math.round(h*scale));
+ input.getContext('2d').drawImage(original,0,0,input.width,input.height);
+ setStatus('KI verarbeitet '+input.width+' × '+input.height+' Pixel. Bitte warten …');
+ const data=await ai.upscale(input,{output:'base64',patchSize:32,padding:2});
+ const image=new Image();image.src=data;await image.decode();
+ result.width=w*times;result.height=h*times;
+ const ctx=result.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ ctx.drawImage(image,0,0,result.width,result.height);
+ setStatus('Fertig: '+result.width+' × '+result.height+' Pixel. Hinweis: Die KI verarbeitet aus Speichergründen eine verkleinerte Zwischenversion; die endgültige Ausgabe wird zusätzlich interpoliert.');
+}catch(e){setStatus('KI konnte nicht ausgeführt werden: '+e.message+'\\nDie klassische Schärfung bleibt verfügbar.')}
+finally{busy=false;buttons()}
+}
 $('ai').onclick=()=>upscale(2);$('ai4').onclick=()=>upscale(4);
 $('save').onclick=()=>result.toBlob(blob=>{if(!blob){setStatus('PNG konnte nicht erstellt werden.');return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='bildschaerfer-ergebnis.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)},'image/png');
 </script></body></html>
